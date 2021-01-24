@@ -10,8 +10,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.subsystems.ExampleSubsystem.ExampleSubsystem;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -22,61 +20,58 @@ import webapp.Webserver;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  public XboxController Xbox = new XboxController(1);
-  public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
-  public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);
-  // The robot's subsystems and commands are defined here...
+    // The robot's subsystems and commands are defined here...
 
 
-  /**
-   * The container for the robot.  Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
-    // Configure the button bindings
-    configureButtonBindings();
-    if (Robot.debug) {
-      startValueTuner();
-      startFireLog();
+    /**
+     * The container for the robot.  Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+        // Configure the button bindings
+        configureButtonBindings();
+        if (Robot.debug) {
+            startValueTuner();
+            startFireLog();
+        }
     }
-  }
 
-  /**
-   * Use this method to define your button->command mappings.  Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
-   * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
+    /**
+     * Use this method to define your button->command mappings.  Buttons can be created by
+     * instantiating a {@link GenericHID} or one of its subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
+     * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {
 
-  }
-
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-
-    // An ExampleCommand will run in autonomous
-    return null;
-  }
-
-  /**
-   * Initiates the value tuner.
-   */
-  private void startValueTuner() {
-    new ValueTuner().start();
-  }
-
-  /**
-   * Initiates the port of team 225s Fire-Logger.
-   */
-  private void startFireLog() {
-    try {
-      new Webserver();
-    } catch (Exception e) {
-      e.printStackTrace();
     }
-  }
+
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+
+        // An ExampleCommand will run in autonomous
+        return null;
+    }
+
+    /**
+     * Initiates the value tuner.
+     */
+    private void startValueTuner() {
+        new ValueTuner().start();
+    }
+
+    /**
+     * Initiates the port of team 225s Fire-Logger.
+     */
+    private void startFireLog() {
+        try {
+            new Webserver();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

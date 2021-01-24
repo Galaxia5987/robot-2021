@@ -32,10 +32,9 @@
                 document.getElementsByTagName('input'))
                 .forEach(function (el) {
                     var ctype = el.getAttribute("ctype");
-                    if(ctype === "normal") {
+                    if (ctype === "normal") {
                         post(encodeURI(`${window.location.href}set?key=${el.name}&value=${el.value}`));
-                    }
-                    else if(ctype === "talon") {
+                    } else if (ctype === "talon") {
                         var split = el.name.split("-");
                         post(encodeURI(`${window.location.href}setTalon?key=${split[0]}&${split[1]}=${el.value}`));
                     }

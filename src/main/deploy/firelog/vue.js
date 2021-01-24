@@ -357,7 +357,7 @@ function def (obj, key, val, enumerable) {
 var bailRE = /[^\w.$]/;
 function parsePath (path) {
   if (bailRE.test(path)) {
-    return
+
   } else {
     var segments = path.split('.');
     return function (obj) {
