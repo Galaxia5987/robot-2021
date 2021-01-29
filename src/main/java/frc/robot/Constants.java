@@ -31,7 +31,7 @@ public final class Constants {
         public static final double MODEL_TOLERANCE = 3;
         public static final double ENCODER_TOLERANCE = 0.1; // [ticks]
         public static final double J = 0; //moment of inertia [kg * m^2]
-        public static final double ARBITRARY_FEED_FORWARD = 0;
+        public static final double ARBITRARY_FEED_FORWARD = 0; // [%] https://docs.ctre-phoenix.com/en/latest/ch16_ClosedLoop.html#do-i-need-to-use-arbitrary-feed-forward
 
 
         // TODO: Note that we might need to change the values here using the frc-characterizations if the model won't satisfy our needs.
