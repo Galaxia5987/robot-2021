@@ -109,12 +109,23 @@ public class Shooter extends SubsystemBase {
      * Set the velocity to apply by the motor.
      *
      * @param velocity the desired velocity at which the motor will rotate. [RPS]
+     * @see #setVelocity(double, double)
+     */
+    public void setVelocity(double velocity) {
+        setVelocity(velocity, Constants.LOOP_PERIOD);
+    }
+
+    /**
+     * Set the velocity to apply by the motor.
+     *
+     * @param velocity the desired velocity at which the motor will rotate. [RPS]
+     * @param timeInterval the time interval from the last call of this function. [sec]
      * @see #setPower(double)
      */
-    public void setVelocity(double velocity, double difference) {
+    public void setVelocity(double velocity, double timeInterval) {
         stateSpacePredictor.setNextR(VecBuilder.fill(velocity)); //r = reference (setpoint)
         stateSpacePredictor.correct(VecBuilder.fill(getVelocity()));
-        stateSpacePredictor.predict(difference);
+        stateSpacePredictor.predict(timeInterval);
 
         double voltageToApply = stateSpacePredictor.getU(0); // u = input, calculated by the input.
         // returns the voltage to apply (between 0 and 12)

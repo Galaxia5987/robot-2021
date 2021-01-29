@@ -27,7 +27,7 @@ public class Shoot extends CommandBase {
     @Override
     public void initialize() {
         shootingTimer.start();
-        shooter.setVelocity(velocity.get(), Constants.LOOP_PERIOD);
+        shooter.setVelocity(velocity.get());
     }
 
     @Override
