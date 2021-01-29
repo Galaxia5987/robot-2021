@@ -7,10 +7,12 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.utils.DeadbandLaserSensor;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static frc.robot.Constants.Conveyor.*;
 
 public class Conveyor extends SubsystemBase {
-    private static int balls = Constants.Conveyor.INITIAL_BALLS_AMOUNT;
+    private static final AtomicInteger balls = new AtomicInteger(Constants.Conveyor.INITIAL_BALLS_AMOUNT);
 
     private final TalonFX motor = new TalonFX(Ports.Conveyor.MOTOR);
     private final DeadbandLaserSensor shooterSensor = new DeadbandLaserSensor(Ports.Conveyor.SHOOTER_LASER_SENSOR,
@@ -37,7 +39,7 @@ public class Conveyor extends SubsystemBase {
      * @return the amount of balls in the conveyor.
      */
     private static int getBallsAmount() {
-        return balls;
+        return balls.get();
     }
 
     public static synchronized boolean isConveyorFull() {
@@ -51,15 +53,15 @@ public class Conveyor extends SubsystemBase {
     /**
      * Increment by one the amount of balls (only programmatically).
      */
-    private static synchronized void addBall() {
-        balls++;
+    private static void addBall() {
+        balls.incrementAndGet();
     }
 
     /**
      * Decrement by one the amount of balls (only programmatically).
      */
-    private static synchronized void removeBall() {
-        balls--;
+    private static void removeBall() {
+        balls.decrementAndGet();
     }
 
     /**
