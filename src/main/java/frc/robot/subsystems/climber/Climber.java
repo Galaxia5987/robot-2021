@@ -2,7 +2,7 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -12,8 +12,8 @@ public class Climber extends SubsystemBase {
     private final TalonFX master = new TalonFX(Ports.Climber.MASTER);
     private final TalonFX slave = new TalonFX(Ports.Climber.SLAVE);
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_METER);
-    private final Solenoid stopper = new Solenoid(Ports.Climber.STOPPER);
-    private final Solenoid gearboxShifter = new Solenoid(Ports.Climber.GEARBOX_SHIFTER);
+    private final DoubleSolenoid stopper = new DoubleSolenoid(Ports.Climber.STOPPER, Ports.Climber.STOPPER_2);
+    private final DoubleSolenoid gearboxShifter = new DoubleSolenoid(Ports.Climber.GEARBOX_SHIFTER, Ports.Climber.GEARBOX_SHIFTER_2);
 
     public Climber() {
         slave.follow(master);
@@ -51,30 +51,15 @@ public class Climber extends SubsystemBase {
     }
 
     /**
-     * Get whether the stopper is engaged.
-     *
-     * @return whether the stopper is engaged.
-     */
-    public boolean isStoppedEngaged() {
-        return stopper.get();
-    }
-
-    /**
-     * Get whether the gearbox shifter is engaged.
-     *
-     * @return whether the gearbox shifter is engaged.
-     */
-    public boolean isGearboxEngaged() {
-        return gearboxShifter.get();
-    }
-
-    /**
      * Set the stopper mode.
      *
      * @param mode the stopper mode.
      */
     public void setStopperMode(PistonMode mode) {
-        stopper.set(mode.getValue());
+        if (mode.getValue())
+            stopper.set(DoubleSolenoid.Value.kForward);
+        else
+            stopper.set(DoubleSolenoid.Value.kOff);
     }
 
     /**
@@ -83,7 +68,11 @@ public class Climber extends SubsystemBase {
      * @param mode the wanted gearbox shifter mode.
      */
     public void setGearboxMode(PistonMode mode) {
-        gearboxShifter.set(mode.getValue());
+        if (mode.getValue())
+            gearboxShifter.set(DoubleSolenoid.Value.kForward);
+        else
+            gearboxShifter.set(DoubleSolenoid.Value.kOff);
+
     }
 
     /**
@@ -111,14 +100,20 @@ public class Climber extends SubsystemBase {
      * Toggle the piston mode of the piston responsible for the gearbox.
      */
     public void toggleGear() {
-        gearboxShifter.set(!gearboxShifter.get());
+        if (gearboxShifter.get() == DoubleSolenoid.Value.kOff)
+            gearboxShifter.set(DoubleSolenoid.Value.kForward);
+        else
+            gearboxShifter.set(DoubleSolenoid.Value.kOff);
     }
 
     /**
      * Toggle the piston mode of the piston responsible for the stopper.
      */
     public void toggleStopper() {
-        stopper.set(!stopper.get());
+        if (stopper.get() == DoubleSolenoid.Value.kOff)
+            stopper.set(DoubleSolenoid.Value.kForward);
+        else
+            stopper.set(DoubleSolenoid.Value.kOff);
     }
 
 }

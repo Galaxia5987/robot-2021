@@ -30,6 +30,6 @@ public final class Constants {
         public static final int CRUISE_VELOCITY = 0; //sensor units per 100ms.
         public static final int ACCELERATION = 0; //sensor units per 100ms^2.
 
-        public static final double TOLERANCE = 0.1; //Error tolerance for the height [m].
+        public static final double HEIGHT_TOLERANCE = 0.1; //Error tolerance for the height [m].
     }
 }
