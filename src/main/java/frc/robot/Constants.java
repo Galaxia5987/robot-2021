@@ -37,5 +37,6 @@ public final class Constants {
         public static final double FUNNEL_PROXIMITY_LOST_VOLTAGE = 0; // [volts]
         public static final double FUNNEL_PROXIMITY_SENSE_VOLTAGE = 0; // [volts]
 
+        public static final double CONVEYOR_MOTOR_RETURN_POWER = 0; // [%]
     }
 }
