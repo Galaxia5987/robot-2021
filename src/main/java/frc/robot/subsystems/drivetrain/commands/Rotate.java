@@ -6,7 +6,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.valuetuner.WebConstant;
 import org.techfire225.webapp.FireLog;
 
-public class TurnInPlace extends CommandBase {
+public class Rotate extends CommandBase {
 
     private SwerveDrive swerveDrive;
     //    private WebConstant target = new WebConstant("targetAngle", 0);
@@ -18,7 +18,7 @@ public class TurnInPlace extends CommandBase {
     private WebConstant target3 = new WebConstant("target3", 0);
 
 
-    public TurnInPlace(SwerveDrive swerveDrive) {
+    public Rotate(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
         addRequirements(swerveDrive);
     }
@@ -26,7 +26,7 @@ public class TurnInPlace extends CommandBase {
     @Override
     public void execute() {
         double rotation = -OI.xbox.getY();
-        rotation = Utils.joystickDeadband(rotation);
+        rotation = Utils.joystickDeadband(rotation, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
 
         swerveDrive.getModule(0).setAngle(target0.get());
         swerveDrive.getModule(1).setAngle(target1.get());

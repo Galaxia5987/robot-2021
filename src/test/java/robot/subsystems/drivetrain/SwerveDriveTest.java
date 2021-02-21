@@ -50,13 +50,13 @@ public class SwerveDriveTest {
         forward = 1;
         strafe = 0;
         rotation = 0;
-        gyro =  3 * Math.PI / 2;
+        gyro =  -3 * Math.PI / 2;
 
-        expectedHeading = new double[]{0, -forward * SPEED_MULTIPLIER, 0};
-        expectedHeadingField = new double[]{0, -forward * SPEED_MULTIPLIER, 0};
-        expectedVel = new double[]{0, -forward * SPEED_MULTIPLIER, 0, -forward * SPEED_MULTIPLIER,
-                0, -forward * SPEED_MULTIPLIER, 0, -forward * SPEED_MULTIPLIER};
-        expectedVelField = new double[]{0, -forward * SPEED_MULTIPLIER, 0, -forward * SPEED_MULTIPLIER, 0, -forward * SPEED_MULTIPLIER, 0, -forward * SPEED_MULTIPLIER};
+        expectedHeading = new double[]{0, forward * SPEED_MULTIPLIER, 0};
+        expectedHeadingField = new double[]{0, forward * SPEED_MULTIPLIER, 0};
+        expectedVel = new double[]{0, forward * SPEED_MULTIPLIER, 0, forward * SPEED_MULTIPLIER,
+                0, forward * SPEED_MULTIPLIER, 0, forward * SPEED_MULTIPLIER};
+        expectedVelField = new double[]{0, forward * SPEED_MULTIPLIER, 0, forward * SPEED_MULTIPLIER, 0, forward * SPEED_MULTIPLIER, 0, forward * SPEED_MULTIPLIER};
 
         getRobotHeading();
         getRobotHeadingField();

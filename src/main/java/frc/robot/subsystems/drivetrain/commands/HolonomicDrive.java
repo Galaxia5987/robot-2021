@@ -22,9 +22,12 @@ public class HolonomicDrive extends CommandBase {
 
     @Override
     public void execute() {
-        double forward = Utils.joystickDeadband(-OI.xbox.getY(GenericHID.Hand.kRight));
-        double strafe = Utils.joystickDeadband(-OI.xbox.getX(GenericHID.Hand.kRight));
-        double rotation = Utils.joystickDeadband(-OI.xbox.getX(GenericHID.Hand.kLeft));
+        GenericHID.Hand right = GenericHID.Hand.kRight;
+        GenericHID.Hand left = GenericHID.Hand.kLeft;
+
+        double forward = Utils.joystickDeadband(-OI.xbox.getY(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double strafe = Utils.joystickDeadband(-OI.xbox.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double rotation = Utils.joystickDeadband(-OI.xbox.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         if (forward != 0 || strafe != 0 || rotation != 0) {
             swerveDrive.holonomicDrive(forward, strafe, rotation);
         } else {

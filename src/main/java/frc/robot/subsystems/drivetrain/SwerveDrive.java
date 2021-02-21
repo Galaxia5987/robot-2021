@@ -27,7 +27,7 @@ public class SwerveDrive extends SubsystemBase {
     public SwerveDrive(boolean isFieldOriented, boolean testMode) {
 
         // creates an inverse matrix of all the mathematical operations needed to calculate the wheel velocities
-        // see https://file.tavsys.net/control/controls-engineering-in-frc.pdf pg.144
+        // see https://file.tavsys.net/control/controls-engineering-in-frc.pdf pg.140
         for (int i = 0; i < 8; i++) {
             if (i % 2 == 0) {
                 dynamics[i][0] = 1;
@@ -145,7 +145,6 @@ public class SwerveDrive extends SubsystemBase {
      * set the angle of the wheels on the robot to lock the robot in place
      */
     public void lock() {
-        // calculates the lock angles of the wheels
         double[] lockAngles = calculateLockAngles();
 
         for (int i = 0; i < 4; i++) {

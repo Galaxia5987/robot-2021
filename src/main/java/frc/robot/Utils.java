@@ -32,14 +32,14 @@ public class Utils {
     }
 
     /**
-     * @param velocity the length of the velocity vector
-     * @param angle the angle of the velocity vector
+     * @param radius the radius of the vector
+     * @param angle the angle of the vector
      * @return the cartesian representation with x and y components
      */
-    public static double[] polarToCartesian(double velocity, double angle) {
+    public static double[] polarToCartesian(double radius, double angle) {
         double[] v = new double[2];
-        v[0] = Math.sin(angle) * velocity;
-        v[1] = Math.cos(angle) * velocity;
+        v[0] = Math.sin(angle) * radius;
+        v[1] = Math.cos(angle) * radius;
         return v;
     }
 
@@ -70,10 +70,11 @@ public class Utils {
      * sets the value of the joystick to 0 if the value is less than the threshold
      *
      * @param val the joystick value
+     * @param threshold the threshold value
      * @return 0 if val is less than the threshold else val
      */
-    public static double joystickDeadband(double val) {
-        if (Math.abs(val) < Constants.SwerveDrive.JOYSTICK_THRESHOLD)
+    public static double joystickDeadband(double val, double threshold) {
+        if (Math.abs(val) < threshold)
             return 0;
         return Math.pow(val, 3);
     }
