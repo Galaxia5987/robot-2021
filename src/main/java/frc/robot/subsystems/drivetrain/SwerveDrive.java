@@ -232,7 +232,7 @@ public class SwerveDrive extends SubsystemBase {
     /**
      * locks all modules in their current position.
      */
-    public void lockModulesPositions() {
+    public void lockModulePositions() {
         for (SwerveModule swerveModule : swerveModules) {
             swerveModule.setSpeed(0);
             swerveModule.setAngle(swerveModule.getAngle());

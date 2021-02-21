@@ -44,6 +44,7 @@ public class Constants {
         public static final WebConstant KF_DRIVE = new WebConstant("KF_Drive", 0);
 
         // slow man
+        // the module that is slower than the rest
         public static final WebConstant KP_DRIVE_SLOW = new WebConstant("KP_Drive_Slow", 0.2);
         public static final WebConstant KI_DRIVE_SLOW = new WebConstant("KI_Drive_Slow", 0);
         public static final WebConstant KD_DRIVE_SLOW = new WebConstant("KD_Drive_Slow", 2);
@@ -52,6 +53,7 @@ public class Constants {
         public static final int[] ZERO_POSITION = {-339, 686, 221, -903};
 
         // sick man
+        // the module that has more friction in the rotating mechanism
         public static final WebConstant KP_SICK = new WebConstant("KP_SICK", 6);
         public static final WebConstant KI_SICK = new WebConstant("KI_SICK", 0);
         public static final WebConstant KD_SICK = new WebConstant("KD_SICK", 8);

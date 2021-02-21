@@ -40,7 +40,7 @@ public class HolonomicDrive extends CommandBase {
         if (forward != 0 || strafe != 0 || rotation != 0) {
             swerveDrive.holonomicDrive(forward, strafe, rotation);
         } else {
-            swerveDrive.lockModulesPositions();
+            swerveDrive.lockModulePositions();
         }
 
         FireLog.log("swerve angle by vectors", swerveDrive.getVelocity()[1]);
