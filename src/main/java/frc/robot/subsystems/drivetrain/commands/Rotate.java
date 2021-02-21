@@ -36,7 +36,7 @@ public class Rotate extends CommandBase {
         swerveDrive.getModule(2).setAngle(target2.get());
         swerveDrive.getModule(3).setAngle(target3.get());
 
-        FireLog.log("angle ", swerveDrive.swerveModules[2].getAngle());
+        FireLog.log("angle ", swerveDrive.getModule(2).getAngle());
         FireLog.log("swerve velocity", swerveDrive.getVelocity()[0]);
         FireLog.log("swerve angle by vectors", swerveDrive.getVelocity()[1]);
         FireLog.log("swerve direction", Robot.gyro.getAngle());

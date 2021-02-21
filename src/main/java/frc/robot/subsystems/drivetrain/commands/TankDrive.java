@@ -16,8 +16,8 @@ public class TankDrive extends CommandBase {
 
     @Override
     public void initialize() {
-        for (SwerveModule swerveModule : swerveDrive.swerveModules) {
-            swerveModule.setAngle(0);
+        for (int i = 0; i < 4; i++) {
+            swerveDrive.getModule(i).setAngle(0);
         }
     }
 

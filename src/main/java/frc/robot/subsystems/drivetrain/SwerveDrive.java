@@ -10,15 +10,15 @@ import static frc.robot.Ports.SwerveDrive.*;
 
 public class SwerveDrive extends SubsystemBase {
 
-    static double[][] dynamics = new double[8][3];
-    public SwerveModule[] swerveModules = new SwerveModule[4];
+    private static double[][] dynamics = new double[8][3];
+    private SwerveModule[] swerveModules = new SwerveModule[4];
     // calculates the distance from the center of the robot to the wheels
     private static double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
     private static double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
 
     // the sign vectors of Rx and Ry
-    static double[] signX = {1, 1, -1, -1};
-    static double[] signY = {-1, 1, -1, 1};
+    private static double[] signX = {1, 1, -1, -1};
+    private static double[] signY = {-1, 1, -1, 1};
 
     private static boolean isFieldOriented;
 
