@@ -64,8 +64,7 @@ public class Utils {
 
         return out;
     }
-
-
+    
     /**
      * sets the value of the joystick to 0 if the value is less than the threshold
      *
