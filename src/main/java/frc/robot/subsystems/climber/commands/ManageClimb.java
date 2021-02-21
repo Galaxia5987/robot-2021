@@ -21,21 +21,11 @@ public class ManageClimb extends CommandBase {
 
     @Override
     public void initialize() {
-        new SetStopper(climber, Climber.PistonMode.CLOSED);
         climber.setHeight(height);
-    }
-
-    @Override
-    public void execute() {
-
     }
 
     @Override
     public boolean isFinished() {
         return Math.abs(climber.getHeight() - height) <= Constants.Climber.HEIGHT_TOLERANCE;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
     }
 }

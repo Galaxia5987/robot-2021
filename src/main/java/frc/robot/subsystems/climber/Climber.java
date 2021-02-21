@@ -12,8 +12,8 @@ public class Climber extends SubsystemBase {
     private final TalonFX master = new TalonFX(Ports.Climber.MASTER);
     private final TalonFX slave = new TalonFX(Ports.Climber.SLAVE);
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_METER);
-    private final DoubleSolenoid stopper = new DoubleSolenoid(Ports.Climber.STOPPER, Ports.Climber.STOPPER_2);
-    private final DoubleSolenoid gearboxShifter = new DoubleSolenoid(Ports.Climber.GEARBOX_SHIFTER, Ports.Climber.GEARBOX_SHIFTER_2);
+    private final DoubleSolenoid stopper = new DoubleSolenoid(Ports.Climber.STOPPER_FORWARD_CHANNEL, Ports.Climber.STOPPER_REVERSE_CHANNEL);
+    private final DoubleSolenoid gearboxShifter = new DoubleSolenoid(Ports.Climber.GEARBOX_FORWARD_CHANNEL, Ports.Climber.GEARBOX_REVERSE_CHANNEL);
 
     public Climber() {
         slave.follow(master);
@@ -59,7 +59,7 @@ public class Climber extends SubsystemBase {
         if (mode.getValue())
             stopper.set(DoubleSolenoid.Value.kForward);
         else
-            stopper.set(DoubleSolenoid.Value.kOff);
+            stopper.set(DoubleSolenoid.Value.kReverse);
     }
 
     /**
@@ -71,7 +71,7 @@ public class Climber extends SubsystemBase {
         if (mode.getValue())
             gearboxShifter.set(DoubleSolenoid.Value.kForward);
         else
-            gearboxShifter.set(DoubleSolenoid.Value.kOff);
+            gearboxShifter.set(DoubleSolenoid.Value.kReverse);
 
     }
 
@@ -100,20 +100,20 @@ public class Climber extends SubsystemBase {
      * Toggle the piston mode of the piston responsible for the gearbox.
      */
     public void toggleGear() {
-        if (gearboxShifter.get() == DoubleSolenoid.Value.kOff)
+        if (gearboxShifter.get() == DoubleSolenoid.Value.kReverse)
             gearboxShifter.set(DoubleSolenoid.Value.kForward);
         else
-            gearboxShifter.set(DoubleSolenoid.Value.kOff);
+            gearboxShifter.set(DoubleSolenoid.Value.kReverse);
     }
 
     /**
      * Toggle the piston mode of the piston responsible for the stopper.
      */
     public void toggleStopper() {
-        if (stopper.get() == DoubleSolenoid.Value.kOff)
+        if (stopper.get() == DoubleSolenoid.Value.kReverse)
             stopper.set(DoubleSolenoid.Value.kForward);
         else
-            stopper.set(DoubleSolenoid.Value.kOff);
+            stopper.set(DoubleSolenoid.Value.kReverse);
     }
 
 }

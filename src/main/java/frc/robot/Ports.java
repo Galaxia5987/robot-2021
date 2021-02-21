@@ -5,10 +5,10 @@ public class Ports {
         public static final int MASTER = 0;
         public static final int SLAVE = 0;
 
-        public static final int STOPPER = 0;
-        public static final int STOPPER_2 = 0;
-        public static final int GEARBOX_SHIFTER = 0;
-        public static final int GEARBOX_SHIFTER_2 = 0;
+        public static final int STOPPER_FORWARD_CHANNEL = 0;
+        public static final int STOPPER_REVERSE_CHANNEL = 0;
+        public static final int GEARBOX_FORWARD_CHANNEL = 0;
+        public static final int GEARBOX_REVERSE_CHANNEL = 0;
 
         public static final boolean IS_MASTER_INVERTED = false;
         public static final boolean IS_SENSOR_PHASE_INVERTED = false;
