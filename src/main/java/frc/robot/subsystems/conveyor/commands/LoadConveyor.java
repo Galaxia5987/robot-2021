@@ -20,8 +20,14 @@ public class LoadConveyor extends CommandBase {
     @Override
     public void execute() {
         if (!Conveyor.isConveyorFull()) {
-            conveyor.setPower(power);
-        } // TODO: else turn on LEDs to notify that the conveyor is full
+            if (conveyor.hasFunnelSensedObject())
+               conveyor.setPower(power);
+            else
+                conveyor.setPower(0);
+        } else {
+            // TODO: turn on LEDs to notify that the conveyor is full
+            conveyor.setPower(0);
+        }
         // TODO: Add override option in case that the sensor is "broken"
 
     }
