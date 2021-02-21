@@ -15,12 +15,25 @@ import frc.robot.Utils;
 public class SwerveModule extends SubsystemBase {
     private final TalonFX driveMotor;
     private final TalonSRX angleMotor;
+
+    private double angleKP;
+    private double angleKI;
+    private double angleKD;
+    private double angleKF;
+
+    private double driveKP;
+    private double driveKI;
+    private double driveKD;
+    private double driveKF;
+
     private final int wheel;
 
     private final UnitModel driveUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_METER);
     private final UnitModel angleUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_RAD);
 
-    public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted) {
+    public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted,
+                        double angleKP, double angleKI, double angleKD, double angleKF,
+                        double driveKP, double driveKI, double driveKD, double driveKF) {
 
         driveMotor = new TalonFX(driveMotorPort);
         angleMotor = new TalonSRX(angleMotorPort);
@@ -64,6 +77,16 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.selectProfileSlot(1, 0);
 
         this.wheel = wheel;
+
+        this.angleKP = angleKP;
+        this.angleKI = angleKI;
+        this.angleKD = angleKD;
+        this.angleKF = angleKF;
+
+        this.driveKP = driveKP;
+        this.driveKI = driveKI;
+        this.driveKD = driveKD;
+        this.driveKF = driveKF;
     }
 
 
@@ -144,28 +167,15 @@ public class SwerveModule extends SubsystemBase {
      */
     private void configPIDF() {
         // set PIDF - angle motor
-        if (wheel != 2) {
-            angleMotor.config_kP(0, Constants.SwerveModule.KP.get(), Constants.TALON_TIMEOUT);
-            angleMotor.config_kI(0, Constants.SwerveModule.KI.get(), Constants.TALON_TIMEOUT);
-            angleMotor.config_kD(0, Constants.SwerveModule.KD.get(), Constants.TALON_TIMEOUT);
-            angleMotor.config_kF(0, Constants.SwerveModule.KF.get(), Constants.TALON_TIMEOUT);
-        } else {
-            angleMotor.config_kP(0, Constants.SwerveModule.KP_SICK.get(), Constants.TALON_TIMEOUT);
-            angleMotor.config_kI(0, Constants.SwerveModule.KI_SICK.get(), Constants.TALON_TIMEOUT);
-            angleMotor.config_kD(0, Constants.SwerveModule.KD_SICK.get(), Constants.TALON_TIMEOUT);
-            angleMotor.config_kF(0, Constants.SwerveModule.KF_SICK.get(), Constants.TALON_TIMEOUT);
-        }
+        angleMotor.config_kP(0, angleKP, Constants.TALON_TIMEOUT);
+        angleMotor.config_kI(0, angleKI, Constants.TALON_TIMEOUT);
+        angleMotor.config_kD(0, angleKD, Constants.TALON_TIMEOUT);
+        angleMotor.config_kF(0, angleKF, Constants.TALON_TIMEOUT);
 
-        if (wheel != 1) {
-            driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE.get(), Constants.TALON_TIMEOUT);
-        } else {
-            driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-        }
+        // set PIDF - drive motor
+        driveMotor.config_kP(1, driveKP, Constants.TALON_TIMEOUT);
+        driveMotor.config_kI(1, driveKI, Constants.TALON_TIMEOUT);
+        driveMotor.config_kD(1, driveKD, Constants.TALON_TIMEOUT);
+        driveMotor.config_kF(1, driveKF, Constants.TALON_TIMEOUT);
     }
 }
