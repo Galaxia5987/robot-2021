@@ -19,9 +19,9 @@ import edu.wpi.first.wpilibj.util.Color;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final double VOLTAGE = 12; //[J]
 
     public static class ColorWheel {
-        public static final double VOLTAGE = 0;
 
         //RGB values (0-255)
         public static final Color RED_TARGET = ColorMatch.makeColor(255, 0, 0);

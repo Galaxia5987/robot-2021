@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 
+/**
+ * Color wheel values and functions.
+ */
 public class ColorWheel extends SubsystemBase {
 
     private final TalonSRX motor = new TalonSRX(Ports.ColorWheel.MOTOR);
@@ -26,7 +29,7 @@ public class ColorWheel extends SubsystemBase {
     public ColorWheel() {
         motor.setInverted(Ports.ColorWheel.MOTOR_INVERTED);
         motor.setSensorPhase(Ports.ColorWheel.MOTOR_SENSOR_PHASE_INVERTED);
-        motor.configVoltageCompSaturation(Constants.ColorWheel.VOLTAGE);
+        motor.configVoltageCompSaturation(Constants.VOLTAGE);
         motor.enableVoltageCompensation(true);
         colorMatch.addColorMatch(Constants.ColorWheel.RED_TARGET);
         colorMatch.addColorMatch(Constants.ColorWheel.GREEN_TARGET);

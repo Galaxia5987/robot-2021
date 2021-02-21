@@ -25,7 +25,6 @@ public class Spin extends CommandBase {
     public void initialize() {
         colorWheel.updateSensor();
         previousColor = colorWheel.getColorString();
-        currentColor = colorWheel.getColorString();
         colorWheel.power(power);
     }
 
