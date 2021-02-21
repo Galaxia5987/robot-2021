@@ -1,8 +1,5 @@
 package robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import frc.robot.Ports;
 import frc.robot.subsystems.drivetrain.SwerveModule;
 import org.junit.Assert;
 import org.junit.Before;

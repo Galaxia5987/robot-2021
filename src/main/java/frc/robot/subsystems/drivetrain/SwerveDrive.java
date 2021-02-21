@@ -27,19 +27,19 @@ public class SwerveDrive extends SubsystemBase {
 
         if (!testMode) {
             swerveModules[0] = new SwerveModule(0, DRIVE_MOTOR_FRONT_RIGHT, ANGLE_MOTOR_FRONT_RIGHT, FRONT_RIGHT_INVERTED,
-                    Constants.SwerveModule.KP.get(), Constants.SwerveModule.KI.get(), Constants.SwerveModule.KD.get(), Constants.SwerveModule.KP.get(),
+                    Constants.SwerveModule.KP.get(), Constants.SwerveModule.KI.get(), Constants.SwerveModule.KD.get(), Constants.SwerveModule.KF.get(),
                     Constants.SwerveModule.KP_DRIVE.get(), Constants.SwerveModule.KI_DRIVE.get(), Constants.SwerveModule.KD_DRIVE.get(), Constants.SwerveModule.KF_DRIVE.get());
 
             swerveModules[1] = new SwerveModule(1, DRIVE_MOTOR_FRONT_LEFT, ANGLE_MOTOR_FRONT_LEFT, FRONT_LEFT_INVERTED,
-                    Constants.SwerveModule.KP.get(), Constants.SwerveModule.KI.get(), Constants.SwerveModule.KD.get(), Constants.SwerveModule.KP.get(),
+                    Constants.SwerveModule.KP.get(), Constants.SwerveModule.KI.get(), Constants.SwerveModule.KD.get(), Constants.SwerveModule.KF.get(),
                     Constants.SwerveModule.KP_DRIVE_SLOW.get(), Constants.SwerveModule.KI_DRIVE_SLOW.get(), Constants.SwerveModule.KD_DRIVE_SLOW.get(), Constants.SwerveModule.KF_DRIVE_SLOW.get());
 
             swerveModules[2] = new SwerveModule(2, DRIVE_MOTOR_BACK_RIGHT, ANGLE_MOTOR_BACK_RIGHT, BACK_RIGHT_INVERTED,
-                    Constants.SwerveModule.KP_SICK.get(), Constants.SwerveModule.KI_SICK.get(), Constants.SwerveModule.KD_SICK.get(), Constants.SwerveModule.KP_SICK.get(),
+                    Constants.SwerveModule.KP_SICK.get(), Constants.SwerveModule.KI_SICK.get(), Constants.SwerveModule.KD_SICK.get(), Constants.SwerveModule.KF_SICK.get(),
                     Constants.SwerveModule.KP_DRIVE.get(), Constants.SwerveModule.KI_DRIVE.get(), Constants.SwerveModule.KD_DRIVE.get(), Constants.SwerveModule.KF_DRIVE.get());
 
             swerveModules[3] = new SwerveModule(3, DRIVE_MOTOR_BACK_LEFT, ANGLE_MOTOR_BACK_LEFT, BACK_LEFT_INVERTED,
-                    Constants.SwerveModule.KP.get(), Constants.SwerveModule.KI.get(), Constants.SwerveModule.KD.get(), Constants.SwerveModule.KP.get(),
+                    Constants.SwerveModule.KP.get(), Constants.SwerveModule.KI.get(), Constants.SwerveModule.KD.get(), Constants.SwerveModule.KF.get(),
                     Constants.SwerveModule.KP_DRIVE.get(), Constants.SwerveModule.KI_DRIVE.get(), Constants.SwerveModule.KD_DRIVE.get(), Constants.SwerveModule.KF_DRIVE.get());
         }
 
