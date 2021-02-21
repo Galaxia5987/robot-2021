@@ -11,7 +11,7 @@ import org.techfire225.webapp.FireLog;
 
 public class Rotate extends CommandBase {
 
-    private SwerveDrive swerveDrive;
+    private final SwerveDrive swerveDrive;
     //    private WebConstant target = new WebConstant("targetAngle", 0);
 
     // the target angles for each wheel by numbered index

@@ -120,8 +120,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setAngle(double angle) {
         double targetAngle = getTargetAngle(angle, getAngle());
-        int angleTicks = angleUnitModel.toTicks(targetAngle);
-        angleMotor.set(ControlMode.Position, angleTicks);
+        angleMotor.set(ControlMode.Position, angleUnitModel.toTicks(targetAngle));
     }
 
     /**

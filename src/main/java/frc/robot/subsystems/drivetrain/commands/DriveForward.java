@@ -11,7 +11,7 @@ import org.techfire225.webapp.FireLog;
 
 public class DriveForward extends CommandBase {
 
-    private SwerveDrive swerveDrive;
+    private final SwerveDrive swerveDrive;
     private WebConstant target = new WebConstant("targetSpeed", 0);
 
     public DriveForward(SwerveDrive swerveDrive) {
