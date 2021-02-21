@@ -17,8 +17,8 @@ public class SwerveModule extends SubsystemBase {
     private final TalonSRX angleMotor;
     private final int wheel;
 
-    private final UnitModel unitDrive = new UnitModel(Constants.SwerveDrive.TICKS_PER_METER);
-    private final UnitModel unitAngle = new UnitModel(Constants.SwerveDrive.TICKS_PER_RAD);
+    private final UnitModel driveUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_METER);
+    private final UnitModel angleUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_RAD);
 
     public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted) {
 
@@ -28,7 +28,7 @@ public class SwerveModule extends SubsystemBase {
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
         angleMotor.configFeedbackNotContinuous(Ports.SwerveDrive.IS_NOT_CONTINUOUS_FEEDBACK, Constants.TALON_TIMEOUT);
-
+        resetAngleEncoder();
         angleMotor.setNeutralMode(NeutralMode.Brake);
 
         // set inversions
@@ -71,14 +71,14 @@ public class SwerveModule extends SubsystemBase {
      * @return the speed of the wheel in [m/s]
      */
     public double getSpeed() {
-        return unitDrive.toVelocity(driveMotor.getSelectedSensorVelocity(1));
+        return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(1));
     }
 
     /**
      * @return the angle of the wheel in radians
      */
     public double getAngle() {
-        return unitAngle.toUnits(angleMotor.getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITION[wheel]);
+        return angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITION[wheel]);
     }
 
     /**
@@ -87,7 +87,7 @@ public class SwerveModule extends SubsystemBase {
      * @param speed the speed of the wheel in [m/s]
      */
     public void setSpeed(double speed) {
-        driveMotor.set(ControlMode.Velocity, unitDrive.toTicks100ms(speed));
+        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(speed));
     }
 
     /**
@@ -97,7 +97,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setAngle(double angle) {
         double targetAngle = getTargetAngle(angle, getAngle());
-        int angleTicks = unitAngle.toTicks(targetAngle) + Constants.SwerveModule.ZERO_POSITION[wheel];
+        int angleTicks = angleUnitModel.toTicks(targetAngle);
         angleMotor.set(ControlMode.Position, angleTicks);
     }
 
@@ -135,13 +135,8 @@ public class SwerveModule extends SubsystemBase {
     /**
      * reset encoder value to 0
      */
-    public void resetAngle() {
-        angleMotor.setSelectedSensorPosition(0);
-    }
-
-    @Override
-    public void periodic() {
-        configPIDF();
+    public void resetAngleEncoder() {
+        angleMotor.setSelectedSensorPosition(Constants.SwerveModule.ZERO_POSITION[wheel]);
     }
 
     /**

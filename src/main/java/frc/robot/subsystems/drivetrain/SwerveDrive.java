@@ -1,7 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -25,21 +23,7 @@ public class SwerveDrive extends SubsystemBase {
     private static boolean isFieldOriented;
 
     public SwerveDrive(boolean isFieldOriented, boolean testMode) {
-
-        // creates an inverse matrix of all the mathematical operations needed to calculate the wheel velocities
-        // see https://file.tavsys.net/control/controls-engineering-in-frc.pdf pg.140
-        for (int i = 0; i < 8; i++) {
-            if (i % 2 == 0) {
-                dynamics[i][0] = 1;
-                dynamics[i][1] = 0;
-                dynamics[i][2] = Rx * signX[i / 2];
-            } else {
-                dynamics[i][0] = 0;
-                dynamics[i][1] = 1;
-                dynamics[i][2] = Ry * signY[i / 2];
-            }
-        }
-        Robot.gyro.reset();
+        createInverseMatrix();
 
         if (!testMode) {
             swerveModules[0] = new SwerveModule(0, DRIVE_MOTOR_0, ANGLE_MOTOR_0, FRONT_RIGHT_INVERTED);
@@ -101,10 +85,6 @@ public class SwerveDrive extends SubsystemBase {
      * @return an array of the robot heading
      */
     public static double[] getRobotHeading(double forward, double strafe, double rotation, double robotAngle) {
-        // turns the joystick values into the heading of the robot
-        forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;
-        strafe *= Constants.SwerveDrive.SPEED_MULTIPLIER;
-        rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
         // multiplies the 2D rotation matrix by the robot heading, there by rotating the coordinate system
         // see https://en.wikipedia.org/wiki/Rotation_matrix
         double[][] rotationMat = {{Math.cos(robotAngle), -Math.sin(robotAngle)},
@@ -121,9 +101,7 @@ public class SwerveDrive extends SubsystemBase {
         System.out.println("relative forward" + speeds[0]);
         System.out.println("relative strafe" + speeds[1]);
 
-        double[] robotHeading = {forward, strafe, rotation};
-
-        return robotHeading;
+        return new double[]{forward, strafe, rotation};
     }
 
     /**
@@ -137,18 +115,21 @@ public class SwerveDrive extends SubsystemBase {
      */
     public static double[] calculateWheelVelocities(double[] robotHeading) {
         // multiplies M by the robotHeading to obtain the wheel velocities
-        double[] wheelVelocities = Utils.matrixVectorMult(dynamics, robotHeading);
-        return wheelVelocities;
+        return Utils.matrixVectorMult(dynamics, robotHeading);
     }
 
     /**
-     * set the angle of the wheels on the robot to lock the robot in place
+     * Set the angle of the wheels on the robot to lock the robot in place.
+     * Lock angles are used for when there is defence on the robot,
+     * the wheels point outwards and it is nearly impossible to move the robot.
      */
     public void lock() {
         double[] lockAngles = calculateLockAngles();
 
         for (int i = 0; i < 4; i++) {
             swerveModules[i].setSpeed(0);
+            // switches the lock angles between the back left and back right wheels
+            // so that they will match the signs of the dynamics matrix
             if (i == 2) {
                 swerveModules[i].setAngle(lockAngles[i + 1]);
             }
@@ -163,9 +144,10 @@ public class SwerveDrive extends SubsystemBase {
      */
     public double[] calculateLockAngles() {
         double[] lockAngles = new double[4];
+        double firstLockAngle = Math.atan(Constants.SwerveDrive.ROBOT_LENGTH / Constants.SwerveDrive.ROBOT_WIDTH);
 
         for (int i = 0; i < 4; i++) {
-            lockAngles[i] = Math.PI / 2 - Math.atan(Constants.SwerveDrive.ROBOT_WIDTH / Constants.SwerveDrive.ROBOT_LENGTH) + i * Math.PI / 2;
+            lockAngles[i] = firstLockAngle + i * Math.PI / 2;
         }
 
         return lockAngles;
@@ -212,11 +194,11 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * resets all the modules
+     * resets all the module encoder values to 0
      */
-    public void resetAll() {
-        for (int i = 0; i < 4; i++) {
-            swerveModules[i].resetAngle();
+    public void resetAllEncoders() {
+        for (SwerveModule swerveModule : swerveModules) {
+            swerveModule.resetAngleEncoder();
         }
     }
 
@@ -227,4 +209,34 @@ public class SwerveDrive extends SubsystemBase {
     public SwerveModule getModule(int i) {
         return swerveModules[i];
     }
+
+    /**
+     * creates an inverse matrix of all the mathematical operations needed to calculate the wheel velocities
+     * see https://file.tavsys.net/control/controls-engineering-in-frc.pdf pg.140
+     */
+    public void createInverseMatrix() {
+
+        for (int i = 0; i < 8; i++) {
+            if (i % 2 == 0) {
+                dynamics[i][0] = 1;
+                dynamics[i][1] = 0;
+                dynamics[i][2] = Rx * signX[i / 2];
+            } else {
+                dynamics[i][0] = 0;
+                dynamics[i][1] = 1;
+                dynamics[i][2] = Ry * signY[i / 2];
+            }
+        }
+    }
+
+    /**
+     * locks all modules in their current position.
+     */
+    public void lockModulesPositions() {
+        for (SwerveModule swerveModule : swerveModules) {
+            swerveModule.setSpeed(0);
+            swerveModule.setAngle(swerveModule.getAngle());
+        }
+    }
+
 }

@@ -37,15 +37,15 @@ public class Utils {
      * @return the cartesian representation with x and y components
      */
     public static double[] polarToCartesian(double radius, double angle) {
-        double[] v = new double[2];
-        v[0] = Math.sin(angle) * radius;
-        v[1] = Math.cos(angle) * radius;
-        return v;
+        double[] coordinates = new double[2];
+        coordinates[0] = Math.sin(angle) * radius;
+        coordinates[1] = Math.cos(angle) * radius;
+        return coordinates;
     }
 
     /**
-     * calculates the matrix - vector multiplication
-     * assuming that the number of columns in the matrix correspond to the number of rows in the vector
+     * Calculates a matrix-vector multiplication.
+     * assuming that the number of columns in the matrix is equal to the number of rows in the vector.
      * @param m a matrix of size R * C
      * @param v a vector of size C
      * @return a vector of length R with the corresponding matrix multiplication
