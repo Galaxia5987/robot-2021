@@ -31,18 +31,20 @@ public class SwerveDriveTest {
         strafe = 0;
         rotation = -1;
 
-        expectedHeading = new double[]{strafe * SPEED_MULTIPLIER, forward * SPEED_MULTIPLIER, rotation * ROTATION_MULTIPLIER};
-        expectedHeadingField = new double[]{strafe * SPEED_MULTIPLIER, forward * SPEED_MULTIPLIER, rotation * ROTATION_MULTIPLIER};
+        expectedHeading = new double[]{strafe, forward, rotation};
+        expectedHeadingField = new double[]{strafe, forward, rotation};
 
-        double vy = ROTATION_MULTIPLIER * ROBOT_LENGTH / 2;
-        double vx = ROTATION_MULTIPLIER * ROBOT_LENGTH / 2;
+        double vy = ROBOT_LENGTH / 2;
+        double vx = ROBOT_WIDTH / 2;
 
 
         expectedVel = new double[]{-vy, vx, -vy, -vx, vy, vx, vy, -vx};
+        expectedVelField = new double[]{-vy, vx, -vy, -vx, vy, vx, vy, -vx};
 
         getRobotHeading();
         getRobotHeadingField();
         calculateWheelVelocities();
+        calculateWheelVelocitiesField();
     }
 
     @Test
@@ -52,11 +54,10 @@ public class SwerveDriveTest {
         rotation = 0;
         gyro =  -3 * Math.PI / 2;
 
-        expectedHeading = new double[]{0, forward * SPEED_MULTIPLIER, 0};
-        expectedHeadingField = new double[]{0, forward * SPEED_MULTIPLIER, 0};
-        expectedVel = new double[]{0, forward * SPEED_MULTIPLIER, 0, forward * SPEED_MULTIPLIER,
-                0, forward * SPEED_MULTIPLIER, 0, forward * SPEED_MULTIPLIER};
-        expectedVelField = new double[]{0, forward * SPEED_MULTIPLIER, 0, forward * SPEED_MULTIPLIER, 0, forward * SPEED_MULTIPLIER, 0, forward * SPEED_MULTIPLIER};
+        expectedHeading = new double[]{0, forward, 0};
+        expectedHeadingField = new double[]{0, forward, 0};
+        expectedVel = new double[]{0, forward, 0, forward, 0, forward, 0, forward};
+        expectedVelField = new double[]{0, forward, 0, forward, 0, forward, 0, forward};
 
         getRobotHeading();
         getRobotHeadingField();
@@ -70,14 +71,13 @@ public class SwerveDriveTest {
         strafe = 0.5;
         rotation = 0;
 
-        gyro =  3 * Math.PI / 2;
+        gyro = 3 * Math.PI / 2;
 
-        expectedHeading = new double[]{forward * SPEED_MULTIPLIER, strafe * SPEED_MULTIPLIER, rotation * ROTATION_MULTIPLIER};
-        expectedHeadingField = new double[]{0.35, -0.35, rotation * ROTATION_MULTIPLIER};
+        expectedHeading = new double[]{strafe, -forward, rotation};
+        expectedHeadingField = new double[]{0.5, -0.5, rotation};
 
-        expectedVel = new double[]{strafe * SPEED_MULTIPLIER, forward * SPEED_MULTIPLIER, strafe * SPEED_MULTIPLIER, forward * SPEED_MULTIPLIER,
-                strafe * SPEED_MULTIPLIER, forward * SPEED_MULTIPLIER, strafe * SPEED_MULTIPLIER, forward * SPEED_MULTIPLIER};
-        expectedVelField = new double[]{-0.35, 0.35, -0.35, 0.35, -0.35, 0.35, -0.35, 0.35};
+        expectedVel = new double[]{strafe, -forward, strafe, -forward, strafe, -forward, strafe, -forward};
+        expectedVelField = new double[]{0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5};
 
         getRobotHeading();
         getRobotHeadingField();
