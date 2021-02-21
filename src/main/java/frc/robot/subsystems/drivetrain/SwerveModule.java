@@ -13,6 +13,9 @@ import frc.robot.UnitModel;
 import frc.robot.Utils;
 import frc.robot.valuetuner.WebConstant;
 
+/**
+ * The Swerve Module Subsystem controls the individual wheel with the controls from the Swerve Drive Subsystem.
+ */
 public class SwerveModule extends SubsystemBase {
     private final TalonFX driveMotor;
     private final TalonSRX angleMotor;

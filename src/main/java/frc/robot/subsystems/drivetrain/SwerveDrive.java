@@ -8,6 +8,9 @@ import org.techfire225.webapp.FireLog;
 
 import static frc.robot.Ports.SwerveDrive.*;
 
+/**
+ * The Swerve Subsystem calculates all the mathematical operations and controls for the Swerve Modules.
+ */
 public class SwerveDrive extends SubsystemBase {
 
     private static double[][] dynamics = new double[8][3];
