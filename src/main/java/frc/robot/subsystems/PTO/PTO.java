@@ -12,21 +12,21 @@ public class PTO extends SubsystemBase {
     private final TalonFX motor1 = new TalonFX(Ports.PTO.MOTOR_1);
     private final TalonFX motor2 = new TalonFX(Ports.PTO.MOTOR_2);
     private final DoubleSolenoid piston = new DoubleSolenoid(Ports.PTO.PISTON_FORWARD, Ports.PTO.PISTON_REVERSE);
-    private gearboxState state = gearboxState.shooter;
+    private GearboxState state = GearboxState.SHOOTER;
 
     public void configureClimber() {
-        //Todo: take the configuration from the climber PR.
+        //Todo: take the configuration from the CLIMBER PR.
     }
 
     public void configureShooter() {
-        //Todo: take the configuration from the shooter PR.
+        //Todo: take the configuration from the SHOOTER PR.
     }
 
-    public void changeState(gearboxState state) {
+    public void changeState(GearboxState state) {
         this.state = state;
     }
 
-    public gearboxState getState() {
+    public GearboxState getState() {
         return state;
     }
 
@@ -49,7 +49,7 @@ public class PTO extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (state == gearboxState.shooter) {
+        if (state == GearboxState.SHOOTER) {
             configureShooter();
         } else {
             configureClimber();
@@ -57,7 +57,7 @@ public class PTO extends SubsystemBase {
     }
 
 
-    public enum gearboxState {
-        shooter, climber
+    public enum GearboxState {
+        SHOOTER, CLIMBER
     }
 }

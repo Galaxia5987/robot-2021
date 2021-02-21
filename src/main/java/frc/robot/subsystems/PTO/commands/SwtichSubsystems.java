@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.PTO.PTO;
 
 public class SwtichSubsystems extends InstantCommand {
-    private PTO pto;
-    private boolean isClimber;
+    private final PTO pto;
+    private final boolean isClimber;
 
     public SwtichSubsystems(PTO pto, boolean isClimber){
         this.pto = pto;
@@ -17,9 +17,9 @@ public class SwtichSubsystems extends InstantCommand {
     public void initialize(){
         pto.changePiston(isClimber);
         if (isClimber){
-            pto.changeState(PTO.gearboxState.climber);
+            pto.changeState(PTO.GearboxState.CLIMBER);
         }else {
-            pto.changeState(PTO.gearboxState.shooter);
+            pto.changeState(PTO.GearboxState.SHOOTER);
         }
 
     }
