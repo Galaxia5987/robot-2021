@@ -87,18 +87,28 @@ public class Conveyor extends SubsystemBase {
         setPower(0);
     }
 
+
+    /**
+     * Get whether the funnel sensed an object.
+     *
+     * @return whether the funnel sensed an object.
+     */
+    public boolean hasFunnelSensedObject() {
+        return funnelSensor.hasObjectSensed();
+    }
+
     @Override
     public void periodic() {
         shooterSensor.updateState();
         funnelSensor.updateState();
 
-        // An object is being taken out either from the shooter or from the funnel
+        // An object is being taken out either from the shooter or from the funnel.
         if (!shooterSensor.hasObjectSensed() && shooterSensor.hasStateChanged() && isMovingUp() ||
                 !funnelSensor.hasObjectSensed() && funnelSensor.hasStateChanged() && !isMovingUp()) {
             Conveyor.removeBall();
         }
 
-        // An object is being inserted into the conveyor
+        // An object is being inserted into the conveyor.
         if (funnelSensor.hasObjectSensed() && funnelSensor.hasStateChanged() && isMovingUp()) {
             Conveyor.addBall();
         }
