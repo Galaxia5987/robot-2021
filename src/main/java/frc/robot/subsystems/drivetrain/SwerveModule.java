@@ -11,29 +11,21 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.UnitModel;
 import frc.robot.Utils;
+import frc.robot.valuetuner.WebConstant;
 
 public class SwerveModule extends SubsystemBase {
     private final TalonFX driveMotor;
     private final TalonSRX angleMotor;
 
-    private double angleKP;
-    private double angleKI;
-    private double angleKD;
-    private double angleKF;
-
-    private double driveKP;
-    private double driveKI;
-    private double driveKD;
-    private double driveKF;
+    private WebConstant[] anglePIDF;
+    private WebConstant[] drivePIDF;
 
     private final int wheel;
 
     private final UnitModel driveUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_METER);
     private final UnitModel angleUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_RAD);
 
-    public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted,
-                        double angleKP, double angleKI, double angleKD, double angleKF,
-                        double driveKP, double driveKI, double driveKD, double driveKF) {
+    public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted, WebConstant[] anglePIDF, WebConstant[] drivePIDF) {
 
         driveMotor = new TalonFX(driveMotorPort);
         angleMotor = new TalonSRX(angleMotorPort);
@@ -78,15 +70,8 @@ public class SwerveModule extends SubsystemBase {
 
         this.wheel = wheel;
 
-        this.angleKP = angleKP;
-        this.angleKI = angleKI;
-        this.angleKD = angleKD;
-        this.angleKF = angleKF;
-
-        this.driveKP = driveKP;
-        this.driveKI = driveKI;
-        this.driveKD = driveKD;
-        this.driveKF = driveKF;
+        this.anglePIDF = anglePIDF;
+        this.drivePIDF = drivePIDF;
     }
 
 
@@ -166,15 +151,15 @@ public class SwerveModule extends SubsystemBase {
      */
     private void configPIDF() {
         // set PIDF - angle motor
-        angleMotor.config_kP(0, angleKP, Constants.TALON_TIMEOUT);
-        angleMotor.config_kI(0, angleKI, Constants.TALON_TIMEOUT);
-        angleMotor.config_kD(0, angleKD, Constants.TALON_TIMEOUT);
-        angleMotor.config_kF(0, angleKF, Constants.TALON_TIMEOUT);
+        angleMotor.config_kP(0, anglePIDF[0].get(), Constants.TALON_TIMEOUT);
+        angleMotor.config_kI(0, anglePIDF[1].get(), Constants.TALON_TIMEOUT);
+        angleMotor.config_kD(0, anglePIDF[2].get(), Constants.TALON_TIMEOUT);
+        angleMotor.config_kF(0, anglePIDF[3].get(), Constants.TALON_TIMEOUT);
 
         // set PIDF - drive motor
-        driveMotor.config_kP(1, driveKP, Constants.TALON_TIMEOUT);
-        driveMotor.config_kI(1, driveKI, Constants.TALON_TIMEOUT);
-        driveMotor.config_kD(1, driveKD, Constants.TALON_TIMEOUT);
-        driveMotor.config_kF(1, driveKF, Constants.TALON_TIMEOUT);
+        driveMotor.config_kP(1, drivePIDF[0].get(), Constants.TALON_TIMEOUT);
+        driveMotor.config_kI(1, drivePIDF[1].get(), Constants.TALON_TIMEOUT);
+        driveMotor.config_kD(1, drivePIDF[2].get(), Constants.TALON_TIMEOUT);
+        driveMotor.config_kF(1, drivePIDF[3].get(), Constants.TALON_TIMEOUT);
     }
 }
