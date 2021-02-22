@@ -5,7 +5,7 @@ public class Ports {
 
         public static final int MOTOR = 0;
         public static final boolean IS_MOTOR_INVERTED = false;
-        public static final int SOLENOID_RIGHT = 1;
-        public static final int SOLENOID_LEFT = 2;
+        public static final int RIGHT_SOLENOID = 1;
+        public static final int LEFT_SOLENOID = 2;
     }
 }
