@@ -31,7 +31,13 @@ public class SwerveDrive extends SubsystemBase {
     // see https://file.tavsys.net/control/controls-engineering-in-frc.pdf pg.144
     private static boolean isFieldOriented;
 
-    public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(), new Translation2d(), new Translation2d(), new Translation2d()); // TODO: add real values
+    public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+            new Translation2d(signX[0] * Rx, signY[0] * Ry),
+            new Translation2d(signX[1] * Rx, signY[1] * Ry),
+            new Translation2d(signX[2] * Rx, signY[2] * Ry),
+            new Translation2d(signX[3] * Rx, signY[3] * Ry)
+    );
+
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(Robot.gyro.getAngle()), new Pose2d()); // TODO: Check pose2d and angle might be ccw.
 
     public SwerveDrive(boolean isFieldOriented) {
