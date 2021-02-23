@@ -17,10 +17,7 @@ public class StartIntake extends CommandBase {
     public void initialize() {
         if(!intake.isOpen())
             intake.togglePiston();
-        if(direction)
-            intake.setVelocity(Constants.Intake.VELOCITY);// field --> funnel
-        else
-            intake.setVelocity(-1*Constants.Intake.VELOCITY);// funnel --> field
+        intake.setVelocity(direction ? Constants.Intake.VELOCITY : -Constants.Intake.VELOCITY);// field --> funnel
     }
 
     @Override
