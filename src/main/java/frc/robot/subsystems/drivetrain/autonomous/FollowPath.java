@@ -67,8 +67,6 @@ public class FollowPath extends CommandBase {
         prevTime = 0;
         var initialState = trajectory.sample(0);
 
-
-
         prevSpeeds = SwerveDrive.kinematics.toSwerveModuleStates(
                 new ChassisSpeeds(initialState.velocityMetersPerSecond, 0,
                         initialState.curvatureRadPerMeter * initialState.velocityMetersPerSecond)
@@ -92,6 +90,7 @@ public class FollowPath extends CommandBase {
         // feeds the corresponding control to each wheel
         for (int k = 0; k < 4; k++) {
             swerveDrive.swerveModules[k].setSpeed(
+                    targetWheelSpeeds[k].speedMetersPerSecond +
                     feedforward[k].calculate(targetWheelSpeeds[k].speedMetersPerSecond,
                             (targetWheelSpeeds[k].speedMetersPerSecond - prevSpeeds[k].speedMetersPerSecond) / dt)
             );
