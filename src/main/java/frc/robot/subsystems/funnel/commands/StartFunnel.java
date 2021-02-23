@@ -15,6 +15,7 @@ public class StartFunnel extends CommandBase {
     public StartFunnel(Funnel funnel, boolean direction) {
         this.funnel = funnel;
         this.direction = direction;
+        addRequirements(funnel);
     }
 
     @Override
