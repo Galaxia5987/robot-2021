@@ -20,7 +20,7 @@ public class Funnel extends SubsystemBase {
      * this function sets the motor's velocity
      * @param power - the target output (%)
      */
-    public void setVelocity(double power) {
+    public void setPower(double power) {
         motor.set(ControlMode.PercentOutput , power);
     }
 }

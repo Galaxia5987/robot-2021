@@ -21,9 +21,9 @@ public class StartFunnel extends CommandBase {
     @Override
     public void initialize() {
         if (isMovingUp)
-            funnel.setVelocity(Constants.Funnel.POWER);// in
+            funnel.setPower(Constants.Funnel.POWER);// in
         else
-            funnel.setVelocity(-1 * Constants.Funnel.POWER);// out
+            funnel.setPower(-1 * Constants.Funnel.POWER);// out
     }
 
     @Override
@@ -33,6 +33,6 @@ public class StartFunnel extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        funnel.setVelocity(0);
+        funnel.setPower(0);
     }
 }
