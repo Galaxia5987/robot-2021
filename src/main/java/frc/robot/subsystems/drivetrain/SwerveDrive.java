@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -38,7 +40,7 @@ public class SwerveDrive extends SubsystemBase {
             new Translation2d(signX[3] * Rx, signY[3] * Ry)
     );
 
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(Robot.gyro.getAngle()), new Pose2d()); // TODO: Check pose2d and angle might be ccw.
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(Robot.gyro.getAngle()), new Pose2d(new Translation2d(0.0, 0.0), new Rotation2d(Robot.gyro.getAngle()))); // TODO: Check pose2d and angle might be ccw.
 
     public SwerveDrive(boolean isFieldOriented) {
 
@@ -229,7 +231,14 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return odometry.getPoseMeters();
+        Pose2d pose = odometry.getPoseMeters();
+        double x = pose.getTranslation().getX();
+        double y = pose.getTranslation().getY();
+        double angle = pose.getRotation().getRadians();
+        SmartDashboard.putNumber("x", x);
+        SmartDashboard.putNumber("y", y);
+        SmartDashboard.putNumber("angle", angle);
+        return pose;
     }
 
 }
