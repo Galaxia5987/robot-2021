@@ -10,17 +10,17 @@ import frc.robot.subsystems.funnel.Funnel;
 public class StartFunnel extends CommandBase {
 
     private Funnel funnel;
-    private boolean direction;
+    private boolean isMovingUp;
 
-    public StartFunnel(Funnel funnel, boolean direction) {
+    public StartFunnel(Funnel funnel, boolean isMovingUp) {
         this.funnel = funnel;
-        this.direction = direction;
+        this.isMovingUp = isMovingUp;
         addRequirements(funnel);
     }
 
     @Override
     public void initialize() {
-        if (direction)
+        if (isMovingUp)
             funnel.setVelocity(Constants.Funnel.POWER);// in
         else
             funnel.setVelocity(-1 * Constants.Funnel.POWER);// out
