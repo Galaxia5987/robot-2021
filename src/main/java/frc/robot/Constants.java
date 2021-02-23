@@ -71,7 +71,12 @@ public class Constants {
         public static final double MAX_SPEED = 0;
         public static final double MAX_ACCELERATION = 0;
         public static final double MAX_CENTRIPETAL_ACCELERATION = 0;
+        public static final double kBeta = 0.0;
+        public static final double kZeta = 0.0;
 
+        public static final double[] kS = new double[]{0.0, 0.0, 0.0, 0.0};
+        public static final double[] kV = new double[]{0.0, 0.0, 0.0, 0.0};
+        public static final double[] kA = new double[]{0.0, 0.0, 0.0, 0.0};
     }
 
 
