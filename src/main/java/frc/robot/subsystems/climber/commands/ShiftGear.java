@@ -8,7 +8,7 @@ import frc.robot.subsystems.climber.Climber;
  */
 public class ShiftGear extends InstantCommand {
     private final Climber climber;
-    private Climber.PistonMode mode;
+    private final Climber.PistonMode mode;
 
     public ShiftGear(Climber climber, Climber.PistonMode mode) {
         this.climber = climber;

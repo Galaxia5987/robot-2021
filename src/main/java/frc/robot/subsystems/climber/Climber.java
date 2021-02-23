@@ -8,6 +8,9 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.subsystems.UnitModel;
 
+/**
+ * Climber's configurations and commands.
+ */
 public class Climber extends SubsystemBase {
     private final TalonFX master = new TalonFX(Ports.Climber.MASTER);
     private final TalonFX slave = new TalonFX(Ports.Climber.SLAVE);
@@ -42,7 +45,7 @@ public class Climber extends SubsystemBase {
     }
 
     /**
-     * climb height meters up with the robot.
+     * Raise the climber to a given height.
      *
      * @param height requested height to climb [m].
      */
@@ -56,7 +59,7 @@ public class Climber extends SubsystemBase {
      * @param mode the stopper mode.
      */
     public void setStopperMode(PistonMode mode) {
-        if (mode.getValue())
+        if (mode.getExtensionState())
             stopper.set(DoubleSolenoid.Value.kForward);
         else
             stopper.set(DoubleSolenoid.Value.kReverse);
@@ -68,32 +71,11 @@ public class Climber extends SubsystemBase {
      * @param mode the wanted gearbox shifter mode.
      */
     public void setGearboxMode(PistonMode mode) {
-        if (mode.getValue())
+        if (mode.getExtensionState())
             gearboxShifter.set(DoubleSolenoid.Value.kForward);
         else
             gearboxShifter.set(DoubleSolenoid.Value.kReverse);
 
-    }
-
-    /**
-     * Enum for piston mode, OPEN is true, CLOSED is false.
-     */
-    public enum PistonMode {
-        OPEN(true), CLOSED(false);
-        private boolean on;
-
-        PistonMode(boolean on) {
-            this.on = on;
-        }
-
-        /**
-         * Get the value of the piston mode.
-         *
-         * @return the value of the piston mode [boolean].
-         */
-        public boolean getValue() {
-            return on;
-        }
     }
 
     /**
@@ -116,4 +98,24 @@ public class Climber extends SubsystemBase {
             stopper.set(DoubleSolenoid.Value.kReverse);
     }
 
+    /**
+     * Enum for piston mode, OPEN is true, CLOSED is false.
+     */
+    public enum PistonMode {
+        OPEN(true), CLOSED(false);
+        private final boolean on;
+
+        PistonMode(boolean on) {
+            this.on = on;
+        }
+
+        /**
+         * Get the value of the piston mode.
+         *
+         * @return the value of the piston mode [boolean].
+         */
+        public boolean getExtensionState() {
+            return on;
+        }
+    }
 }

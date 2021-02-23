@@ -6,12 +6,12 @@ import frc.robot.Constants;
 import frc.robot.subsystems.climber.Climber;
 
 /**
- * The command lifts the robot up by a given number of meters.
+ * The command will raise the climber to a given height.
  */
 public class ManageClimb extends CommandBase {
 
     private final Climber climber;
-    private double height;
+    private final double height;
 
     public ManageClimb(Climber climber, double height) {
         this.climber = climber;
