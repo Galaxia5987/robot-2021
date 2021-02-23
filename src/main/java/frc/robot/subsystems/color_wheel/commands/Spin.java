@@ -25,7 +25,7 @@ public class Spin extends CommandBase {
     public void initialize() {
         colorWheel.updateSensor();
         previousColor = colorWheel.getColorString();
-        colorWheel.power(power);
+        colorWheel.setPower(power);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class Spin extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        colorWheel.power(0);
+        colorWheel.setPower(0);
     }
 
     private void updateDifferentColorCount() {
@@ -55,8 +55,8 @@ public class Spin extends CommandBase {
 
     private void moderatePower() {
         if (differentColorCounter == Constants.ColorWheel.REQUIRED_SPINS * Constants.ColorWheel.COLOR_WHEEL_SLOTS - 1)
-            colorWheel.power(Constants.ColorWheel.REDUCE_POWER_BY * power);
+            colorWheel.setPower(Constants.ColorWheel.REDUCE_POWER_BY * power);
         else
-            colorWheel.power(power);
+            colorWheel.setPower(power);
     }
 }

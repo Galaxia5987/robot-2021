@@ -8,15 +8,13 @@ import frc.robot.subsystems.color_wheel.ColorWheel;
  * Spin the wheel until you reach the desired color.
  */
 public class FindColor extends CommandBase {
-    private ColorWheel colorWheel;
-    private String color;
-    private double power;
-    private String tempColor;
-    private int targetColorDistance; //amount of colors away from initial color to target color.
-    private int previousColor;
-    private boolean isNewColorSeen = false;
+    private final ColorWheel colorWheel;
+    private final String color;
+    private final double power;
+    private String tempColor = "";
     private int initColorIndex;
     private int targetColorIndex;
+    private int cutoff = 10;
 
     public FindColor(ColorWheel colorWheel, String color, double power) {
         this.colorWheel = colorWheel;
@@ -29,21 +27,7 @@ public class FindColor extends CommandBase {
     public void initialize() {
         colorWheel.updateSensor();
         findInitialAndTargetColorPosition();
-        int clockDistance, antiDistance;
-        if (targetColorIndex < initColorIndex) {
-            clockDistance = targetColorIndex + Constants.ColorWheel.COLORS.length - initColorIndex;
-            antiDistance = initColorIndex - targetColorIndex;
-        } else {
-            clockDistance = targetColorIndex - initColorIndex;
-            antiDistance = Constants.ColorWheel.COLORS.length - targetColorIndex + initColorIndex;
-        }
-        if (clockDistance < antiDistance) {
-            colorWheel.power(power);
-            targetColorDistance = clockDistance;
-        } else {
-            colorWheel.power(-power);
-            targetColorDistance = antiDistance;
-        }
+        findPathAndSetPower();
     }
 
     @Override
@@ -51,12 +35,7 @@ public class FindColor extends CommandBase {
         colorWheel.updateSensor();
         if (!colorWheel.getColorString().equals(tempColor)) {
             tempColor = colorWheel.getColorString();
-            previousColor--;
-            isNewColorSeen = true;
-        }
-        if (isNewColorSeen) {
-            colorWheel.power(power - 0.1 * (targetColorDistance - previousColor));
-            isNewColorSeen = false;
+            colorWheel.setPower(power * cutoff-- / 10.);
         }
     }
 
@@ -67,7 +46,23 @@ public class FindColor extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        colorWheel.power(0);
+        colorWheel.setPower(0);
+    }
+
+    public void findPathAndSetPower() {
+        int clockDistance, antiDistance;
+        if (targetColorIndex < initColorIndex) {
+            clockDistance = targetColorIndex + Constants.ColorWheel.COLORS.length - initColorIndex;
+            antiDistance = initColorIndex - targetColorIndex;
+        } else {
+            clockDistance = targetColorIndex - initColorIndex;
+            antiDistance = Constants.ColorWheel.COLORS.length - targetColorIndex + initColorIndex;
+        }
+        if (clockDistance < antiDistance) {
+            colorWheel.setPower(power);
+        } else {
+            colorWheel.setPower(-power);
+        }
     }
 
     private void findInitialAndTargetColorPosition() {

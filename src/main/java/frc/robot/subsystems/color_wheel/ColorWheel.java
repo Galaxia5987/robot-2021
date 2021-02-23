@@ -29,8 +29,10 @@ public class ColorWheel extends SubsystemBase {
     public ColorWheel() {
         motor.setInverted(Ports.ColorWheel.MOTOR_INVERTED);
         motor.setSensorPhase(Ports.ColorWheel.MOTOR_SENSOR_PHASE_INVERTED);
+
         motor.configVoltageCompSaturation(Constants.VOLTAGE);
         motor.enableVoltageCompensation(true);
+
         colorMatch.addColorMatch(Constants.ColorWheel.RED_TARGET);
         colorMatch.addColorMatch(Constants.ColorWheel.GREEN_TARGET);
         colorMatch.addColorMatch(Constants.ColorWheel.BLUE_TARGET);
@@ -42,7 +44,7 @@ public class ColorWheel extends SubsystemBase {
      *
      * @param percent designated percentages for the Color Wheel's power.
      */
-    public void power(double percent) {
+    public void setPower(double percent) {
         motor.set(ControlMode.PercentOutput, percent);
     }
 
@@ -60,9 +62,8 @@ public class ColorWheel extends SubsystemBase {
             return "BLUE";
         } else if (Constants.ColorWheel.YELLOW_TARGET.equals(matchResult.color)) {
             return "YELLOW";
-        } else {
-            return "UNKNOWN";
         }
+        return "UNKNOWN";
     }
 
     /**
@@ -81,7 +82,5 @@ public class ColorWheel extends SubsystemBase {
     public String getColorString() {
         return colorString;
     }
-
-
 }
 

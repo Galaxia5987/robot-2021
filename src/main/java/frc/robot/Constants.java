@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.util.Color;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final double VOLTAGE = 12; //[J]
+    public static final double VOLTAGE = 12; //[volts]
 
     public static class ColorWheel {
 
