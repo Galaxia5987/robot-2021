@@ -59,7 +59,7 @@ public class Climber extends SubsystemBase {
      * @param mode the stopper mode.
      */
     public void setStopperMode(PistonMode mode) {
-        if (mode.getExtensionState())
+        if (mode == PistonMode.OPEN)
             stopper.set(DoubleSolenoid.Value.kForward);
         else
             stopper.set(DoubleSolenoid.Value.kReverse);
@@ -71,7 +71,7 @@ public class Climber extends SubsystemBase {
      * @param mode the wanted gearbox shifter mode.
      */
     public void setGearboxMode(PistonMode mode) {
-        if (mode.getExtensionState())
+        if (mode == PistonMode.OPEN)
             gearboxShifter.set(DoubleSolenoid.Value.kForward);
         else
             gearboxShifter.set(DoubleSolenoid.Value.kReverse);
@@ -102,20 +102,6 @@ public class Climber extends SubsystemBase {
      * Enum for piston mode, OPEN is true, CLOSED is false.
      */
     public enum PistonMode {
-        OPEN(true), CLOSED(false);
-        private final boolean on;
-
-        PistonMode(boolean on) {
-            this.on = on;
-        }
-
-        /**
-         * Get the value of the piston mode.
-         *
-         * @return the value of the piston mode [boolean].
-         */
-        public boolean getExtensionState() {
-            return on;
-        }
+        OPEN, CLOSED;
     }
 }
