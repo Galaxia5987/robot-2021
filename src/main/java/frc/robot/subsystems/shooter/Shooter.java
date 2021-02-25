@@ -31,33 +31,13 @@ import static frc.robot.Constants.Shooter.*;
  * @since 2021
  */
 public class Shooter extends SubsystemBase {
-    private final TalonFX main = new TalonFX(Ports.Shooter.MAIN);
-    private final TalonFX aux = new TalonFX(Ports.Shooter.AUX);
+
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
 
     private final LinearRegression velocityEstimator;
     private final LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
 
     public Shooter() {
-        // Configure the motors
-        main.setInverted(Ports.Shooter.MAIN_INVERTED);
-        aux.setInverted(Ports.Shooter.AUX_INVERTED);
-        main.setSensorPhase(Ports.Shooter.IS_SENSOR_INVERTED);
-
-        main.setNeutralMode(NeutralMode.Coast);
-        aux.setNeutralMode(NeutralMode.Coast);
-
-        main.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
-        main.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
-
-        main.enableVoltageCompensation(true);
-        aux.enableVoltageCompensation(true);
-
-        main.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-        aux.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-
-        aux.follow(main);
-
         this.stateSpacePredictor = constructLinearSystem();
         this.velocityEstimator = new LinearRegression(readCSV());
     }

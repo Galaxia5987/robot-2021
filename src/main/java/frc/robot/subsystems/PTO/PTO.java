@@ -19,18 +19,51 @@ public class PTO extends SubsystemBase {
      * This Configure the motors with the configuration required for the climber.
      */
     public void configureClimber() {
-        //Todo: take the configuration from the CLIMBER PR.
+        slave.follow(master);
+
+        master.setInverted(Ports.Climber.IS_MASTER_INVERTED);
+        slave.setInverted(Ports.Climber.IS_SLAVE_INVERTED);
+
+        master.setSensorPhase(Ports.Climber.IS_SENSOR_PHASE_INVERTED);
+
+        master.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY, Constants.TALON_TIMEOUT);
+        master.configMotionAcceleration(Constants.Climber.ACCELERATION, Constants.TALON_TIMEOUT);
+
+        master.config_kP(0, Constants.Climber.KP, Constants.TALON_TIMEOUT);
+        master.config_kI(0, Constants.Climber.KI, Constants.TALON_TIMEOUT);
+        master.config_kD(0, Constants.Climber.KD, Constants.TALON_TIMEOUT);
+        master.config_kF(0, Constants.Climber.KF, Constants.TALON_TIMEOUT);
+
+        master.setSelectedSensorPosition(0);
     }
 
     /**
      * This Configure the motors with the configuration required for the shooter.
      */
     public void configureShooter() {
-        //Todo: take the configuration from the SHOOTER PR.
+        // Configure the motors
+        master.setInverted(Ports.Shooter.MAIN_INVERTED);
+        slave.setInverted(Ports.Shooter.AUX_INVERTED);
+        master.setSensorPhase(Ports.Shooter.IS_SENSOR_INVERTED);
+
+        master.setNeutralMode(NeutralMode.Coast);
+        slave.setNeutralMode(NeutralMode.Coast);
+
+        master.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
+        master.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
+
+        master.enableVoltageCompensation(true);
+        slave.enableVoltageCompensation(true);
+
+        master.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        slave.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+
+        slave.follow(master);
     }
 
     /**
      * This method changes the current state of the gearboxState.
+     *
      * @param state the new state.
      */
     private void changeState(GearboxState state) {

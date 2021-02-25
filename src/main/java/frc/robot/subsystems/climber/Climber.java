@@ -1,7 +1,6 @@
 package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -13,28 +12,9 @@ import frc.robot.subsystems.UnitModel;
  */
 public class Climber extends SubsystemBase {
 
-    private final TalonFX master = new TalonFX(Ports.Climber.MASTER);
-    private final TalonFX slave = new TalonFX(Ports.Climber.SLAVE);
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_METER);
     private final DoubleSolenoid stopper = new DoubleSolenoid(Ports.Climber.STOPPER_FORWARD_CHANNEL, Ports.Climber.STOPPER_REVERSE_CHANNEL);
     private final DoubleSolenoid gearboxShifter = new DoubleSolenoid(Ports.Climber.GEARBOX_FORWARD_CHANNEL, Ports.Climber.GEARBOX_REVERSE_CHANNEL);
-
-    public Climber() {
-        slave.follow(master);
-
-        master.setInverted(Ports.Climber.IS_MASTER_INVERTED);
-        slave.setInverted(Ports.Climber.IS_SLAVE_INVERTED);
-
-        master.setSensorPhase(Ports.Climber.IS_SENSOR_PHASE_INVERTED);
-
-        master.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY, Constants.TALON_TIMEOUT);
-        master.configMotionAcceleration(Constants.Climber.ACCELERATION, Constants.TALON_TIMEOUT);
-
-        master.config_kP(0, Constants.Climber.KP, Constants.TALON_TIMEOUT);
-        master.config_kI(0, Constants.Climber.KI, Constants.TALON_TIMEOUT);
-        master.config_kD(0, Constants.Climber.KD, Constants.TALON_TIMEOUT);
-        master.config_kF(0, Constants.Climber.KF, Constants.TALON_TIMEOUT);
-    }
 
     /**
      * Get the climber's elevation relative to the ground.
