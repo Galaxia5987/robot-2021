@@ -12,17 +12,18 @@ public class SwitchSubsystems extends InstantCommand {
 
     /**
      * Here we define the desired state of the PTO.
-     * @param pto the subsystem.
+     *
+     * @param pto       the subsystem.
      * @param isClimber whether we want it to be the climber or not.
      */
-    public SwitchSubsystems(PTO pto, boolean isClimber){
+    public SwitchSubsystems(PTO pto, boolean isClimber) {
         this.pto = pto;
         this.isClimber = isClimber;
         addRequirements(pto);
     }
 
     @Override
-    public void initialize(){
+    public void initialize() {
         pto.changePiston(isClimber);
     }
 
