@@ -16,4 +16,20 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static final int TALON_TIMEOUT = 10; //Waiting period for configurations [ms].
+
+    public static class Climber {
+        public static final int TICKS_PER_METER = 0;
+
+        public static final double KP = 0;
+        public static final double KI = 0;
+        public static final double KD = 0;
+        public static final double KF = 0;
+
+        public static final int CRUISE_VELOCITY = 0; //sensor units per 100ms.
+        public static final int ACCELERATION = 0; //sensor units per 100ms^2.
+
+        public static final double HEIGHT_TOLERANCE = 0.1; //Error tolerance for the height [m].
+    }
 }
