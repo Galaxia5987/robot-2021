@@ -1,8 +1,12 @@
 package frc.robot.subsystems.PTO;
 
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Ports;
 
 /**
@@ -10,8 +14,9 @@ import frc.robot.Ports;
  * The PTO is responsible for switching between the climber and the shooter, because they are using the same motors.
  */
 public class PTO extends SubsystemBase {
-    private final TalonFX motor1 = new TalonFX(Ports.PTO.MOTOR_1);
-    private final TalonFX motor2 = new TalonFX(Ports.PTO.MOTOR_2);
+
+    private final TalonFX master = new TalonFX(Ports.PTO.MASTER);
+    private final TalonFX slave = new TalonFX(Ports.PTO.SLAVE);
     private final DoubleSolenoid piston = new DoubleSolenoid(Ports.PTO.PISTON_FORWARD, Ports.PTO.PISTON_REVERSE);
     private GearboxState state = GearboxState.SHOOTER;
 
@@ -79,23 +84,26 @@ public class PTO extends SubsystemBase {
 
     /**
      * This method returns the motor controller for the climber and the shooter to use.
-     * @return the motor controller of motor 1.
+     *
+     * @return the motor controller of the master.
      */
-    public TalonFX getMotor1() {
-        return motor1;
+    public TalonFX getMaster() {
+        return master;
     }
 
     /**
      * This method returns the motor controller for the climber and the shooter to use.
-     * @return the motor controller of motor 1.
+     *
+     * @return the motor controller of the slave.
      */
-    public TalonFX getMotor2() {
-        return motor2;
+    public TalonFX getSlave() {
+        return slave;
     }
 
     /**
      * This method switches the piston to change the subsystem.
      * After that this method configure the motors according to the new state and change the current state.
+     *
      * @param isClimber whether the new state is the climber subsystem.
      */
     public void changePiston(boolean isClimber) {
@@ -105,7 +113,7 @@ public class PTO extends SubsystemBase {
             configureClimber();
         } else {
             piston.set(DoubleSolenoid.Value.kReverse);
-            changeState(GearboxState.CLIMBER);
+            changeState(GearboxState.SHOOTER);
             configureShooter();
         }
     }
