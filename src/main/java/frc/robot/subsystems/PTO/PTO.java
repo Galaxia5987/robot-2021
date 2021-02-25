@@ -42,17 +42,12 @@ public class PTO extends SubsystemBase {
     public void changePiston(boolean isClimber) {
         if (isClimber) {
             piston.set(DoubleSolenoid.Value.kForward);
+            changeState(GearboxState.CLIMBER);
+            configureClimber();
         } else {
             piston.set(DoubleSolenoid.Value.kReverse);
-        }
-    }
-
-    @Override
-    public void periodic() {
-        if (state == GearboxState.SHOOTER) {
+            changeState(GearboxState.CLIMBER);
             configureShooter();
-        } else {
-            configureClimber();
         }
     }
 
