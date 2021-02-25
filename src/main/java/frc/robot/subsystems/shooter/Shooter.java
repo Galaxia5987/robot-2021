@@ -1,7 +1,7 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
 import edu.wpi.first.wpilibj.system.LinearSystem;
@@ -13,7 +13,8 @@ import edu.wpi.first.wpiutil.math.VecBuilder;
 import edu.wpi.first.wpiutil.math.Vector;
 import edu.wpi.first.wpiutil.math.numbers.N1;
 import frc.robot.Constants;
-import frc.robot.Ports;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.UnitModel;
 
 import java.io.InputStream;
@@ -82,7 +83,11 @@ public class Shooter extends SubsystemBase {
      * @see #setVelocity(double, double)
      */
     public double getVelocity() {
-        return unitModel.toVelocity(main.getSelectedSensorVelocity());
+        if (RobotContainer.pto.getState() == PTO.GearboxState.CLIMBER) {
+            return 0;
+        }
+
+        return unitModel.toVelocity(RobotContainer.pto.getMaster().getSelectedSensorVelocity());
     }
 
     /**
@@ -98,7 +103,7 @@ public class Shooter extends SubsystemBase {
     /**
      * Set the velocity to apply by the motor.
      *
-     * @param velocity the desired velocity at which the motor will rotate. [RPS]
+     * @param velocity     the desired velocity at which the motor will rotate. [RPS]
      * @param timeInterval the time interval from the last call of this function. [sec]
      * @see #setPower(double)
      */
@@ -119,7 +124,12 @@ public class Shooter extends SubsystemBase {
      * @see #stop()
      */
     public void setPower(double power) {
-        main.set(TalonFXControlMode.PercentOutput, power, DemandType.ArbitraryFeedForward, Constants.Shooter.ARBITRARY_FEED_FORWARD);
+        if (RobotContainer.pto.getState() == PTO.GearboxState.SHOOTER) {
+            return;
+        }
+
+        RobotContainer.pto.getMaster().set(TalonFXControlMode.PercentOutput, power,
+                DemandType.ArbitraryFeedForward, Constants.Shooter.ARBITRARY_FEED_FORWARD);
     }
 
     /**

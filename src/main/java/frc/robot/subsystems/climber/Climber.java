@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.UnitModel;
 
 /**
@@ -22,7 +24,11 @@ public class Climber extends SubsystemBase {
      * @return the climber's height [m].
      */
     public double getHeight() {
-        return unitModel.toUnits(master.getSelectedSensorPosition());
+        if (RobotContainer.pto.getState() == PTO.GearboxState.SHOOTER) {
+            return 0;
+        }
+
+        return unitModel.toUnits(RobotContainer.pto.getMaster().getSelectedSensorPosition());
     }
 
     /**
@@ -31,7 +37,11 @@ public class Climber extends SubsystemBase {
      * @param height requested height to climb [m].
      */
     public void setHeight(double height) {
-        master.set(ControlMode.MotionMagic, unitModel.toTicks(height));
+        if (RobotContainer.pto.getState() == PTO.GearboxState.SHOOTER) {
+            return;
+        }
+
+        RobotContainer.pto.getMaster().set(ControlMode.MotionMagic, unitModel.toTicks(height));
     }
 
     /**
