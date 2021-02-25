@@ -7,6 +7,7 @@ import frc.robot.subsystems.climber.Climber;
  * Set the gearbox to be open or closed.
  */
 public class ShiftGear extends InstantCommand {
+
     private final Climber climber;
     private final Climber.PistonMode mode;
 

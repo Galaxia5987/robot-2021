@@ -9,7 +9,6 @@ public class AutoClimb extends SequentialCommandGroup {
         addCommands(new ShiftGear(climber, Climber.PistonMode.OPEN),
                 new SetStopper(climber, Climber.PistonMode.OPEN),
                 new ManageClimb(climber, height),
-                 new SetStopper(climber, Climber.PistonMode.CLOSED));
-
+                new SetStopper(climber, Climber.PistonMode.CLOSED));
     }
 }

@@ -12,6 +12,7 @@ import frc.robot.subsystems.UnitModel;
  * Climber's configurations and commands.
  */
 public class Climber extends SubsystemBase {
+
     private final TalonFX master = new TalonFX(Ports.Climber.MASTER);
     private final TalonFX slave = new TalonFX(Ports.Climber.SLAVE);
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_METER);
@@ -54,9 +55,9 @@ public class Climber extends SubsystemBase {
     }
 
     /**
-     * Set the stopper mode.
+     * Set the stopper shifter mode to a given mode.
      *
-     * @param mode the stopper mode.
+     * @param mode the wanted stopper shifter mode.
      */
     public void setStopperMode(PistonMode mode) {
         if (mode == PistonMode.OPEN)
