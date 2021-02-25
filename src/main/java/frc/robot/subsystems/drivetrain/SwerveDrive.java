@@ -47,7 +47,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * sets the wheels of the robot to the calculated angle and speed
+     * Sets the wheels of the robot to the calculated angle and speed.
      *
      * @param forward  the Y value of the joystick
      * @param strafe   the X value of the joystick
@@ -86,7 +86,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * turns the joystick inputs into the robot heading
+     * Turns the joystick inputs into the robot heading.
      *
      * @param forward    the Y value of the joystick
      * @param strafe     the X value of the joystick
@@ -115,7 +115,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * calculates the velocity vector of each wheel
+     * Calculates the velocity vector of each wheel.
      *
      * @param robotHeading the three joystick outputs:
      *                     forward the heading of the robot in the Y direction
@@ -150,7 +150,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * calculates the angles for which the wheels will lock in place
+     * Calculates the angles for which the wheels will lock in place.
      */
     public double[] calculateLockAngles() {
         double[] lockAngles = new double[4];
@@ -164,7 +164,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * stops all the wheels
+     * Stops all the wheels.
      */
     public void stop() {
         for (SwerveModule swerveModule : swerveModules) {
@@ -203,7 +203,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * resets all the module encoder values to 0
+     * Resets all the module encoder values to 0.
      */
     public void resetAllEncoders() {
         for (SwerveModule swerveModule : swerveModules) {
@@ -220,7 +220,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * creates an inverse matrix of all the mathematical operations needed to calculate the wheel velocities
+     * Creates an inverse matrix of all the mathematical operations needed to calculate the wheel velocities.
      * see https://file.tavsys.net/control/controls-engineering-in-frc.pdf pg.140
      */
     public void createInverseMatrix() {
@@ -239,11 +239,20 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * locks all modules in their current position.
+     * Locks all modules in their current position.
      */
     public void lockModulePositions() {
         for (SwerveModule swerveModule : swerveModules) {
             swerveModule.setSpeed(0);
+        }
+        stayAtAngle();
+    }
+
+    /**
+     * Makes the modules stay at its current angle.
+     */
+    public void stayAtAngle() {
+        for (SwerveModule swerveModule : swerveModules) {
             swerveModule.setAngle(swerveModule.getAngle());
         }
     }
