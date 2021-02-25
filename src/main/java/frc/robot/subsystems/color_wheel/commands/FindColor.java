@@ -1,79 +1,74 @@
 package frc.robot.subsystems.color_wheel.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.color_wheel.ColorWheel;
 
 /**
  * Spin the wheel until you reach the desired color.
  */
+
 public class FindColor extends CommandBase {
     private final ColorWheel colorWheel;
-    private final String color;
+    private final String targetColor;
     private final double power;
-    private String tempColor = "";
-    private int initColorIndex;
-    private int targetColorIndex;
+    private String prevColor;
     private int cutoff = 10;
 
-    public FindColor(ColorWheel colorWheel, String color, double power) {
+    public FindColor(ColorWheel colorWheel, String targetColor, double power) {
         this.colorWheel = colorWheel;
-        this.color = color;
+        this.targetColor = targetColor;
         this.power = power;
-        addRequirements(colorWheel);
     }
 
     @Override
     public void initialize() {
         colorWheel.updateSensor();
-        findInitialAndTargetColorPosition();
-        findPathAndSetPower();
+        String initColor = colorWheel.getColorString();
+        switch (initColor) {
+            case "RED":
+                switch (targetColor) {
+                    case "GREEN", "BLUE" -> colorWheel.setPower(power);
+                    case "YELLOW" -> colorWheel.setPower(-power);
+                }
+                break;
+            case "GREEN":
+                switch (targetColor) {
+                    case "RED" -> colorWheel.setPower(-power);
+                    case "BLUE", "YELLOW" -> colorWheel.setPower(power);
+                }
+                break;
+            case "BLUE":
+                switch (targetColor) {
+                    case "RED", "YELLOW" -> colorWheel.setPower(power);
+                    case "GREEN" -> colorWheel.setPower(-power);
+                }
+                break;
+            case "YELLOW":
+                switch (targetColor) {
+                    case "RED", "GREEN" -> colorWheel.setPower(power);
+                    case "BLUE" -> colorWheel.setPower(-power);
+                }
+                break;
+        }
+        prevColor = initColor;
     }
 
     @Override
     public void execute() {
         colorWheel.updateSensor();
-        if (!colorWheel.getColorString().equals(tempColor)) {
-            tempColor = colorWheel.getColorString();
-            colorWheel.setPower(power * cutoff-- / 10.);
+        if (!colorWheel.getColorString().equals(prevColor)) {
+            colorWheel.setPower(power * --cutoff / 10.);
+            prevColor = colorWheel.getColorString();
         }
     }
 
     @Override
     public boolean isFinished() {
-        return colorWheel.getColorString().equals(color);
+        return colorWheel.getColorString().equals(targetColor);
     }
 
     @Override
     public void end(boolean interrupted) {
         colorWheel.setPower(0);
-    }
-
-    public void findPathAndSetPower() {
-        int clockDistance, antiDistance;
-        if (targetColorIndex < initColorIndex) {
-            clockDistance = targetColorIndex + Constants.ColorWheel.COLORS.length - initColorIndex;
-            antiDistance = initColorIndex - targetColorIndex;
-        } else {
-            clockDistance = targetColorIndex - initColorIndex;
-            antiDistance = Constants.ColorWheel.COLORS.length - targetColorIndex + initColorIndex;
-        }
-        if (clockDistance < antiDistance) {
-            colorWheel.setPower(power);
-        } else {
-            colorWheel.setPower(-power);
-        }
-    }
-
-    private void findInitialAndTargetColorPosition() {
-        tempColor = colorWheel.getColorString();
-        initColorIndex = 0;
-        targetColorIndex = 0;
-        for (int i = 0; i < Constants.ColorWheel.COLORS.length; i++) {
-            if (Constants.ColorWheel.COLORS[i].equals(tempColor))
-                initColorIndex = i;
-            if (Constants.ColorWheel.COLORS[i].equals(color))
-                targetColorIndex = i;
-        }
     }
 }

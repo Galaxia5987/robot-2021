@@ -11,8 +11,8 @@ public class Spin extends CommandBase {
 
     private final ColorWheel colorWheel;
     private final double power;
-    private String previousColor; //the first color the sensor sees.
-    private String currentColor; //the first color the sensor sees.
+    private String previousColor;
+    private String currentColor;
     private int differentColorCounter = 0;
 
     public Spin(ColorWheel colorWheel, double power) {
@@ -53,6 +53,9 @@ public class Spin extends CommandBase {
         }
     }
 
+    /**
+     * Moderate Color Wheel power at the last color.
+     */
     private void moderatePower() {
         if (differentColorCounter == Constants.ColorWheel.REQUIRED_SPINS * Constants.ColorWheel.COLOR_WHEEL_SLOTS - 1)
             colorWheel.setPower(Constants.ColorWheel.REDUCE_POWER_BY * power);

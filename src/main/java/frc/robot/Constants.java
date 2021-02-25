@@ -29,9 +29,9 @@ public final class Constants {
         public static final Color BLUE_TARGET = ColorMatch.makeColor(0, 0, 255);
         public static final Color YELLOW_TARGET = ColorMatch.makeColor(255, 255, 0);
 
-        public static final int REQUIRED_SPINS = 3; //amount of spins the wheel must complete to win
-        public static final int COLOR_WHEEL_SLOTS = 8; //amount of color slots in the wheel
-        public static final double REDUCE_POWER_BY = 0.5; //percentage to cut the motor power by
+        public static final int REQUIRED_SPINS = 3; //Amount of spins the wheel must complete to win
+        public static final int COLOR_WHEEL_SLOTS = 8; //Amount of color slots in the wheel
+        public static final double REDUCE_POWER_BY = 0.5; //Percentage to cut the motor power by
 
         public static final String[] COLORS = new String[]{"YELLOW", "BLUE", "GREEN", "RED"};
     }
