@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.util.Units;
  */
 public final class Constants {
 
+    public static final double LOOP_PERIOD = 0.02; // [s]
+    public static final double NOMINAL_VOLTAGE = 12; // [volts]
     public static final int TALON_TIMEOUT = 10; //Waiting period for configurations [ms].
 
     public static class Climber {
@@ -34,8 +36,6 @@ public final class Constants {
 
         public static final double HEIGHT_TOLERANCE = 0.1; //Error tolerance for the height [m].
     }
-    public static final double LOOP_PERIOD = 0.02; // [s]
-    public static final double NOMINAL_VOLTAGE = 12; // [volts]
 
     //TODO: change to real values
     public static final class Shooter {
