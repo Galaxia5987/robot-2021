@@ -54,9 +54,9 @@ public class Climber extends SubsystemBase {
     }
 
     /**
-     * Set the stopper mode.
+     * Set the stopper shifter mode to a given mode.
      *
-     * @param mode the stopper mode.
+     * @param mode the wanted stopper shifter mode.
      */
     public void setStopperMode(PistonMode mode) {
         if (mode == PistonMode.OPEN)
