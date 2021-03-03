@@ -18,6 +18,7 @@ public class FindColor extends CommandBase {
         this.colorWheel = colorWheel;
         this.targetColor = targetColor;
         this.power = power;
+        addRequirements();
     }
 
     @Override
@@ -27,26 +28,42 @@ public class FindColor extends CommandBase {
         switch (initColor) {
             case "RED":
                 switch (targetColor) {
-                    case "GREEN", "BLUE" -> colorWheel.setPower(power);
-                    case "YELLOW" -> colorWheel.setPower(-power);
+                    case "GREEN":
+                    case "BLUE":
+                        colorWheel.setPower(power);
+                        break;
+                    case "YELLOW":
+                        colorWheel.setPower(-power);
                 }
                 break;
             case "GREEN":
                 switch (targetColor) {
-                    case "RED" -> colorWheel.setPower(-power);
-                    case "BLUE", "YELLOW" -> colorWheel.setPower(power);
+                    case "RED":
+                        colorWheel.setPower(-power);
+                        break;
+                    case "BLUE":
+                    case "YELLOW":
+                        colorWheel.setPower(power);
                 }
                 break;
             case "BLUE":
                 switch (targetColor) {
-                    case "RED", "YELLOW" -> colorWheel.setPower(power);
-                    case "GREEN" -> colorWheel.setPower(-power);
+                    case "RED":
+                    case "YELLOW":
+                        colorWheel.setPower(power);
+                        break;
+                    case "GREEN":
+                        colorWheel.setPower(-power);
                 }
                 break;
             case "YELLOW":
                 switch (targetColor) {
-                    case "RED", "GREEN" -> colorWheel.setPower(power);
-                    case "BLUE" -> colorWheel.setPower(-power);
+                    case "RED":
+                    case "GREEN":
+                        colorWheel.setPower(power);
+                        break;
+                    case "BLUE":
+                        colorWheel.setPower(-power);
                 }
                 break;
         }
