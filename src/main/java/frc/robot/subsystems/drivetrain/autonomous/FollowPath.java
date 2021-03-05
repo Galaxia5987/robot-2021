@@ -89,12 +89,12 @@ public class FollowPath extends CommandBase {
 
         // feeds the corresponding control to each wheel
         for (int k = 0; k < 4; k++) {
-            swerveDrive.swerveModules[k].setSpeed(
+            swerveDrive.getModule(k).setSpeed(
                     targetWheelSpeeds[k].speedMetersPerSecond +
                     feedforward[k].calculate(targetWheelSpeeds[k].speedMetersPerSecond,
                             (targetWheelSpeeds[k].speedMetersPerSecond - prevSpeeds[k].speedMetersPerSecond) / dt)
             );
-            swerveDrive.swerveModules[k].setAngle(targetWheelSpeeds[k].angle.getRadians());
+            swerveDrive.getModule(k).setAngle(targetWheelSpeeds[k].angle.getRadians());
         }
 
         FalconDashboard.INSTANCE.setPathHeading(state.poseMeters.getRotation().getRadians());

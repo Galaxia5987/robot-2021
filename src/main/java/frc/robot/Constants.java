@@ -62,6 +62,7 @@ public class Constants {
         public static final WebConstant KD_SICK = new WebConstant("KD_SICK", 8);
         public static final WebConstant KF_SICK = new WebConstant("KF_SICK", 0);
         public static final WebConstant[] SICK_ANGLE_PIDF = new WebConstant[]{KP_SICK, KI_SICK, KD_SICK, KF_SICK};
+    }
 
     public static class Autonomous {
         public static final double MAX_SPEED = 0;
@@ -69,18 +70,11 @@ public class Constants {
         public static final double MAX_CENTRIPETAL_ACCELERATION = 0;
         public static final double kBeta = 0.0;
         public static final double kZeta = 0.0;
-        public static final int TRIGGER_THRESHOLD_CURRENT = 5; // ampere
-        public static final double TRIGGER_THRESHOLD_TIME = 0.02; // seconds
-        public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
-        public static final int VOLTAGE_SATURATION = 12; // volts
 
         public static final double[] kS = new double[]{0.0, 0.0, 0.0, 0.0};
         public static final double[] kV = new double[]{0.0, 0.0, 0.0, 0.0};
         public static final double[] kA = new double[]{0.0, 0.0, 0.0, 0.0};
     }
 
-
-
-    }
 
 }
