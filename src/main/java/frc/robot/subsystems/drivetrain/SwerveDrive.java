@@ -2,12 +2,18 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Utils;
@@ -15,51 +21,61 @@ import org.techfire225.webapp.FireLog;
 
 import static frc.robot.Ports.SwerveDrive.*;
 
+/**
+ * The Swerve Subsystem calculates all the mathematical operations and controls for the Swerve Modules.
+ */
 public class SwerveDrive extends SubsystemBase {
 
-    static double[][] Dynamics = new double[8][3];
-    public SwerveModule[] swerveModules = new SwerveModule[4];
+    private static double[][] dynamics = new double[8][3];
+    private SwerveModule[] swerveModules = new SwerveModule[4];
+
     // calculates the distance from the center of the robot to the wheels
-    static double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
-    static double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
+    private static double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
+    private static double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
 
     // the sign vectors of Rx and Ry
-    static double[] signX = {1, 1, -1, -1};
-    static double[] signY = {-1, 1, -1, 1};
+    private static double[] signX = {1, 1, -1, -1};
+    private static double[] signY = {-1, 1, -1, 1};
 
-    // creates an inverse matrix of all the mathematical operations needed to calculate the wheel velocities
-    // see https://file.tavsys.net/control/controls-engineering-in-frc.pdf pg.144
     private static boolean isFieldOriented;
 
-    public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d(), new Translation2d(), new Translation2d(), new Translation2d()); // TODO: add real values
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(Robot.gyro.getAngle()), new Pose2d()); // TODO: Check pose2d and angle might be ccw.
+    public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+            new Translation2d(signX[0] * Rx, signY[0] * Ry),
+            new Translation2d(signX[1] * Rx, signY[1] * Ry),
+            new Translation2d(signX[2] * Rx, signY[2] * Ry),
+            new Translation2d(signX[3] * Rx, signY[3] * Ry)
+    );
 
-    public SwerveDrive(boolean isFieldOriented) {
+    private final SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
+            new Rotation2d(-Robot.gyro.getAngle()),
+            new Pose2d(),
+            kinematics,
+            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+            VecBuilder.fill(Units.degreesToRadians(0.01)),
+            VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))
+    );
+    public SwerveDrive(boolean isFieldOriented, boolean testMode) {
+        createInverseMatrix();
 
-        for (int i = 0; i < 8; i++) {
-            if (i % 2 == 0) {
-                Dynamics[i][0] = 1;
-                Dynamics[i][1] = 0;
-                Dynamics[i][2] = Rx * signX[i / 2];
-            } else {
-                Dynamics[i][0] = 0;
-                Dynamics[i][1] = 1;
-                Dynamics[i][2] = Ry * signY[i / 2];
-            }
+        if (!testMode) {
+            swerveModules[0] = new SwerveModule(0, DRIVE_MOTOR_FRONT_RIGHT, ANGLE_MOTOR_FRONT_RIGHT, FRONT_RIGHT_INVERTED,
+                    Constants.SwerveModule.ANGLE_PIDF, Constants.SwerveModule.DRIVE_PIDF);
+
+            swerveModules[1] = new SwerveModule(1, DRIVE_MOTOR_FRONT_LEFT, ANGLE_MOTOR_FRONT_LEFT, FRONT_LEFT_INVERTED,
+                    Constants.SwerveModule.ANGLE_PIDF, Constants.SwerveModule.SLOW_DRIVE_PIDF);
+
+            swerveModules[2] = new SwerveModule(2, DRIVE_MOTOR_BACK_RIGHT, ANGLE_MOTOR_BACK_RIGHT, BACK_RIGHT_INVERTED,
+                    Constants.SwerveModule.SICK_ANGLE_PIDF, Constants.SwerveModule.DRIVE_PIDF);
+
+            swerveModules[3] = new SwerveModule(3, DRIVE_MOTOR_BACK_LEFT, ANGLE_MOTOR_BACK_LEFT, BACK_LEFT_INVERTED,
+                    Constants.SwerveModule.ANGLE_PIDF, Constants.SwerveModule.DRIVE_PIDF);
         }
-        Robot.gyro.reset();
-
-        swerveModules[0] = new SwerveModule(0, new TalonFX(DRIVE_MOTOR_1), new TalonSRX(ANGLE_MOTOR_1), FRONT_RIGHT_INVERTED);
-        swerveModules[1] = new SwerveModule(1, new TalonFX(DRIVE_MOTOR_2), new TalonSRX(ANGLE_MOTOR_2), FRONT_LEFT_INVERTED);
-        swerveModules[2] = new SwerveModule(2, new TalonFX(DRIVE_MOTOR_3), new TalonSRX(ANGLE_MOTOR_3), BACK_RIGHT_INVERTED);
-        swerveModules[3] = new SwerveModule(3, new TalonFX(DRIVE_MOTOR_4), new TalonSRX(ANGLE_MOTOR_4), BACK_LEFT_INVERTED);
 
         this.isFieldOriented = isFieldOriented;
     }
 
-
     /**
-     * sets the wheels of the robot to the calculated angle and speed
+     * Sets the wheels of the robot to the calculated angle and speed.
      *
      * @param forward  the Y value of the joystick
      * @param strafe   the X value of the joystick
@@ -98,7 +114,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * turns the joystick inputs into the robot heading
+     * Turns the joystick inputs into the robot heading.
      *
      * @param forward    the Y value of the joystick
      * @param strafe     the X value of the joystick
@@ -107,10 +123,6 @@ public class SwerveDrive extends SubsystemBase {
      * @return an array of the robot heading
      */
     public static double[] getRobotHeading(double forward, double strafe, double rotation, double robotAngle) {
-        // turns the joystick values into the heading of the robot
-        forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;
-        strafe *= Constants.SwerveDrive.SPEED_MULTIPLIER;
-        rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
         // multiplies the 2D rotation matrix by the robot heading, there by rotating the coordinate system
         // see https://en.wikipedia.org/wiki/Rotation_matrix
         double[][] rotationMat = {{Math.cos(robotAngle), -Math.sin(robotAngle)},
@@ -127,13 +139,11 @@ public class SwerveDrive extends SubsystemBase {
         System.out.println("relative forward" + speeds[0]);
         System.out.println("relative strafe" + speeds[1]);
 
-        double[] robotHeading = {forward, strafe, rotation};
-
-        return robotHeading;
+        return new double[]{forward, strafe, rotation};
     }
 
     /**
-     * calculates the velocity vector of each wheel
+     * Calculates the velocity vector of each wheel.
      *
      * @param robotHeading the three joystick outputs:
      *                     forward the heading of the robot in the Y direction
@@ -143,19 +153,21 @@ public class SwerveDrive extends SubsystemBase {
      */
     public static double[] calculateWheelVelocities(double[] robotHeading) {
         // multiplies M by the robotHeading to obtain the wheel velocities
-        double[] wheelVelocities = Utils.matrixVectorMult(Dynamics, robotHeading);
-        return wheelVelocities;
+        return Utils.matrixVectorMult(dynamics, robotHeading);
     }
 
     /**
-     * set the angle of the wheels on the robot to lock the robot in place
+     * Set the angle of the wheels on the robot to lock the robot in place.
+     * Lock angles are used for when there is defence on the robot,
+     * the wheels point outwards and it is nearly impossible to move the robot.
      */
     public void lock() {
-        // calculates the lock angles of the wheels
         double[] lockAngles = calculateLockAngles();
 
         for (int i = 0; i < 4; i++) {
             swerveModules[i].setSpeed(0);
+            // switches the lock angles between the back left and back right wheels
+            // so that they will match the signs of the dynamics matrix
             if (i == 2) {
                 swerveModules[i].setAngle(lockAngles[i + 1]);
             }
@@ -166,21 +178,21 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * calculates the angles for which the wheels will lock in place
+     * Calculates the angles for which the wheels will lock in place.
      */
     public double[] calculateLockAngles() {
         double[] lockAngles = new double[4];
+        double firstLockAngle = Math.atan(Constants.SwerveDrive.ROBOT_LENGTH / Constants.SwerveDrive.ROBOT_WIDTH);
 
         for (int i = 0; i < 4; i++) {
-            lockAngles[i] = Math.PI / 2 - Math.atan(Constants.SwerveDrive.ROBOT_WIDTH / Constants.SwerveDrive.ROBOT_LENGTH) + i * Math.PI / 2;
+            lockAngles[i] = firstLockAngle + i * Math.PI / 2;
         }
 
         return lockAngles;
     }
 
-
     /**
-     * stops all the wheels
+     * Stops all the wheels.
      */
     public void stop() {
         for (SwerveModule swerveModule : swerveModules) {
@@ -190,6 +202,9 @@ public class SwerveDrive extends SubsystemBase {
 
     }
 
+    /**
+     * @return the x and y velocities of each module
+     */
     public double[][] getXYVelocities() {
         double[][] velocities = new double[4][2];
         for (int i = 0; i < 4; i++) {
@@ -201,6 +216,9 @@ public class SwerveDrive extends SubsystemBase {
         return velocities;
     }
 
+    /**
+     * @return the velocity of the robot (length, angle)
+     */
     public double[] getVelocity() {
         double[][] velocities = getXYVelocities();
         double sumx = 0;
@@ -212,18 +230,88 @@ public class SwerveDrive extends SubsystemBase {
         return Utils.cartesianToPolar(sumx / 4, sumy / 4);
     }
 
-    public void resetAll() {
-        for (int i = 0; i < 4; i++) {
-            swerveModules[i].resetAngle();
+    /**
+     * Resets all the module encoder values to 0.
+     */
+    public void resetAllEncoders() {
+        for (SwerveModule swerveModule : swerveModules) {
+            swerveModule.resetAngleEncoder();
         }
     }
+
+    /**
+     * @param i the index of the module
+     * @return the corresponding module
+     */
+    public SwerveModule getModule(int i) {
+        return swerveModules[i];
+    }
+
+    /**
+     * Creates an inverse matrix of all the mathematical operations needed to calculate the wheel velocities.
+     * see https://file.tavsys.net/control/controls-engineering-in-frc.pdf pg.140
+     */
+    public void createInverseMatrix() {
+
+        for (int i = 0; i < 8; i++) {
+            if (i % 2 == 0) {
+                dynamics[i][0] = 1;
+                dynamics[i][1] = 0;
+                dynamics[i][2] = Rx * signX[i / 2];
+            } else {
+                dynamics[i][0] = 0;
+                dynamics[i][1] = 1;
+                dynamics[i][2] = Ry * signY[i / 2];
+            }
+        }
+    }
+
+    /**
+     * Locks all modules in their current position.
+     */
+    public void lockModulePositions() {
+        for (SwerveModule swerveModule : swerveModules) {
+            swerveModule.setSpeed(0);
+        }
+        stayAtAngle();
+    }
+
+    /**
+     * Makes the modules stay at its current angle.
+     */
+    public void stayAtAngle() {
+        for (SwerveModule swerveModule : swerveModules) {
+            swerveModule.setAngle(swerveModule.getAngle());
+        }
+    }
+
 
     public void setPose(Pose2d pose) {
         odometry.resetPosition(pose, Rotation2d.fromDegrees(Robot.gyro.getAngle())); // TODO: change, check CCW
     }
 
     public Pose2d getPose() {
-        return odometry.getPoseMeters();
+        Pose2d pose = odometry.getEstimatedPosition();
+        double x = pose.getTranslation().getX();
+        double y = pose.getTranslation().getY();
+        double angle = pose.getRotation().getRadians();
+        SmartDashboard.putNumber("x", x);
+        SmartDashboard.putNumber("y", y);
+        SmartDashboard.putNumber("angle", angle);
+        return pose;
+    }
+
+    @Override
+    public void periodic() {
+        SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
+        for (int i = 0; i<4; i++){
+            swerveModuleState[i] = new SwerveModuleState(swerveModules[i].getSpeed(), new Rotation2d(swerveModules[i].getAngle()));
+        }
+        odometry.update(
+            new Rotation2d(-Robot.gyro.getAngle()),
+                swerveModuleState
+        );
     }
 
 }
+
