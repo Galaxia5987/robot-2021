@@ -26,7 +26,12 @@ public class FollowPath extends CommandBase {
     private double prevTime;
 
     private static final RamseteController follower = new RamseteController(Constants.Autonomous.kBeta, Constants.Autonomous.kZeta);
+<<<<<<< Updated upstream
     private static final SimpleMotorFeedforward[] feedforward = new SimpleMotorFeedforward[4];
+=======
+    private static final SimpleMotorFeedforward leftfeedforward = new SimpleMotorFeedforward(Constants.Autonomous.leftkS, Constants.Autonomous.leftkV, Constants.Autonomous.leftkA);
+    private static final SimpleMotorFeedforward rightfeedforward = new SimpleMotorFeedforward(Constants.Autonomous.rightkS, Constants.Autonomous.rightkV, Constants.Autonomous.rightkA);
+>>>>>>> Stashed changes
     private final SwerveDrive swerveDrive;
     private Trajectory trajectory;
 
