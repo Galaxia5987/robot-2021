@@ -2,14 +2,18 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Utils;
@@ -40,7 +44,15 @@ public class SwerveDrive extends SubsystemBase {
             new Translation2d(signX[3] * Rx, signY[3] * Ry)
     );
 
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(Robot.gyro.getAngle()), new Pose2d(new Translation2d(0.0, 0.0), new Rotation2d(Robot.gyro.getAngle()))); // TODO: Check pose2d and angle might be ccw.
+    private final SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
+            new Rotation2d(-Robot.gyro.getAngle()),
+            new Pose2d(),
+            kinematics,
+            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+            VecBuilder.fill(Units.degreesToRadians(0.01)),
+            VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))
+    );
+//    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(Robot.gyro.getAngle()), new Pose2d(new Translation2d(0.0, 0.0), new Rotation2d(Robot.gyro.getAngle()))); // TODO: Check pose2d and angle might be ccw.
 
     public SwerveDrive(boolean isFieldOriented) {
 
@@ -231,7 +243,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        Pose2d pose = odometry.getPoseMeters();
+        Pose2d pose = odometry.getEstimatedPosition();
         double x = pose.getTranslation().getX();
         double y = pose.getTranslation().getY();
         double angle = pose.getRotation().getRadians();
@@ -241,4 +253,17 @@ public class SwerveDrive extends SubsystemBase {
         return pose;
     }
 
+    @Override
+    public void periodic() {
+        SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
+        for (int i = 0; i<4; i++){
+            swerveModuleState[i] = new SwerveModuleState(swerveModules[i].getSpeed(), new Rotation2d(swerveModules[i].getAngle()));
+        }
+        odometry.update(
+            new Rotation2d(-Robot.gyro.getAngle()),
+                swerveModuleState
+        );
+    }
+
 }
+
