@@ -1,11 +1,9 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Button;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.*;
 import frc.robot.valuetuner.ValueTuner;
@@ -18,22 +16,11 @@ import org.techfire225.webapp.Webserver;
 public class RobotContainer {
     SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-    public static XboxController xbox = new XboxController(2);
-    public static Button b = new JoystickButton(xbox, 1);
-    Button x = new JoystickButton(xbox, 3);
-    Button y = new JoystickButton(xbox, 4);
-    private JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
-    private JoystickButton c = new JoystickButton(OI.joystick, 3);
-
-    public SwerveDrive swerveDrive = new SwerveDrive(true);
-//    public HolonomicDrive holonomicDrive = new HolonomicDrive(swerveDrive);
+    public SwerveDrive swerveDrive = new SwerveDrive(true, false);
 
     public RobotContainer(){
         configureButtonBindings();
 
-        //m_chooser.addOption("Example Auto 1", new DriveStraight());
-        //m_chooser.addOption("Example Auto 2", new ExampleCommand());
-        //m_chooser.setDefaultOption();
         Shuffleboard.getTab("Autonomous").add(m_chooser);
         if (Robot.debug) {
             startValueTuner();
@@ -41,18 +28,10 @@ public class RobotContainer {
         }
     }
 
-
-
     private void configureButtonBindings() {
         // Grab the hatch when the 'A' button is pressed.
-//        a.whenPressed(new HolonomicDrive(swerveDrive));
-//        swerveDrive.setDefaultCommand(new TurnInPlace(swerveDrive));
-//        swerveDrive.setDefaultCommand(new DriveForward(swerveDrive));
         swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
-//        swerveDrive.setDefaultCommand(new DriveForward(swerveDrive));
-//        swerveDrive.setDefaultCommand(new TankDrive(swerveDrive));
-        c.whenPressed(new ResetPositions(swerveDrive));
-        //new JoystickButton(m_driverController, Button.kB.value).whenPressed(new ExampleCommand());
+        OI.c.whenPressed(new InstantCommand(swerveDrive::resetAllEncoders, swerveDrive));
     }
 
 
