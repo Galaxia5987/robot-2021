@@ -2,10 +2,12 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.Constants;
+import frc.robot.Ports;
 import frc.robot.Robot;
 import frc.robot.Utils;
 import org.techfire225.webapp.FireLog;
@@ -28,6 +31,7 @@ public class SwerveDrive extends SubsystemBase {
 
     private static double[][] dynamics = new double[8][3];
     private SwerveModule[] swerveModules = new SwerveModule[4];
+    private Timer timer = new Timer();
 
     // calculates the distance from the center of the robot to the wheels
     private static double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
@@ -47,31 +51,28 @@ public class SwerveDrive extends SubsystemBase {
     );
 
     private final SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
-            new Rotation2d(-Robot.gyro.getAngle()),
+            new Rotation2d(Math.toRadians(shiftAngle(Robot.gyro.getAngle()))),
             new Pose2d(),
             kinematics,
             VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
             VecBuilder.fill(Units.degreesToRadians(0.01)),
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))
     );
+
     public SwerveDrive(boolean isFieldOriented, boolean testMode) {
         createInverseMatrix();
 
-        if (!testMode) {
-            swerveModules[0] = new SwerveModule(0, DRIVE_MOTOR_FRONT_RIGHT, ANGLE_MOTOR_FRONT_RIGHT, FRONT_RIGHT_INVERTED,
-                    Constants.SwerveModule.ANGLE_PIDF, Constants.SwerveModule.DRIVE_PIDF);
+        Robot.gyro.reset();
 
-            swerveModules[1] = new SwerveModule(1, DRIVE_MOTOR_FRONT_LEFT, ANGLE_MOTOR_FRONT_LEFT, FRONT_LEFT_INVERTED,
-                    Constants.SwerveModule.ANGLE_PIDF, Constants.SwerveModule.SLOW_DRIVE_PIDF);
-
-            swerveModules[2] = new SwerveModule(2, DRIVE_MOTOR_BACK_RIGHT, ANGLE_MOTOR_BACK_RIGHT, BACK_RIGHT_INVERTED,
-                    Constants.SwerveModule.SICK_ANGLE_PIDF, Constants.SwerveModule.DRIVE_PIDF);
-
-            swerveModules[3] = new SwerveModule(3, DRIVE_MOTOR_BACK_LEFT, ANGLE_MOTOR_BACK_LEFT, BACK_LEFT_INVERTED,
-                    Constants.SwerveModule.ANGLE_PIDF, Constants.SwerveModule.DRIVE_PIDF);
-        }
+        swerveModules[0] = new SwerveModule(0, new TalonFX(DRIVE_MOTOR_FRONT_RIGHT), new TalonSRX(ANGLE_MOTOR_FRONT_RIGHT), FRONT_RIGHT_INVERTED);
+        swerveModules[1] = new SwerveModule(1, new TalonFX(DRIVE_MOTOR_FRONT_LEFT), new TalonSRX(ANGLE_MOTOR_FRONT_LEFT), FRONT_LEFT_INVERTED);
+        swerveModules[2] = new SwerveModule(2, new TalonFX(DRIVE_MOTOR_BACK_RIGHT), new TalonSRX(ANGLE_MOTOR_BACK_RIGHT), BACK_RIGHT_INVERTED);
+        swerveModules[3] = new SwerveModule(3, new TalonFX(DRIVE_MOTOR_BACK_LEFT), new TalonSRX(ANGLE_MOTOR_BACK_LEFT), BACK_LEFT_INVERTED);
 
         this.isFieldOriented = isFieldOriented;
+
+        timer.reset();
+        timer.start();
     }
 
     /**
@@ -235,7 +236,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void resetAllEncoders() {
         for (SwerveModule swerveModule : swerveModules) {
-            swerveModule.resetAngleEncoder();
+            swerveModule.resetAngle();
         }
     }
 
@@ -287,30 +288,40 @@ public class SwerveDrive extends SubsystemBase {
 
 
     public void setPose(Pose2d pose) {
-        odometry.resetPosition(pose, Rotation2d.fromDegrees(Robot.gyro.getAngle())); // TODO: change, check CCW
+        odometry.resetPosition(pose, Rotation2d.fromDegrees(shiftAngle(Robot.gyro.getAngle()))); // TODO: change, check CCW
     }
 
     public Pose2d getPose() {
         Pose2d pose = odometry.getEstimatedPosition();
         double x = pose.getTranslation().getX();
         double y = pose.getTranslation().getY();
-        double angle = pose.getRotation().getRadians();
+        double angle = pose.getRotation().getDegrees();
         SmartDashboard.putNumber("x", x);
         SmartDashboard.putNumber("y", y);
         SmartDashboard.putNumber("angle", angle);
         return pose;
     }
 
+    public double shiftAngle(double angle) {
+        return -Math.IEEEremainder(angle, 360);
+    }
+
     @Override
     public void periodic() {
         SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
-        for (int i = 0; i<4; i++){
-            swerveModuleState[i] = new SwerveModuleState(swerveModules[i].getSpeed(), new Rotation2d(swerveModules[i].getAngle()));
+        for (int i = 0; i < 4; i++) {
+            swerveModuleState[i] = new SwerveModuleState(swerveModules[i].getSpeed(), new Rotation2d(Math.toRadians(90) - swerveModules[i].getAngle()));
+            SmartDashboard.putNumber("" + i, swerveModuleState[i].angle.getDegrees());
+            SmartDashboard.putNumber("vel" + i, swerveModuleState[i].speedMetersPerSecond);
+            SmartDashboard.putNumber("correct angle " + i, swerveModules[i].getAngle());
+
         }
-        odometry.update(
-            new Rotation2d(-Robot.gyro.getAngle()),
+
+        odometry.updateWithTime(timer.get(),
+                new Rotation2d(Math.toRadians(shiftAngle(Robot.gyro.getAngle()))),
                 swerveModuleState
         );
+        System.out.println(getPose());
     }
 
 }

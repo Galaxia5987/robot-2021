@@ -25,6 +25,7 @@ public class DriveForward extends CommandBase {
 
         swerveDrive.stayAtAngle();
         for (int i = 0; i < 4; i++) {
+            swerveDrive.getModule(i).setAngle(0);
             swerveDrive.getModule(i).setSpeed(target.get());
             FireLog.log("speed " + i, Math.abs(swerveDrive.getModule(i).getSpeed()));
         }
