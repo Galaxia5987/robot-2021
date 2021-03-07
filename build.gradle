@@ -1,10 +1,10 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2020.3.2"
+    id "edu.wpi.first.GradleRIO" version "2021.2.2"
 }
 
 wpi.maven.useDevelopment = true
-wpi.wpilibVersion = '2020.+'
+wpi.wpilibVersion = '2021.+'
 
 
 apply plugin: "java"
@@ -70,6 +70,7 @@ test {
 // Also defines JUnit 4.
 dependencies {
     implementation wpi.deps.wpilib()
+    implementation 'junit:junit:4.12'
     nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
 
