@@ -39,7 +39,7 @@ public class Constants {
         public static final WebConstant KF = new WebConstant("KF", 0);
         public static final WebConstant[] ANGLE_PIDF = new WebConstant[]{KP, KI, KD, KF};
 
-        public static final WebConstant KP_DRIVE = new WebConstant("KP_Drive", 0.05);
+        public static final WebConstant KP_DRIVE = new WebConstant("KP_Drive", 0.047);
         public static final WebConstant KI_DRIVE = new WebConstant("KI_Drive", 0);
         public static final WebConstant KD_DRIVE = new WebConstant("KD_Drive", 2);
         public static final WebConstant KF_DRIVE = new WebConstant("KF_Drive", 0);
@@ -47,10 +47,10 @@ public class Constants {
 
         // slow man
         // the module that is slower than the rest
-        public static final WebConstant KP_DRIVE_SLOW = new WebConstant("KP_Drive_Slow", 0.2);
+        public static final WebConstant KP_DRIVE_SLOW = new WebConstant("KP_Drive_Slow", 0.12);
         public static final WebConstant KI_DRIVE_SLOW = new WebConstant("KI_Drive_Slow", 0);
         public static final WebConstant KD_DRIVE_SLOW = new WebConstant("KD_Drive_Slow", 2);
-        public static final WebConstant KF_DRIVE_SLOW = new WebConstant("KF_Drive_Slow", 0.05);
+        public static final WebConstant KF_DRIVE_SLOW = new WebConstant("KF_Drive_Slow", 0.047);
         public static final WebConstant[] SLOW_DRIVE_PIDF = new WebConstant[]{KP_DRIVE_SLOW, KI_DRIVE_SLOW, KD_DRIVE_SLOW, KF_DRIVE_SLOW};
 
         public static final int[] ZERO_POSITION = {-339, 686, 221, -903};
@@ -62,6 +62,11 @@ public class Constants {
         public static final WebConstant KD_SICK = new WebConstant("KD_SICK", 8);
         public static final WebConstant KF_SICK = new WebConstant("KF_SICK", 0);
         public static final WebConstant[] SICK_ANGLE_PIDF = new WebConstant[]{KP_SICK, KI_SICK, KD_SICK, KF_SICK};
+
+        public static final WebConstant KP_BROKEN = new WebConstant("KP_BROKEN", 0.065);
+        public static final WebConstant KI_BROKEN = new WebConstant("KI_BROKEN", 0);
+        public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
+        public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
     }
 
     public static class Autonomous {
