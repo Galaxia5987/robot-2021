@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
-import frc.robot.utils.DeadbandLaserSensor;
+import frc.robot.utils.DeadbandProximity;
 
 import static frc.robot.Constants.Conveyor.*;
 
@@ -13,10 +13,10 @@ public class Conveyor extends SubsystemBase {
     private static int balls = Constants.Conveyor.INITIAL_BALLS_AMOUNT;
 
     private final TalonFX motor = new TalonFX(Ports.Conveyor.MOTOR);
-    private final DeadbandLaserSensor shooterSensor = new DeadbandLaserSensor(Ports.Conveyor.SHOOTER_LASER_SENSOR,
-            SHOOTER_PROXIMITY_LOST_VOLTAGE, SHOOTER_PROXIMITY_SENSE_VOLTAGE);
-    private final DeadbandLaserSensor funnelSensor = new DeadbandLaserSensor(Ports.Conveyor.FUNNEL_LASER_SENSOR,
-            FUNNEL_PROXIMITY_LOST_VOLTAGE, FUNNEL_PROXIMITY_SENSE_VOLTAGE);
+    private final DeadbandProximity shooterSensor = new DeadbandProximity(Ports.Conveyor.SHOOTER_PROXIMITY_1,
+            Ports.Conveyor.SHOOTER_PROXIMITY_2, SHOOTER_PROXIMITY_LOST_VOLTAGE, SHOOTER_PROXIMITY_SENSE_VOLTAGE);
+    private final DeadbandProximity funnelSensor = new DeadbandProximity(Ports.Conveyor.FUNNEL_PROXIMITY_1,
+            Ports.Conveyor.FUNNEL_PROXIMITY_2, FUNNEL_PROXIMITY_LOST_VOLTAGE, FUNNEL_PROXIMITY_SENSE_VOLTAGE);
 
     public Conveyor() {
         motor.setInverted(Ports.Conveyor.IS_MOTOR_INVERTED);

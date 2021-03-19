@@ -8,19 +8,23 @@ import edu.wpi.first.wpilibj.AnalogInput;
  * this is crucial for the conveyor, because the amount of balls that enter are counted by the amount of times
  * the sensor switches.
  */
-public class DeadbandLaserSensor extends AnalogInput {
+public class DeadbandProximity {
+    private final AnalogInput sensor1;
+    private final AnalogInput sensor2;
     private final double lostVoltage;
     private final double senseVoltage;
     private boolean objectSensed = false;
     private boolean stateChanged = false;
 
     /**
-     * @param channel      The channel number to represent. 0-3 are on-board 4-7 are on the MXP port.
+     * @param sensor1port      The channel number to represent. 0-3 are on-board 4-7 are on the MXP port.
+     * @param sensor2port      The channel number to represent. 0-3 are on-board 4-7 are on the MXP port.
      * @param lostVoltage  The voltage where an object is considered as lost.
      * @param senseVoltage The voltage where an object is considered as sensed.
      */
-    public DeadbandLaserSensor(int channel, double lostVoltage, double senseVoltage) {
-        super(channel);
+    public DeadbandProximity(int sensor1port, int sensor2port, double lostVoltage, double senseVoltage) {
+        this.sensor1 = new AnalogInput(sensor1port);
+        this.sensor2 = new AnalogInput(sensor2port);
         this.lostVoltage = lostVoltage;
         this.senseVoltage = senseVoltage;
     }
@@ -48,9 +52,8 @@ public class DeadbandLaserSensor extends AnalogInput {
      * @return whether the sensor sense an object.
      */
     private boolean isObjectClose() {
-        return getValue() > senseVoltage;
+        return sensor1.getValue() > senseVoltage && sensor2.getValue() > senseVoltage;
     }
-
 
     /**
      * Get whether the sensor lost the object.
@@ -59,7 +62,7 @@ public class DeadbandLaserSensor extends AnalogInput {
      * @return whether the sensor lost the object.
      */
     private boolean isObjectAway() {
-        return getValue() < lostVoltage;
+        return sensor1.getValue() < lostVoltage && sensor2.getValue() < lostVoltage;
     }
 
     /**
