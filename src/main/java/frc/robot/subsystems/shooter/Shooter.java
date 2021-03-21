@@ -159,3 +159,40 @@ public class Shooter extends SubsystemBase {
         setPower(0);
     }
 }
+
+    public enum State {
+        // TODO: must use real path to csv
+        LOW(0, new DoubleRange(0, 0), new LinearRegression("")),
+        MIDDLE(0, new DoubleRange(0, 0), new LinearRegression("")),
+        HIGH(0, new DoubleRange(0, 0), new LinearRegression(""));
+
+        public final DoubleRange shootingRange; // [min, max] meters
+        public final LinearRegression velocityEstimator;
+        private final int position; //[ticks]
+
+        State(int position, DoubleRange range, LinearRegression velocityEstimator) {
+            this.position = position;
+            this.shootingRange = range;
+            this.velocityEstimator = velocityEstimator;
+        }
+
+        //distance - meters
+        public static State getOptimalState(double distance) {
+            State current = LOW;
+            double minVelocity = LOW.velocityEstimator.estimateVelocityFromDistance(distance);
+            for (State state : State.values()) {
+                double currentVelocity = state.velocityEstimator.estimateVelocityFromDistance(distance);
+                if (currentVelocity < minVelocity) {
+                    minVelocity = currentVelocity;
+                    current = state;
+                }
+            }
+            return current;
+        }
+
+        // ticks
+        public int getDistance(State other) {
+            return other.position - position;
+        }
+    }
+}
