@@ -2,6 +2,10 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
 import edu.wpi.first.wpilibj.system.LinearSystem;
@@ -16,6 +20,8 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.UnitModel;
+import frc.robot.utils.Utils;
+import org.apache.commons.lang.math.DoubleRange;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,12 +41,22 @@ public class Shooter extends SubsystemBase {
 
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
 
-    private final LinearRegression velocityEstimator;
     private final LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
+    // hood
+    private final CANSparkMax hoodMotor = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: use real port
+    private final CANPIDController hoodPID = hoodMotor.getPIDController();
+    private State state;
 
     public Shooter() {
         this.stateSpacePredictor = constructLinearSystem();
-        this.velocityEstimator = new LinearRegression(readCSV());
+        hoodPID.setP(0);
+        hoodPID.setI(0);
+        hoodPID.setD(0);
+//        hoodPID.setIZone(0);
+        hoodPID.setFF(0);
+        hoodPID.setOutputRange(0, 0); // TODO: change to [min position, max position] maybe not use
+        //TODO: config hood motor
+        this.state = State.LOW;
     }
 
     /**
@@ -139,7 +155,7 @@ public class Shooter extends SubsystemBase {
      * @return the velocity that should be applied by the shooter in order to reach the target.[RPS]
      */
     public double estimateVelocityFromDistance(double distance) {
-        return velocityEstimator.estimateVelocityFromDistance(distance);
+        return state.velocityEstimator.estimateVelocityFromDistance(distance);
     }
 
     /**
@@ -158,7 +174,13 @@ public class Shooter extends SubsystemBase {
     public void stop() {
         setPower(0);
     }
-}
+
+    // hood
+    public void changeState(State newState) {
+        double distance = state.getDistance(newState);
+        hoodPID.setReference(distance, ControlType.kPosition); // it's maybe apply power directly to the spark max
+        this.state = newState;
+    }
 
     public enum State {
         // TODO: must use real path to csv
