@@ -85,6 +85,8 @@ dependencies {
 
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 
+    implementation 'com.revrobotics.frc:SparkMax-java:1.5.2'
+
     implementation wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
