@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commandgroups.PickupBalls;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.StartIntake;
@@ -65,12 +66,13 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        a.whenPressed(new ToggleIntake(intake));
-        BR.whileHeld(new StartIntake(intake, true));//transfers the balls to the Funnel
-        BL.whileHeld(new StartFunnel(funnel,true));
-
-    b.whileHeld(new FeedShooter(conveyor, 0.7));
-    y.whileHeld(new LoadConveyor(conveyor, 0.7));
+//        a.whenPressed(new ToggleIntake(intake));
+//        BR.whileHeld(new StartIntake(intake, true));//transfers the balls to the Funnel
+//        BL.whileHeld(new StartFunnel(funnel,true));
+//
+//        b.whileHeld(new FeedShooter(conveyor, 0.7));
+//        y.whileHeld(new LoadConveyor(conveyor, 0.7));
+        a.whileHeld(new PickupBalls(intake, funnel, conveyor));
   }
 
     /**

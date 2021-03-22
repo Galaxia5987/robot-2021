@@ -95,5 +95,6 @@ public final class Constants {
         public static final double[] RED_RGB = {0.492, 0.348, 0.145};
         public static final double[] BLUE_RGB = {0.132, 0.427, 0.442};
         public static final double CONVEYOR_MOTOR_RETURN_POWER = 0; // [%]
+        public static final double CONVEYOR_MOTOR_POWER = 0.7;
     }
 }
