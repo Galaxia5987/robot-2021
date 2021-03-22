@@ -2,6 +2,12 @@ package frc.robot.subsystems.conveyor;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorSensorV3;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -13,13 +19,24 @@ public class Conveyor extends SubsystemBase {
     private static int balls = Constants.Conveyor.INITIAL_BALLS_AMOUNT;
 
     private final TalonFX motor = new TalonFX(Ports.Conveyor.MOTOR);
-    private final DeadbandProximity shooterSensor = new DeadbandProximity(Ports.Conveyor.SHOOTER_PROXIMITY_1,
-            Ports.Conveyor.SHOOTER_PROXIMITY_2, SHOOTER_PROXIMITY_LOST_VOLTAGE, SHOOTER_PROXIMITY_SENSE_VOLTAGE);
-    private final DeadbandProximity funnelSensor = new DeadbandProximity(Ports.Conveyor.FUNNEL_PROXIMITY_1,
-            Ports.Conveyor.FUNNEL_PROXIMITY_2, FUNNEL_PROXIMITY_LOST_VOLTAGE, FUNNEL_PROXIMITY_SENSE_VOLTAGE);
+    public final I2C.Port i2cPort = I2C.Port.kOnboard;
+    public final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
+
+    private String colorString = " ";
+    private final ColorMatch colorMatcher = new ColorMatch();
+    private final Color BlueTarget = ColorMatch.makeColor(Constants.Conveyor.BLUE_RGB[0], Constants.Conveyor.BLUE_RGB[1], Constants.Conveyor.BLUE_RGB[2]);
+    private final Color GreenTarget = ColorMatch.makeColor(Constants.Conveyor.GREEN_RGB[0], Constants.Conveyor.GREEN_RGB[1], Constants.Conveyor.GREEN_RGB[2]);
+    private final Color RedTarget = ColorMatch.makeColor(Constants.Conveyor.RED_RGB[0], Constants.Conveyor.RED_RGB[1], Constants.Conveyor.RED_RGB[2]);
+    private final Color YellowTarget = ColorMatch.makeColor(Constants.Conveyor.YELLOW_RGB[0], Constants.Conveyor.YELLOW_RGB[1], Constants.Conveyor.YELLOW_RGB[2]);
+
+    private ColorMatchResult match;
 
     public Conveyor() {
         motor.setInverted(Ports.Conveyor.IS_MOTOR_INVERTED);
+        colorMatcher.addColorMatch(BlueTarget);
+        colorMatcher.addColorMatch(GreenTarget);
+        colorMatcher.addColorMatch(RedTarget);
+        colorMatcher.addColorMatch(YellowTarget);
 
         motor.configPeakOutputForward(FORWARD_PEAK, Constants.TALON_TIMEOUT);
         motor.configPeakOutputReverse(REVERSE_PEAK, Constants.TALON_TIMEOUT);
@@ -29,6 +46,7 @@ public class Conveyor extends SubsystemBase {
 
         motor.enableVoltageCompensation(true);
         motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+
     }
 
     /**
@@ -94,23 +112,35 @@ public class Conveyor extends SubsystemBase {
      * @return whether the funnel sensed an object.
      */
     public boolean hasFunnelSensedObject() {
-        return funnelSensor.hasObjectSensed();
+        return colorString.equals("Yellow");
+    }
+
+
+    /*
+    Returns the currently detected color as a string
+     */
+    private String colorToString() {
+        String colorInString;
+        if (match.color == BlueTarget) {
+            colorInString = "Blue";
+        } else if (match.color == RedTarget) {
+            colorInString = "Red";
+        } else if (match.color == GreenTarget) {
+            colorInString = "Green";
+        } else if (match.color == YellowTarget) {
+            colorInString = "Yellow";
+        } else {
+            colorInString = "Unknown";
+        }
+        return colorInString;
     }
 
     @Override
     public void periodic() {
-        shooterSensor.updateState();
-        funnelSensor.updateState();
+        Color detectedColor = colorSensor.getColor();
+        match = colorMatcher.matchClosestColor(detectedColor);
+        colorString = colorToString();
+        SmartDashboard.putString("color" ,colorString);
 
-        // An object is being taken out either from the shooter or from the funnel.
-        if (!shooterSensor.hasObjectSensed() && shooterSensor.hasStateChanged() && isMovingUp() ||
-                !funnelSensor.hasObjectSensed() && funnelSensor.hasStateChanged() && !isMovingUp()) {
-            Conveyor.removeBall();
-        }
-
-        // An object is being inserted into the conveyor.
-        if (funnelSensor.hasObjectSensed() && funnelSensor.hasStateChanged() && isMovingUp()) {
-            Conveyor.addBall();
-        }
     }
 }

@@ -24,10 +24,10 @@ public final class Constants {
 
     // TODO: Change the values
     public static final class Conveyor {
-        public static final double FORWARD_PEAK = 0; // [%]
-        public static final double REVERSE_PEAK = 0; // [%]
-        public static final SupplyCurrentLimitConfiguration SUPPLY_CURRENT_LIMIT = new SupplyCurrentLimitConfiguration(false, 0,0,0); //prevent breakers from tripping.
-        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(false, 0,0,0); // control the acceleration
+        public static final double FORWARD_PEAK = 1; // [%]
+        public static final double REVERSE_PEAK = 1; // [%]
+        public static final SupplyCurrentLimitConfiguration SUPPLY_CURRENT_LIMIT = new SupplyCurrentLimitConfiguration(false, 40,2,0); //prevent breakers from tripping.
+        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(false, 40,0,0); // control the acceleration
 
         public static final int INITIAL_BALLS_AMOUNT = 3;
         public static final int MAX_BALLS_AMOUNT = 5;
@@ -36,7 +36,10 @@ public final class Constants {
         public static final double SHOOTER_PROXIMITY_SENSE_VOLTAGE = 0; // [volts]
         public static final double FUNNEL_PROXIMITY_LOST_VOLTAGE = 0; // [volts]
         public static final double FUNNEL_PROXIMITY_SENSE_VOLTAGE = 0; // [volts]
-
+        public static final double[] YELLOW_RGB = {0.317, 0.552, 0.127};
+        public static final double[] GREEN_RGB = {0.16, 0.571, 0.269};
+        public static final double[] RED_RGB = {0.492, 0.348, 0.145};
+        public static final double[] BLUE_RGB = {0.132, 0.427, 0.442};
         public static final double CONVEYOR_MOTOR_RETURN_POWER = 0; // [%]
     }
 }

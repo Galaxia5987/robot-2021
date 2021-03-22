@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.FeedShooter;
+import frc.robot.subsystems.conveyor.commands.LoadConveyor;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -25,6 +28,8 @@ public class RobotContainer {
   public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
   public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);
   // The robot's subsystems and commands are defined here...
+  Conveyor conveyor = new Conveyor();
+  public JoystickButton y = new JoystickButton(Xbox, XboxController.Button.kY.value);
 
 
   /**
@@ -46,7 +51,8 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    y.whileHeld(new LoadConveyor(conveyor, 0.7));
+    b.whileHeld(new FeedShooter(conveyor, 0.7));
   }
 
 

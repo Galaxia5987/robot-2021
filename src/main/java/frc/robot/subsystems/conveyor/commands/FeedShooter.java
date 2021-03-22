@@ -24,7 +24,7 @@ public class FeedShooter extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Conveyor.isConveyorEmpty();
+        return false;
     }
 
     @Override
