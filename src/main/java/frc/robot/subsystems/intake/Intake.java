@@ -1,5 +1,7 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -12,7 +14,7 @@ import frc.robot.subsystems.UnitModel;
  * this subsystem takes the balls from the field to the funnel.
  */
 public class Intake extends SubsystemBase {
-    private CANSparkMax motor = new CANSparkMax(Ports.Intake.MOTOR, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private TalonFX motor = new TalonFX(Ports.Intake.MOTOR);
     private Solenoid solenoid = new Solenoid(Ports.Intake.SOLENOID);
     private boolean position;
 
@@ -33,7 +35,7 @@ public class Intake extends SubsystemBase {
      * @param speed - the target velocity (m/s)
      */
     public void setVelocity(double speed) {
-        motor.set(speed);
+        motor.set(ControlMode.PercentOutput, speed);
     }
 
     /**
