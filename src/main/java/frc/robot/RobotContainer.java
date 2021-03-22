@@ -62,8 +62,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         a.whenPressed(new ToggleIntake(intake));
         BR.whileHeld(new StartIntake(intake, true));//transfers the balls to the Funnel
-    BL.whileHeld(new StartFunnel(funnel,true));
-  }
+        BL.whileHeld(new StartFunnel(funnel,true));
+    }
 
 
     /**
