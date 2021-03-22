@@ -43,7 +43,7 @@ public class Shooter extends SubsystemBase {
 
     private final LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
     // hood
-    private final CANSparkMax hoodMotor = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: use real port
+    private final CANSparkMax hoodMotor = new CANSparkMax(51, CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: use real port
     private final CANPIDController hoodPID = hoodMotor.getPIDController();
     private State state;
 
@@ -80,18 +80,6 @@ public class Shooter extends SubsystemBase {
         );
 
         return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
-    }
-
-    /**
-     * Internal function to create an input stream reader, in order values from the shooting experiments.
-     *
-     * @return a reader to the CSV.
-     */
-    private InputStreamReader readCSV() {
-        InputStream is = getClass().getResourceAsStream(PATH_TO_CSV);
-        assert is != null : "Can't create input stream";
-
-        return new InputStreamReader(is);
     }
 
     /**
@@ -184,18 +172,30 @@ public class Shooter extends SubsystemBase {
 
     public enum State {
         // TODO: must use real path to csv
-        LOW(0, new DoubleRange(0, 0), new LinearRegression("")),
-        MIDDLE(0, new DoubleRange(0, 0), new LinearRegression("")),
-        HIGH(0, new DoubleRange(0, 0), new LinearRegression(""));
+        LOW(0, new DoubleRange(0, 0), "/Low.csv"),
+        MIDDLE(0, new DoubleRange(0, 0), "/Middle.csv"),
+        HIGH(0, new DoubleRange(0, 0), "/High.csv");
 
         public final DoubleRange shootingRange; // [min, max] meters
         public final LinearRegression velocityEstimator;
         private final int position; //[ticks]
 
-        State(int position, DoubleRange range, LinearRegression velocityEstimator) {
+        State(int position, DoubleRange range, String pathToCsv) {
             this.position = position;
             this.shootingRange = range;
-            this.velocityEstimator = velocityEstimator;
+            this.velocityEstimator = new LinearRegression(readCSV(pathToCsv));
+        }
+
+        /**
+         * Internal function to create an input stream reader, in order values from the shooting experiments.
+         *
+         * @return a reader to the CSV.6
+         */
+        private InputStreamReader readCSV(String path) {
+            InputStream is = getClass().getResourceAsStream(path);
+            assert is != null : "Can't create input stream";
+
+            return new InputStreamReader(is);
         }
 
         //distance - meters

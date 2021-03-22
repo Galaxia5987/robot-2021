@@ -1,10 +1,10 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2021.1.2"
+    id "edu.wpi.first.GradleRIO" version "2021.2.2"
 }
 
 wpi.maven.useDevelopment = true
-wpi.wpilibVersion = '2020.+'
+wpi.wpilibVersion = '2021.+'
 
 apply plugin: "java"
 

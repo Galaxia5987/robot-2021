@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -15,8 +16,8 @@ import frc.robot.subsystems.UnitModel;
 public class Climber extends SubsystemBase {
 
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_METER);
-    private final DoubleSolenoid stopper = new DoubleSolenoid(Ports.Climber.STOPPER_FORWARD_CHANNEL, Ports.Climber.STOPPER_REVERSE_CHANNEL);
-    private final DoubleSolenoid gearboxShifter = new DoubleSolenoid(Ports.Climber.GEARBOX_FORWARD_CHANNEL, Ports.Climber.GEARBOX_REVERSE_CHANNEL);
+    private final Solenoid stopper = new Solenoid(Ports.Climber.STOPPER_REVERSE_CHANNEL);
+    private final Solenoid gearboxShifter = new Solenoid(Ports.Climber.GEARBOX_REVERSE_CHANNEL);
 
     /**
      * Get the climber's elevation relative to the ground.
@@ -51,9 +52,9 @@ public class Climber extends SubsystemBase {
      */
     public void setStopperMode(PistonMode mode) {
         if (mode == PistonMode.OPEN)
-            stopper.set(DoubleSolenoid.Value.kForward);
+            stopper.set(true);
         else
-            stopper.set(DoubleSolenoid.Value.kReverse);
+            stopper.set(false);
     }
 
     /**
@@ -63,9 +64,9 @@ public class Climber extends SubsystemBase {
      */
     public void setGearboxMode(PistonMode mode) {
         if (mode == PistonMode.OPEN)
-            gearboxShifter.set(DoubleSolenoid.Value.kForward);
+            gearboxShifter.set(true);
         else
-            gearboxShifter.set(DoubleSolenoid.Value.kReverse);
+            gearboxShifter.set(false);
 
     }
 
@@ -73,20 +74,20 @@ public class Climber extends SubsystemBase {
      * Toggle the piston mode of the piston responsible for the gearbox.
      */
     public void toggleGear() {
-        if (gearboxShifter.get() == DoubleSolenoid.Value.kReverse)
-            gearboxShifter.set(DoubleSolenoid.Value.kForward);
+        if (gearboxShifter.get())
+            gearboxShifter.set(true);
         else
-            gearboxShifter.set(DoubleSolenoid.Value.kReverse);
+            gearboxShifter.set(false);
     }
 
     /**
      * Toggle the piston mode of the piston responsible for the stopper.
      */
     public void toggleStopper() {
-        if (stopper.get() == DoubleSolenoid.Value.kReverse)
-            stopper.set(DoubleSolenoid.Value.kForward);
+        if (!stopper.get())
+            stopper.set(true);
         else
-            stopper.set(DoubleSolenoid.Value.kReverse);
+            stopper.set(false);
     }
 
     /**
