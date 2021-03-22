@@ -1,9 +1,10 @@
 package frc.robot.subsystems.shooter.commands;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.shooter.Shooter;
 
-public class AdjustHood extends InstantCommand {
+public class AdjustHood extends CommandBase {
 
     private final Shooter shooter;
     private final double distance;
@@ -15,7 +16,8 @@ public class AdjustHood extends InstantCommand {
 
 
     @Override
-    public void initialize() {
-        shooter.changeState(Shooter.State.getOptimalState(distance));
+    public void execute() {
+//        shooter.changeState(Shooter.State.getOptimalState(distance));
+        shooter.hoodMotor.set(-0.2);
     }
 }

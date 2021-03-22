@@ -43,7 +43,7 @@ public class Shooter extends SubsystemBase {
 
     private final LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
     // hood
-    private final CANSparkMax hoodMotor = new CANSparkMax(51, CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: use real port
+    public final CANSparkMax hoodMotor = new CANSparkMax(51, CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: use real port
     private final CANPIDController hoodPID = hoodMotor.getPIDController();
     private State state;
 
