@@ -35,7 +35,7 @@ import frc.robot.subsystems.funnel.commands.StartFunnel;
 public class RobotContainer {
     public Funnel funnel = new Funnel();
     public static final PTO pto = new PTO();
-    private final Shooter shooter = new Shooter();
+//    private final Shooter shooter = new Shooter();
     public XboxController Xbox = new XboxController(1);
     public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
     public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);

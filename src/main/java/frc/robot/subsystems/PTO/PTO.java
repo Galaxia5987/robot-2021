@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -17,7 +18,7 @@ public class PTO extends SubsystemBase {
 
     private final TalonFX master = new TalonFX(Ports.PTO.MASTER);
     private final TalonFX slave = new TalonFX(Ports.PTO.SLAVE);
-    private final DoubleSolenoid piston = new DoubleSolenoid(Ports.PTO.PISTON_FORWARD, Ports.PTO.PISTON_REVERSE);
+    private final Solenoid piston = new Solenoid(Ports.PTO.PISTON_REVERSE);
     private GearboxState state = GearboxState.SHOOTER;
 
     /**
@@ -108,11 +109,11 @@ public class PTO extends SubsystemBase {
      */
     public void changePiston(boolean isClimber) {
         if (isClimber) {
-            piston.set(DoubleSolenoid.Value.kForward);
+            piston.set(true);
             changeState(GearboxState.CLIMBER);
             configureClimber();
         } else {
-            piston.set(DoubleSolenoid.Value.kReverse);
+            piston.set(false);
             changeState(GearboxState.SHOOTER);
             configureShooter();
         }
