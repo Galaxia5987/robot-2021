@@ -32,7 +32,7 @@ import frc.robot.subsystems.funnel.commands.StartFunnel;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  public Funnel funnel = new Funnel();
+    public Funnel funnel = new Funnel();
     public static final PTO pto = new PTO();
     private final Shooter shooter = new Shooter();
     public XboxController Xbox = new XboxController(1);
@@ -42,7 +42,8 @@ public class RobotContainer {
     public Intake intake = new Intake();
     public JoystickButton BL = new JoystickButton(Xbox, XboxController.Button.kBumperLeft.value);
     public JoystickButton BR = new JoystickButton(Xbox, XboxController.Button.kBumperRight.value);
-  public JoystickButton y = new JoystickButton(Xbox, XboxController.Button.kY.value);
+    public JoystickButton y = new JoystickButton(Xbox, XboxController.Button.kY.value);
+    public Conveyor conveyor = new Conveyor();
 
 
     /**
