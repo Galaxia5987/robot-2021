@@ -27,7 +27,6 @@ public class RobotContainer {
   public JoystickButton BR = new JoystickButton(Xbox, XboxController.Button.kBumperRight.value);
   // The robot's subsystems and commands are defined here...
 
-
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -44,7 +43,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     BL.whileHeld(new StartFunnel(funnel,true));
-    BR.whileHeld(new StartFunnel(funnel,false));
   }
 
 
