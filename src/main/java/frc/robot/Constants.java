@@ -66,4 +66,7 @@ public final class Constants {
 
         public static final double ALLOWED_ERROR = 0.03;// [m]
     }
+    public static final class Intake{
+        public static final double VELOCITY = 0.3; // the target velocity of intake's motor(m/s)
+    }
 }

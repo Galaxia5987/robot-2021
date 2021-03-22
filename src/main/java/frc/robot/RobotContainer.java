@@ -9,12 +9,17 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.commands.StartIntake;
+import frc.robot.subsystems.intake.commands.ToggleIntake;
+
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -29,6 +34,9 @@ public class RobotContainer {
     public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
     public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);
     // The robot's subsystems and commands are defined here...
+  public Intake intake = new Intake();
+  public JoystickButton BL = new JoystickButton(Xbox, XboxController.Button.kBumperLeft.value);
+  public JoystickButton BR = new JoystickButton(Xbox,XboxController.Button.kBumperRight.value);
 
 
     /**
@@ -43,13 +51,17 @@ public class RobotContainer {
         }
     }
 
-    /**
-     * Use this method to define your button->command mappings.  Buttons can be created by
-     * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
-     * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
-    private void configureButtonBindings() {
+  /**
+   * Use this method to define your button->command mappings.  Buttons can be created by
+   * instantiating a {@link GenericHID} or one of its subclasses ({@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
+   * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   */
+  private void configureButtonBindings() {
+    a.whenPressed(new ToggleIntake(intake));
+    BR.whileHeld(new StartIntake(intake,true));//transfers the balls to the Funnel
+    BL.whenHeld(new StartIntake(intake,false));//transfers the balls to the field
+  }
 
     }
 

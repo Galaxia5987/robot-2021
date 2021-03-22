@@ -25,4 +25,10 @@ public class Ports {
         public static final boolean AUX_INVERTED = false;
         public static final boolean IS_SENSOR_INVERTED = false;
     }
+    public static final class Intake {
+
+        public static final int MOTOR = 17;
+        public static final boolean IS_MOTOR_INVERTED = true;
+        public static final int SOLENOID = 2;
+    }
 }
