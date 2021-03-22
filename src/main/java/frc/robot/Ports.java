@@ -31,4 +31,10 @@ public class Ports {
         public static final boolean IS_MOTOR_INVERTED = true;
         public static final int SOLENOID = 2;
     }
+
+    public static final class Funnel {
+        public static final int MOTOR = 11;
+        public static final boolean IS_INVERTED = false;
+        public static final int blop = 6;
+    }
 }

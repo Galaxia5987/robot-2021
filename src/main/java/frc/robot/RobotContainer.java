@@ -18,6 +18,8 @@ import frc.robot.subsystems.intake.commands.ToggleIntake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
+import frc.robot.subsystems.funnel.Funnel;
+import frc.robot.subsystems.funnel.commands.StartFunnel;
 
 
 /**
@@ -27,6 +29,7 @@ import webapp.Webserver;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  public Funnel funnel = new Funnel();
     public static final PTO pto = new PTO();
     private final Shooter shooter = new Shooter();
     public XboxController Xbox = new XboxController(1);
@@ -59,8 +62,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         a.whenPressed(new ToggleIntake(intake));
         BR.whileHeld(new StartIntake(intake, true));//transfers the balls to the Funnel
-        BL.whenHeld(new StartIntake(intake, false));//transfers the balls to the field
-    }
+    BL.whileHeld(new StartFunnel(funnel,true));
+  }
 
 
     /**

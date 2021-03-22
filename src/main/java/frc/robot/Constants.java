@@ -69,4 +69,8 @@ public final class Constants {
     public static final class Intake{
         public static final double VELOCITY = 0.3; // the target velocity of intake's motor(m/s)
     }
+    public static final class Funnel {
+        public static final double POWER = 0.6; //the default output of Funnel's motor (%)
+    }
+
 }
