@@ -37,4 +37,10 @@ public class Ports {
         public static final boolean IS_INVERTED = false;
         public static final int blop = 6;
     }
+
+    public static final class Conveyor {
+        public static final int MOTOR = 41;
+        public static final boolean IS_MOTOR_INVERTED = true;
+
+    }
 }

@@ -16,6 +16,9 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.StartIntake;
 import frc.robot.subsystems.intake.commands.ToggleIntake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.FeedShooter;
+import frc.robot.subsystems.conveyor.commands.LoadConveyor;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 import frc.robot.subsystems.funnel.Funnel;
@@ -39,6 +42,7 @@ public class RobotContainer {
     public Intake intake = new Intake();
     public JoystickButton BL = new JoystickButton(Xbox, XboxController.Button.kBumperLeft.value);
     public JoystickButton BR = new JoystickButton(Xbox, XboxController.Button.kBumperRight.value);
+  public JoystickButton y = new JoystickButton(Xbox, XboxController.Button.kY.value);
 
 
     /**
@@ -63,8 +67,10 @@ public class RobotContainer {
         a.whenPressed(new ToggleIntake(intake));
         BR.whileHeld(new StartIntake(intake, true));//transfers the balls to the Funnel
         BL.whileHeld(new StartFunnel(funnel,true));
-    }
 
+    b.whileHeld(new FeedShooter(conveyor, 0.7));
+    y.whileHeld(new LoadConveyor(conveyor, 0.7));
+  }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
