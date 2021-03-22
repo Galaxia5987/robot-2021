@@ -3,9 +3,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.*;
+import frc.robot.utils.ToggleLed;
 import frc.robot.valuetuner.ValueTuner;
 import org.techfire225.webapp.Webserver;
 
@@ -16,7 +16,7 @@ import org.techfire225.webapp.Webserver;
 public class RobotContainer {
     SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-    public SwerveDrive swerveDrive = new SwerveDrive(true, false);
+    public SwerveDrive swerveDrive = new SwerveDrive(false, false);
 
     public RobotContainer(){
         configureButtonBindings();
@@ -31,7 +31,10 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Grab the hatch when the 'A' button is pressed.
         swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
-        OI.c.whenPressed(new InstantCommand(swerveDrive::resetAllEncoders, swerveDrive));
+        OI.a.whenPressed(new ToggleLed());
+//        OI.c.whenPressed(new InstantCommand(swerveDrive::resetAllEncoders, swerveDrive));
+//        swerveDrive.setDefaultCommand(new DriveForward(swerveDrive));
+
     }
 
 

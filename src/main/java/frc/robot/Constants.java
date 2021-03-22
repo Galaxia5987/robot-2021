@@ -39,21 +39,27 @@ public class Constants {
         public static final WebConstant KF = new WebConstant("KF", 0);
         public static final WebConstant[] ANGLE_PIDF = new WebConstant[]{KP, KI, KD, KF};
 
-        public static final WebConstant KP_DRIVE = new WebConstant("KP_Drive", 0.05);
+        public static final WebConstant KP_DRIVE = new WebConstant("KP_Drive", 0.15);
         public static final WebConstant KI_DRIVE = new WebConstant("KI_Drive", 0);
         public static final WebConstant KD_DRIVE = new WebConstant("KD_Drive", 2);
-        public static final WebConstant KF_DRIVE = new WebConstant("KF_Drive", 0);
+        public static final WebConstant KF_DRIVE = new WebConstant("KF_Drive", 0.05);
         public static final WebConstant[] DRIVE_PIDF = new WebConstant[]{KP_DRIVE, KI_DRIVE, KD_DRIVE, KF_DRIVE};
 
         // slow man
         // the module that is slower than the rest
-        public static final WebConstant KP_DRIVE_SLOW = new WebConstant("KP_Drive_Slow", 0.2);
+        public static final WebConstant KP_DRIVE_SLOW = new WebConstant("KP_Drive_Slow", 0.046);
         public static final WebConstant KI_DRIVE_SLOW = new WebConstant("KI_Drive_Slow", 0);
         public static final WebConstant KD_DRIVE_SLOW = new WebConstant("KD_Drive_Slow", 2);
-        public static final WebConstant KF_DRIVE_SLOW = new WebConstant("KF_Drive_Slow", 0.05);
+        public static final WebConstant KF_DRIVE_SLOW = new WebConstant("KF_Drive_Slow", 0);
         public static final WebConstant[] SLOW_DRIVE_PIDF = new WebConstant[]{KP_DRIVE_SLOW, KI_DRIVE_SLOW, KD_DRIVE_SLOW, KF_DRIVE_SLOW};
 
-        public static final int[] ZERO_POSITION = {-339, 686, 221, -903};
+
+        public static final WebConstant KP_BROKEN = new WebConstant("KP_BROKEN", 0.065);
+        public static final WebConstant KI_BROKEN = new WebConstant("KI_BROKEN", 0);
+        public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
+        public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
+
+        public static final int[] ZERO_POSITION = {-903, 339, 102, 124};
 
         // sick man
         // the module that has more friction in the rotating mechanism

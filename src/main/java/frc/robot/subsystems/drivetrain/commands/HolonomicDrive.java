@@ -29,8 +29,8 @@ public class HolonomicDrive extends CommandBase {
         GenericHID.Hand left = GenericHID.Hand.kLeft;
 
         double forward = Utils.joystickDeadband(-OI.xbox.getY(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        double strafe = Utils.joystickDeadband(-OI.xbox.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        double rotation = Utils.joystickDeadband(-OI.xbox.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double strafe = Utils.joystickDeadband(OI.xbox.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double rotation = Utils.joystickDeadband(OI.xbox.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
 
         // turns the joystick values into the heading of the robot
         forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;

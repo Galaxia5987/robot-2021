@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.OI;
@@ -35,6 +36,11 @@ public class Rotate extends CommandBase {
         swerveDrive.getModule(1).setAngle(target1.get());
         swerveDrive.getModule(2).setAngle(target2.get());
         swerveDrive.getModule(3).setAngle(target3.get());
+
+        SmartDashboard.putNumber("module FR", Math.toDegrees(swerveDrive.getModule(0).getAngle()));
+        SmartDashboard.putNumber("module FL", Math.toDegrees(swerveDrive.getModule(1).getAngle()));
+        SmartDashboard.putNumber("module RR", Math.toDegrees(swerveDrive.getModule(2).getAngle()));
+        SmartDashboard.putNumber("module RL", Math.toDegrees(swerveDrive.getModule(3).getAngle()));
 
         FireLog.log("angle ", swerveDrive.getModule(2).getAngle());
         FireLog.log("swerve velocity", swerveDrive.getVelocity()[0]);
