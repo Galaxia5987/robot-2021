@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 import edu.wpi.first.wpilibj.util.Units;
+import frc.robot.valuetuner.WebConstant;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -42,14 +43,14 @@ public final class Constants {
 
     //TODO: change to real values
     public static final class Shooter {
-        public static final int TICKS_PER_ROTATION = 4096;
+        public static final int TICKS_PER_ROTATION = 2048;
 
         // NOTE: these are the only constants you need to change.
         // TODO: Calibrate
-        public static final double VELOCITY_TOLERANCE = 3; // [RPS]
-        public static final double MODEL_TOLERANCE = 3;
+        public static final double VELOCITY_TOLERANCE = 1; // [RPS]
+        public static final double MODEL_TOLERANCE = 1;
         public static final double ENCODER_TOLERANCE = 0.1; // [ticks]
-        public static final double J = 1; //moment of inertia [kg * m^2]
+        public static final WebConstant J = new WebConstant("J", 0.00045); //moment of inertia [kg * m^2]
         public static final double ARBITRARY_FEED_FORWARD = 0; // [%] https://docs.ctre-phoenix.com/en/latest/ch16_ClosedLoop.html#do-i-need-to-use-arbitrary-feed-forward
 
 
@@ -60,7 +61,7 @@ public final class Constants {
         public static final double FREE_CURRENT = 1.5; // [amps]
         public static final double FREE_SPEED = Units.rotationsPerMinuteToRadiansPerSecond(6380); // [rad/sec]
 
-        public static final double GEAR_RATIO = 1; //TODO: Choose real value.
+        public static final double GEAR_RATIO = 0.987654321; //TODO: Choose real value.
         public static final double kT = STALL_TORQUE / STALL_CURRENT;// took from FRC examples.
         public static final double OMEGA = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
         public static final double kV = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA * FREE_CURRENT);// took from FRC examples.
@@ -68,6 +69,8 @@ public final class Constants {
         public static final String PATH_TO_CSV = "/Shooting.csv";
 
         public static final double ALLOWED_ERROR = 0.03;// [m]
+        public static final WebConstant UP_MOTOR_J = new WebConstant("UP_J", 0.000001);
+        public static final double ARBITRARY_FEED_FORWARD_UP = 0;
     }
     public static final class Intake{
         public static final double VELOCITY = 0.5; // the target velocity of intake's motor(m/s)
@@ -96,5 +99,13 @@ public final class Constants {
         public static final double[] BLUE_RGB = {0.132, 0.427, 0.442};
         public static final double CONVEYOR_MOTOR_RETURN_POWER = 0; // [%]
         public static final double CONVEYOR_MOTOR_POWER = 0.7;
+    }
+
+    public static final class Vision {
+        public static final double VISION_MODULE_HOOD_DISTANCE = 0;
+        public static final double VISION_ROTATION_RADIUS = 0;
+        public static final double ROBOT_TO_TURRET_CENTER = 0;
+        public static final double HEIGHT = 0;
+        public static final double TARGET_HEIGHT = 0;
     }
 }
