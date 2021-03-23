@@ -1,7 +1,6 @@
 package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -9,6 +8,7 @@ import frc.robot.Ports;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.UnitModel;
+import webapp.FireLog;
 
 /**
  * Climber's configurations and commands.
@@ -16,8 +16,7 @@ import frc.robot.subsystems.UnitModel;
 public class Climber extends SubsystemBase {
 
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_METER);
-    private final Solenoid stopper = new Solenoid(Ports.Climber.STOPPER_REVERSE_CHANNEL);
-    private final Solenoid gearboxShifter = new Solenoid(Ports.Climber.GEARBOX_REVERSE_CHANNEL);
+    private final Solenoid stopper = new Solenoid(Ports.Climber.STOPPER_FORWARD_CHANNEL);
 
     /**
      * Get the climber's elevation relative to the ground.
@@ -45,6 +44,10 @@ public class Climber extends SubsystemBase {
         RobotContainer.pto.getMaster().set(ControlMode.MotionMagic, unitModel.toTicks(height));
     }
 
+    public double getVelocity() {
+        return unitModel.toVelocity(RobotContainer.pto.getMaster().getSelectedSensorVelocity());
+    }
+
     /**
      * Set the stopper shifter mode to a given mode.
      *
@@ -58,36 +61,26 @@ public class Climber extends SubsystemBase {
     }
 
     /**
-     * Set the gearbox shifter mode to a given mode.
-     *
-     * @param mode the wanted gearbox shifter mode.
-     */
-    public void setGearboxMode(PistonMode mode) {
-        if (mode == PistonMode.OPEN)
-            gearboxShifter.set(true);
-        else
-            gearboxShifter.set(false);
-
-    }
-
-    /**
-     * Toggle the piston mode of the piston responsible for the gearbox.
-     */
-    public void toggleGear() {
-        if (gearboxShifter.get())
-            gearboxShifter.set(true);
-        else
-            gearboxShifter.set(false);
-    }
-
-    /**
      * Toggle the piston mode of the piston responsible for the stopper.
      */
     public void toggleStopper() {
-        if (!stopper.get())
+        if (stopper.get() == false)
             stopper.set(true);
         else
             stopper.set(false);
+    }
+
+    @Override
+    public void periodic() {
+        if (RobotContainer.pto.getState() == PTO.GearboxState.SHOOTER)
+            return;
+        RobotContainer.pto.getMaster().config_kP(0, Constants.Climber.KP.get(), Constants.TALON_TIMEOUT);
+        RobotContainer.pto.getMaster().config_kI(0, Constants.Climber.KI.get(), Constants.TALON_TIMEOUT);
+        RobotContainer.pto.getMaster().config_kD(0, Constants.Climber.KD.get(), Constants.TALON_TIMEOUT);
+        RobotContainer.pto.getMaster().config_kF(0, Constants.Climber.KF.get(), Constants.TALON_TIMEOUT);
+        FireLog.log("Height", getHeight());
+        FireLog.log("Velocity", getVelocity());
+        FireLog.log("Target Velocity", 0);
     }
 
     /**
