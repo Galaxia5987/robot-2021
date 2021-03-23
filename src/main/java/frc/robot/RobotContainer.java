@@ -34,7 +34,7 @@ import webapp.Webserver;
  */
 public class RobotContainer {
     public static final PTO pto = new PTO();
-    private final WebConstant velocity = new WebConstant("velocity", 0);
+    public static final WebConstant velocity = new WebConstant("velocity", 0);
     public Funnel funnel = new Funnel();
     public Shooter shooter = new Shooter();
     public XboxController Xbox = new XboxController(1);
