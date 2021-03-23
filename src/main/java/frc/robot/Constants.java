@@ -30,6 +30,11 @@ public class Constants {
 
         public static final double JOYSTICK_THRESHOLD = 0.1;
 
+        public static final double TURN_TOLERANCE = 2; // degrees
+
+        public static final WebConstant KP_TURN = new WebConstant("KP_TURN", 0);
+        public static final WebConstant KI_TURN = new WebConstant("KP_TURN", 0);
+        public static final WebConstant KD_TURN = new WebConstant("KP_TURN", 0);
     }
 
     public static class SwerveModule {
