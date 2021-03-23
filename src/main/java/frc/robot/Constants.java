@@ -10,6 +10,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.valuetuner.WebConstant;
 
@@ -107,5 +108,7 @@ public final class Constants {
         public static final double ROBOT_TO_TURRET_CENTER = 0;
         public static final double HEIGHT = 0;
         public static final double TARGET_HEIGHT = 0;
+        public static final Pose2d RED_INNER_POWER_PORT_LOCATION = new Pose2d();
+        public static final Pose2d RED_OUTER_POWER_PORT_LOCATION = new Pose2d();
     }
 }
