@@ -66,8 +66,8 @@ public class Shooter extends SubsystemBase {
      */
     private LinearSystemLoop<N1, N1, N1> constructLinearSystem() {
         // https://file.tavsys.net/control/controls-engineering-in-frc.pdf Page 76
-        Vector<N1> A = VecBuilder.fill(-Math.pow(GEAR_RATIO, 2) * kT / (kV * OMEGA * J));
-        Vector<N1> B = VecBuilder.fill(GEAR_RATIO * kT / (OMEGA * J));
+        Vector<N1> A = VecBuilder.fill(-Math.pow(GEAR_RATIO, 2) * kT / (kV * OMEGA * J.get()));
+        Vector<N1> B = VecBuilder.fill(GEAR_RATIO * kT / (OMEGA * J.get()));
         LinearSystem<N1, N1, N1> stateSpace = new LinearSystem<>(A, B, Matrix.eye(Nat.N1()), new Matrix<>(Nat.N1(), Nat.N1()));
         KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace,
                 VecBuilder.fill(MODEL_TOLERANCE),
