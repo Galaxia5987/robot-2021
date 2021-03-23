@@ -23,20 +23,21 @@ public class Robot extends TimedRobot {
     public static boolean debug = true;
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
-  private Compressor compressor = new Compressor(0);
+    private Compressor compressor = new Compressor(0);
+    public static final AHRS navx = new AHRS(SPI.Port.kMXP);
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-    compressor.start();
+    /**
+     * This function is run when the robot is first started up and should be used for any
+     * initialization code.
+     */
+    @Override
+    public void robotInit() {
+        // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+        // autonomous chooser on the dashboard.
+        m_robotContainer = new RobotContainer();
+        compressor.start();
 
-  }
+    }
 
     /**
      * This function is called every robot packet, no matter the mode. Use this for items like
