@@ -9,7 +9,6 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.valuetuner.WebConstant;
@@ -29,12 +28,12 @@ public final class Constants {
     public static final int TALON_TIMEOUT = 10; //Waiting period for configurations [ms].
 
     public static class Climber {
-        public static final int TICKS_PER_METER = 0;
+        public static final double TICKS_PER_METER = 2048 * 0.03 * Math.PI * 100;
 
-        public static final double KP = 0;
-        public static final double KI = 0;
-        public static final double KD = 0;
-        public static final double KF = 0;
+        public static final WebConstant KP = new WebConstant("kP", 0);
+        public static final WebConstant KI = new WebConstant("kI", 0);
+        public static final WebConstant KD = new WebConstant("kD", 0);
+        public static final WebConstant KF = new WebConstant("kF", 0);
 
         public static final int CRUISE_VELOCITY = 0; //sensor units per 100ms.
         public static final int ACCELERATION = 0; //sensor units per 100ms^2.
@@ -73,19 +72,21 @@ public final class Constants {
         public static final WebConstant UP_MOTOR_J = new WebConstant("UP_J", 0.000001);
         public static final double ARBITRARY_FEED_FORWARD_UP = 0;
     }
-    public static final class Intake{
+
+    public static final class Intake {
         public static final double VELOCITY = 0.5; // the target velocity of intake's motor(m/s)
     }
+
     public static final class Funnel {
-        public static final double POWER =0.4 ; //the default output of Funnel's motor (%)
+        public static final double POWER = 0.4; //the default output of Funnel's motor (%)
     }
 
     // TODO: Change the values
     public static final class Conveyor {
         public static final double FORWARD_PEAK = 1; // [%]
         public static final double REVERSE_PEAK = 1; // [%]
-        public static final SupplyCurrentLimitConfiguration SUPPLY_CURRENT_LIMIT = new SupplyCurrentLimitConfiguration(false, 40,2,0); //prevent breakers from tripping.
-        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(false, 40,0,0); // control the acceleration
+        public static final SupplyCurrentLimitConfiguration SUPPLY_CURRENT_LIMIT = new SupplyCurrentLimitConfiguration(false, 40, 2, 0); //prevent breakers from tripping.
+        public static final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT = new StatorCurrentLimitConfiguration(false, 40, 0, 0); // control the acceleration
 
         public static final int INITIAL_BALLS_AMOUNT = 3;
         public static final int MAX_BALLS_AMOUNT = 5;

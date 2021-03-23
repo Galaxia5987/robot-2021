@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -35,10 +34,10 @@ public class PTO extends SubsystemBase {
         master.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY, Constants.TALON_TIMEOUT);
         master.configMotionAcceleration(Constants.Climber.ACCELERATION, Constants.TALON_TIMEOUT);
 
-        master.config_kP(0, Constants.Climber.KP, Constants.TALON_TIMEOUT);
-        master.config_kI(0, Constants.Climber.KI, Constants.TALON_TIMEOUT);
-        master.config_kD(0, Constants.Climber.KD, Constants.TALON_TIMEOUT);
-        master.config_kF(0, Constants.Climber.KF, Constants.TALON_TIMEOUT);
+        master.config_kP(0, Constants.Climber.KP.get(), Constants.TALON_TIMEOUT);
+        master.config_kI(0, Constants.Climber.KI.get(), Constants.TALON_TIMEOUT);
+        master.config_kD(0, Constants.Climber.KD.get(), Constants.TALON_TIMEOUT);
+        master.config_kF(0, Constants.Climber.KF.get(), Constants.TALON_TIMEOUT);
 
         master.setSelectedSensorPosition(0);
     }
