@@ -31,14 +31,15 @@ public class Shoot extends CommandBase {
     public void initialize() {
         shootingTimer.start();
         shooter.setVelocity(velocity.get());
+        shooter.setVelocityUp(velocity.get());
     }
 
     @Override
     public void execute() {
         final double currentTime = shootingTimer.get();
         shooter.setVelocity(velocity.get(), currentTime - lastTime);
+        shooter.setVelocityUp(velocity.get(), currentTime - lastTime);
         lastTime = currentTime;
-
     }
 
     @Override
