@@ -55,9 +55,9 @@ public class Climber extends SubsystemBase {
      */
     public void setStopperMode(PistonMode mode) {
         if (mode == PistonMode.OPEN)
-            stopper.set(true);
-        else
             stopper.set(false);
+        else
+            stopper.set(true);
     }
 
     /**
@@ -81,6 +81,10 @@ public class Climber extends SubsystemBase {
         FireLog.log("Height", getHeight());
         FireLog.log("Velocity", getVelocity());
         FireLog.log("Target Velocity", 0);
+    }
+
+    public void setPower(double v) {
+        RobotContainer.pto.getMaster().set(ControlMode.PercentOutput, v);
     }
 
     /**
