@@ -30,10 +30,12 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         // Grab the hatch when the 'A' button is pressed.
-        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
-        OI.a.whenPressed(new ToggleLed());
+//        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
+//        OI.a.whenPressed(new ToggleLed());
 //        OI.c.whenPressed(new InstantCommand(swerveDrive::resetAllEncoders, swerveDrive));
 //        swerveDrive.setDefaultCommand(new DriveForward(swerveDrive));
+//        OI.a.whenPressed(new TurnToTarget(swerveDrive, 0));
+        OI.a.whenPressed(new ToggleLed());
 
     }
 
