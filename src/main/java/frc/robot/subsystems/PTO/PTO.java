@@ -20,6 +20,9 @@ public class PTO extends SubsystemBase {
     private final Solenoid piston = new Solenoid(Ports.PTO.PISTON_REVERSE);
     private GearboxState state = GearboxState.SHOOTER;
 
+    public PTO() {
+        configureShooter();
+    }
     /**
      * This Configure the motors with the configuration required for the climber.
      */

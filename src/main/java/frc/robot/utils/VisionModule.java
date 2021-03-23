@@ -1,6 +1,7 @@
 package frc.robot.utils;
 
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.LinearFilter;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -15,7 +16,7 @@ import org.photonvision.PhotonUtils;
 import javax.annotation.Nullable;
 
 public class VisionModule extends SubsystemBase {
-    private static final PhotonCamera camera = new PhotonCamera("photonvision");
+    public static final PhotonCamera camera = new PhotonCamera(NetworkTableInstance.getDefault().getTable("photonvision"));
 
     private static LinearFilter filter = LinearFilter.movingAverage(10);
     private static double filteredDistance = -1;

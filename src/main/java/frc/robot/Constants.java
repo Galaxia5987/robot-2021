@@ -69,7 +69,7 @@ public final class Constants {
         public static final String PATH_TO_CSV = "/Shooting.csv";
 
         public static final double ALLOWED_ERROR = 0.03;// [m]
-        public static final WebConstant UP_MOTOR_J = new WebConstant("UP_J", 0.000001);
+        public static final WebConstant UP_MOTOR_J = new WebConstant("UP_J", 0.00055);
         public static final double ARBITRARY_FEED_FORWARD_UP = 0;
     }
 

@@ -12,8 +12,8 @@ public class Ports {
         public static final int STOPPER_FORWARD_CHANNEL = 3;
 
         public static final boolean IS_SENSOR_PHASE_INVERTED = false;
-        public static final boolean IS_MASTER_INVERTED = false;
-        public static final boolean IS_SLAVE_INVERTED = false;
+        public static final boolean IS_MASTER_INVERTED = true;
+        public static final boolean IS_SLAVE_INVERTED = true;
     }
 
     public static final class Shooter {
@@ -25,9 +25,9 @@ public class Ports {
     }
     public static final class Intake {
 
-        public static final int MOTOR = 17;
+        public static final int MOTOR = 18;
         public static final boolean IS_MOTOR_INVERTED = true;
-        public static final int SOLENOID = 2;
+        public static final int SOLENOID = 5;
     }
 
     public static final class Funnel {
