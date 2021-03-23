@@ -106,9 +106,9 @@ public final class Constants {
     public static final class Vision {
         public static final double VISION_MODULE_HOOD_DISTANCE = 0;
         public static final double VISION_ROTATION_RADIUS = 0;
-        public static final double ROBOT_TO_TURRET_CENTER = 0;
-        public static final double HEIGHT = 0;
-        public static final double TARGET_HEIGHT = 0;
+        public static final double VISION_TO_CENTER = 0;
+        public static final double HEIGHT = 0.66;
+        public static final double TARGET_HEIGHT = 2.49;
         public static final Pose2d RED_INNER_POWER_PORT_LOCATION = new Pose2d();
         public static final Pose2d RED_OUTER_POWER_PORT_LOCATION = new Pose2d();
     }

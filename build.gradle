@@ -91,9 +91,8 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-//"groupId": "org.photonvision.lib",
-//      "artifactId": "PhotonLib-java",
-//      "version": "2021.1.2"
+    implementation "com.revrobotics.frc:SparkMax-java:1.5.2"
+
     implementation group: "org.photonvision.lib", name: "PhotonLib-java", version: "2021.1.2"
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging

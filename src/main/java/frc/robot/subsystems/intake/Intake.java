@@ -19,7 +19,7 @@ public class Intake extends SubsystemBase {
     private boolean position;
 
     public Intake() {
-        motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
+//        motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
         position = false;
     }
 

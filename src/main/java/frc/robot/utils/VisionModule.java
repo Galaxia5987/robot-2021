@@ -4,7 +4,7 @@ package frc.robot.utils;
 import edu.wpi.first.wpilibj.LinearFilter;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Transform2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -40,46 +40,28 @@ public class VisionModule extends SubsystemBase {
 
     @Nullable
     public static Pose2d getPose(double cameraPitch) {
+        return new Pose2d();
+        /*
         return PhotonUtils.estimateFieldToRobot(Constants.Vision.HEIGHT, Constants.Vision.TARGET_HEIGHT,
-                cameraPitch, camera.getLatestResult().getBestTarget().getPitch(),
-                new Rotation2d(), new Rotation2d(), new Pose2d(), new Transform2d());
+                cameraPitch, Math.toRadians(camera.getLatestResult().getBestTarget().getPitch()), // maybe not radians
+                new Rotation2d(), new Rotation2d(-Robot.navx.getAngle()), new Pose2d(), new Transform2d());
+*/
     }
 
     /**
      * @return The distance the camera sees, in meters.
      */
     public static double getTargetRawDistance(double cameraPitch) {
-        Pose2d pose = getPose(cameraPitch);
-        if (pose == null) return -1;
-        return Math.sqrt(Math.pow(pose.getTranslation().getX(), 2) + Math.pow(pose.getTranslation().getY(), 2));
-    }
-
-    public static double getHoodDistance() {
-        if (filteredDistance == -1) return -1;
-        return filteredDistance + Constants.Vision.VISION_MODULE_HOOD_DISTANCE;
+        return PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.HEIGHT + 0,
+                Constants.Vision.TARGET_HEIGHT + 0, cameraPitch + 0,
+                Math.toRadians(camera.getLatestResult().getBestTarget().getPitch()) + 0);
     }
 
     public static double getRobotDistance() {
         if (filteredDistance == -1) return -1;
         double a = Constants.Vision.VISION_ROTATION_RADIUS + filteredDistance;
-        double b = Constants.Vision.ROBOT_TO_TURRET_CENTER;
+        double b = Constants.Vision.VISION_TO_CENTER;
         return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2) - 2 * a * b * Math.cos(Math.toRadians(-Robot.navx.getAngle()))); //Cosine law
-    }
-
-    @Override
-    public void periodic() {
-//        double distance = getTargetRawDistance(RobotContainer.);
-//        if(distance == -1) {
-//            filteredDistance = null;
-//        }
-//        else {
-//            if (distance >= 0.1) {
-//                filteredDistance = calculateMovingAverage(distance);
-//                SmartDashboard.putNumber("FilteredDistance", filteredDistance);
-//            }
-//            SmartDashboard.putNumber("VisionDistance", getTargetRawDistance());
-//        }
-//        CustomDashboard.setHasVision(targetSeen());
     }
 
     @Nullable
@@ -98,5 +80,21 @@ public class VisionModule extends SubsystemBase {
 
     private static double calculateMovingAverage(double distance) {
         return filter.calculate(distance);
+    }
+
+    @Override
+    public void periodic() {
+        double distance = getTargetRawDistance(Math.toRadians(56));
+        if(distance == -1) {
+            filteredDistance = -1;
+        }
+        else {
+            if (distance >= 0.1) {
+                filteredDistance = calculateMovingAverage(distance);
+                SmartDashboard.putNumber("FilteredDistance", filteredDistance);
+            }
+            SmartDashboard.putNumber("VisionDistance", getTargetRawDistance(Math.toRadians(56)));
+        }
+//        CustomDashboard.setHasVision(targetSeen());
     }
 }

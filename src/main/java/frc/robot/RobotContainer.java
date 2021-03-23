@@ -18,6 +18,7 @@ import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.AdjustHood;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.VisionModule;
 import frc.robot.valuetuner.ValueTuner;
@@ -78,7 +79,7 @@ public class RobotContainer {
         a.whileHeld(new PickupBalls(intake, funnel, conveyor));
         b.whenPressed(new InstantCommand(() -> VisionModule.setLEDs(LEDMode.kOn)));
         x.whenPressed(new InstantCommand(() -> VisionModule.setLEDs(LEDMode.kBlink)));
-        y.whileHeld(new Shoot(shooter, velocity::get));
+        y.whileHeld(() -> shooter.hoodMotor.set(0.1));
 
     }
 

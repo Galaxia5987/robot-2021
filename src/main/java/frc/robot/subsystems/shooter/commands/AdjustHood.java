@@ -15,10 +15,16 @@ public class AdjustHood extends CommandBase {
     public AdjustHood(Shooter shooter, Shooter.State state) {
         this.shooter = shooter;
         this.state = state;
+        addRequirements(shooter);
     }
 
     @Override
     public void execute() {
         shooter.changeState(state);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 }
