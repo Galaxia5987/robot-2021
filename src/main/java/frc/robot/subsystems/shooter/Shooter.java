@@ -2,10 +2,12 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
 import edu.wpi.first.wpilibj.system.LinearSystem;
 import edu.wpi.first.wpilibj.system.LinearSystemLoop;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.Matrix;
 import edu.wpi.first.wpiutil.math.Nat;
@@ -16,6 +18,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.UnitModel;
+import webapp.FireLog;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,6 +40,11 @@ public class Shooter extends SubsystemBase {
 
     private final LinearRegression velocityEstimator;
     private final LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
+    private double lastOmega = 0;
+    private final Timer shootingTimer = new Timer();
+    private double lastTime = 0;
+
+
 
     public Shooter() {
         this.stateSpacePredictor = constructLinearSystem();
@@ -51,7 +59,7 @@ public class Shooter extends SubsystemBase {
     private LinearSystemLoop<N1, N1, N1> constructLinearSystem() {
         // https://file.tavsys.net/control/controls-engineering-in-frc.pdf Page 76
         Vector<N1> A = VecBuilder.fill(-Math.pow(GEAR_RATIO, 2) * kT / (kV * OMEGA * J));
-        Vector<N1> B = VecBuilder.fill(GEAR_RATIO * kT / (OMEGA * J));
+        Vector<N1> B = VecBuilder.fill((GEAR_RATIO * kT) / (OMEGA * J));
         LinearSystem<N1, N1, N1> stateSpace = new LinearSystem<>(A, B, Matrix.eye(Nat.N1()), new Matrix<>(Nat.N1(), Nat.N1()));
         KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace,
                 VecBuilder.fill(MODEL_TOLERANCE),
@@ -157,5 +165,17 @@ public class Shooter extends SubsystemBase {
      */
     public void stop() {
         setPower(0);
+    }
+
+    @Override
+    public void periodic() {
+        final double currentTime = shootingTimer.get();
+        double omega = getVelocity() * Units.inchesToMeters(4);
+        FireLog.log("velocity", getVelocity());
+        FireLog.log("radial-velocity", omega);
+        FireLog.log("accl-omega", (omega - lastOmega) / (currentTime - lastTime));
+        FireLog.log("voltage", 12);
+
+        lastOmega = omega;
     }
 }

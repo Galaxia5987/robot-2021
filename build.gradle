@@ -91,10 +91,16 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-
+//"groupId": "org.photonvision.lib",
+//      "artifactId": "PhotonLib-java",
+//      "version": "2021.1.2"
+    implementation group: "org.photonvision.lib", name: "PhotonLib-java", version: "2021.1.2"
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
+//    implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '11.0.1'
+
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

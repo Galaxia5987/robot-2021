@@ -36,7 +36,7 @@ public class StartFunnel extends CommandBase {
         if (timmy.get() - last > 0.5) {
             funnel.toggle();
             last = timmy.get();
-            funnel.setPower(0);
+//            funnel.setPower(0);
         } else {
             if (isMovingUp)
                 funnel.setPower(Constants.Funnel.POWER);// in

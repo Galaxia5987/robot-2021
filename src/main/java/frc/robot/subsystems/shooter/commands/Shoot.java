@@ -1,9 +1,12 @@
 package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.Shooter;
+import org.ejml.ops.ConvertDMatrixStruct;
+import webapp.FireLog;
 
 import java.util.function.Supplier;
 
@@ -35,6 +38,7 @@ public class Shoot extends CommandBase {
         final double currentTime = shootingTimer.get();
         shooter.setVelocity(velocity.get(), currentTime - lastTime);
         lastTime = currentTime;
+
     }
 
     @Override

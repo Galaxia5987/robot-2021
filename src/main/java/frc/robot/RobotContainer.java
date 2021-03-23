@@ -10,20 +10,20 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commandgroups.PickupBalls;
 import frc.robot.subsystems.PTO.PTO;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.commands.StartIntake;
-import frc.robot.subsystems.intake.commands.ToggleIntake;
-import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.FeedShooter;
-import frc.robot.subsystems.conveyor.commands.LoadConveyor;
-import frc.robot.valuetuner.ValueTuner;
-import webapp.Webserver;
 import frc.robot.subsystems.funnel.Funnel;
-import frc.robot.subsystems.funnel.commands.StartFunnel;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
+import frc.robot.utils.VisionModule;
+import frc.robot.valuetuner.ValueTuner;
+import frc.robot.valuetuner.WebConstant;
+import org.photonvision.LEDMode;
+import webapp.Webserver;
 
 
 /**
@@ -33,12 +33,14 @@ import frc.robot.subsystems.funnel.commands.StartFunnel;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    public Funnel funnel = new Funnel();
     public static final PTO pto = new PTO();
-//    private final Shooter shooter = new Shooter();
+    private final WebConstant velocity = new WebConstant("velocity", 0);
+    public Funnel funnel = new Funnel();
+    public Shooter shooter = new Shooter();
     public XboxController Xbox = new XboxController(1);
     public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
     public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);
+    public JoystickButton x = new JoystickButton(Xbox, XboxController.Button.kX.value);
     // The robot's subsystems and commands are defined here...
     public Intake intake = new Intake();
     public JoystickButton BL = new JoystickButton(Xbox, XboxController.Button.kBumperLeft.value);
@@ -56,6 +58,7 @@ public class RobotContainer {
         if (Robot.debug) {
             startValueTuner();
             startFireLog();
+//            shooter.periodic();
         }
     }
 
@@ -73,7 +76,11 @@ public class RobotContainer {
 //        b.whileHeld(new FeedShooter(conveyor, 0.7));
 //        y.whileHeld(new LoadConveyor(conveyor, 0.7));
         a.whileHeld(new PickupBalls(intake, funnel, conveyor));
-  }
+        b.whenPressed(new InstantCommand(() -> VisionModule.setLEDs(LEDMode.kOn)));
+        x.whenPressed(new InstantCommand(() -> VisionModule.setLEDs(LEDMode.kBlink)));
+        y.whileHeld(new Shoot(shooter, velocity::get));
+
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

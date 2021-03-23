@@ -1,12 +1,13 @@
 package frc.robot.subsystems.PTO.commands;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.PTO.PTO;
 
 /**
  * This command switches between the shooter and the climber subsystems with the PTO.
  */
-public class SwitchSubsystems extends InstantCommand {
+public class SwitchSubsystems extends CommandBase {
     private final PTO pto;
     private final boolean isClimber;
 

@@ -49,7 +49,7 @@ public final class Constants {
         public static final double VELOCITY_TOLERANCE = 3; // [RPS]
         public static final double MODEL_TOLERANCE = 3;
         public static final double ENCODER_TOLERANCE = 0.1; // [ticks]
-        public static final double J = 0; //moment of inertia [kg * m^2]
+        public static final double J = 1; //moment of inertia [kg * m^2]
         public static final double ARBITRARY_FEED_FORWARD = 0; // [%] https://docs.ctre-phoenix.com/en/latest/ch16_ClosedLoop.html#do-i-need-to-use-arbitrary-feed-forward
 
 
@@ -60,7 +60,7 @@ public final class Constants {
         public static final double FREE_CURRENT = 1.5; // [amps]
         public static final double FREE_SPEED = Units.rotationsPerMinuteToRadiansPerSecond(6380); // [rad/sec]
 
-        public static final double GEAR_RATIO = 0; //TODO: Choose real value.
+        public static final double GEAR_RATIO = 1; //TODO: Choose real value.
         public static final double kT = STALL_TORQUE / STALL_CURRENT;// took from FRC examples.
         public static final double OMEGA = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
         public static final double kV = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA * FREE_CURRENT);// took from FRC examples.
@@ -70,10 +70,10 @@ public final class Constants {
         public static final double ALLOWED_ERROR = 0.03;// [m]
     }
     public static final class Intake{
-        public static final double VELOCITY = 0.3; // the target velocity of intake's motor(m/s)
+        public static final double VELOCITY = 0.5; // the target velocity of intake's motor(m/s)
     }
     public static final class Funnel {
-        public static final double POWER =0.2 ; //the default output of Funnel's motor (%)
+        public static final double POWER =0.4 ; //the default output of Funnel's motor (%)
     }
 
     // TODO: Change the values
