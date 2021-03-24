@@ -23,6 +23,24 @@ public class VisionModule extends SubsystemBase {
     private static LinearFilter filter = LinearFilter.movingAverage(10);
     private static double filteredDistance = -1;
 
+    //
+
+    // "ledSetCommand" : "",
+    //  "ledsCanDim" : true,
+    //  "ledPWMRange" : [ 0, 100 ],
+    //  "ledPWMSetRange" : "",
+    //  "ledPWMFrequency" : 0,
+    //  "ledDimCommand" : "",
+    //  "ledBlinkCommand" : "",
+    //  "statusRGBPins" : [ ],
+    //  "cpuTempCommand" : "",
+    //  "cpuMemoryCommand" : "",
+    //  "cpuUtilCommand" : "",
+    //  "gpuMemoryCommand" : "",
+    //  "gpuTempCommand" : "",
+    //  "ramUtilCommand" : "",
+    //  "restartHardwareCommand" : "",
+    //  "vendorFOV" : -1.0
     /**
      * @return the angle to the target from the vision network table.
      */

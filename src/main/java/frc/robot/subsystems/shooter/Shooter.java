@@ -2,13 +2,11 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.system.LinearSystem;
 import edu.wpi.first.wpilibj.system.LinearSystemLoop;
 import edu.wpi.first.wpilibj.util.Units;
@@ -24,7 +22,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.UnitModel;
 import webapp.FireLog;
-import frc.robot.utils.VisionModule;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -44,10 +42,10 @@ public class Shooter extends SubsystemBase {
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
 
     private final LinearRegression velocityEstimator;
+    private final Timer shootingTimer = new Timer();
     private LinearSystemLoop<N1, N1, N1> upMotorStateSpacePredictor;
     private LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
     private double lastOmega = 0;
-    private final Timer shootingTimer = new Timer();
     private double lastTime = 1;
 
     public Shooter() {
@@ -106,10 +104,6 @@ public class Shooter extends SubsystemBase {
         return unitModel.toVelocity(RobotContainer.pto.getMaster().getSelectedSensorVelocity());
     }
 
-    public double getCurrent() {
-        return RobotContainer.pto.getMaster().getSupplyCurrent();
-    }
-
     /**
      * Set the velocity to apply by the motor.
      *
@@ -118,6 +112,10 @@ public class Shooter extends SubsystemBase {
      */
     public void setVelocity(double velocity) {
         setVelocity(velocity, Constants.LOOP_PERIOD);
+    }
+
+    public double getCurrent() {
+        return RobotContainer.pto.getMaster().getSupplyCurrent();
     }
 
     /**
