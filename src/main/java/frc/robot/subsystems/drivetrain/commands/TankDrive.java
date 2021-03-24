@@ -2,7 +2,7 @@ package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.OI;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class TankDrive extends CommandBase {
@@ -22,8 +22,8 @@ public class TankDrive extends CommandBase {
 
     @Override
     public void execute() {
-        double rightForward = OI.xbox.getY(GenericHID.Hand.kRight);
-        double leftForward = OI.xbox.getY(GenericHID.Hand.kLeft);
+        double rightForward = RobotContainer.Xbox.getY(GenericHID.Hand.kRight);
+        double leftForward = RobotContainer.Xbox.getY(GenericHID.Hand.kLeft);
 
         swerveDrive.getModule(0).setSpeed(rightForward);
         swerveDrive.getModule(2).setSpeed(rightForward);

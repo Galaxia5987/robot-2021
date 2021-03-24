@@ -56,7 +56,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
 
-        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(Robot.navx.getYaw()));
+        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(Robot.navx.getYaw() + 90));
 
         double[] velocities = calculateWheelVelocities(robotHeading);
         double[] polar;
@@ -101,16 +101,12 @@ public class SwerveDrive extends SubsystemBase {
         double[][] rotationMat = {{Math.cos(robotAngle), -Math.sin(robotAngle)},
                 {Math.sin(robotAngle), Math.cos(robotAngle)}};
         double[] speeds = Utils.matrixVectorMult(rotationMat, new double[]{forward, strafe});
-        System.out.println("forward" + forward);
-        System.out.println("strafe" + strafe);
 
         // if the drive style is field oriented, changes the forward and strafe to be according to the field coordinate system
         if (isFieldOriented) {
             forward = speeds[0];
             strafe = speeds[1];
         }
-        System.out.println("relative forward" + speeds[0]);
-        System.out.println("relative strafe" + speeds[1]);
 
         return new double[]{forward, strafe, rotation};
     }

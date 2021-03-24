@@ -11,9 +11,9 @@ import frc.robot.subsystems.intake.commands.StartIntake;
 
 public class PickupBalls extends ParallelCommandGroup {
 
-    public PickupBalls(Intake intake, Funnel funnel, Conveyor conveyor) {
+    public PickupBalls(Intake intake, Funnel funnel, Conveyor conveyor, boolean up) {
         addCommands(
-                new StartIntake(intake, false),
+                new StartIntake(intake, up),
                 new StartFunnel(funnel, true),
                 new LoadConveyor(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER)
         );

@@ -166,7 +166,7 @@ public final class Constants {
         public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
         public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
 
-        public static final int[] ZERO_POSITION = {-903, 339, 102, 124};
+        public static final int[] ZERO_POSITION = {92, 345, 887, 849};
 
         // sick man
         // the module that has more friction in the rotating mechanism

@@ -7,13 +7,15 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
+import java.util.function.DoubleSupplier;
+
 public class TurnToTarget extends CommandBase {
     private SwerveDrive swerveDrive;
-    private double visionOutput;
+    private DoubleSupplier visionOutput;
     private PIDController pid = new PIDController(Constants.SwerveDrive.KP_TURN.get(), Constants.SwerveDrive.KI_TURN.get(), Constants.SwerveDrive.KD_TURN.get());
     private double target;
 
-    public TurnToTarget(SwerveDrive swerveDrive, double visionOutput) {
+    public TurnToTarget(SwerveDrive swerveDrive, DoubleSupplier visionOutput) {
         this.swerveDrive = swerveDrive;
         this.visionOutput = visionOutput;
         addRequirements(swerveDrive);
@@ -21,7 +23,7 @@ public class TurnToTarget extends CommandBase {
 
     @Override
     public void initialize() {
-        target = Robot.navx.getYaw() + visionOutput;
+        target = Robot.navx.getYaw() + visionOutput.getAsDouble();
         pid.setSetpoint(target);
         pid.setP(Constants.SwerveDrive.KP_TURN.get());
         pid.setI(Constants.SwerveDrive.KI_TURN.get());

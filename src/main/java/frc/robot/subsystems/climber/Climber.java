@@ -56,9 +56,9 @@ public class Climber extends SubsystemBase {
      */
     public void setStopperMode(PistonMode mode) {
         if (mode == PistonMode.OPEN)
-            stopper.set(false);
-        else
             stopper.set(true);
+        else
+            stopper.set(false);
     }
 
     public void setDrumMode(PistonMode mode) {

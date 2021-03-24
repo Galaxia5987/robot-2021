@@ -2,8 +2,8 @@ package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Utils;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.valuetuner.WebConstant;
@@ -21,7 +21,7 @@ public class DriveForward extends CommandBase {
 
     @Override
     public void execute() {
-        double forward = Utils.joystickDeadband(-OI.xbox.getY(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double forward = Utils.joystickDeadband(-RobotContainer.Xbox.getY(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
 
 //        swerveDrive.stayAtAngle();
         for (int i = 0; i < 4; i++) {

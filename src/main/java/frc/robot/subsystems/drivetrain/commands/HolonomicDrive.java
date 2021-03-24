@@ -3,8 +3,8 @@ package frc.robot.subsystems.drivetrain.commands;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Utils;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import org.techfire225.webapp.FireLog;
@@ -27,9 +27,9 @@ public class HolonomicDrive extends CommandBase {
         GenericHID.Hand right = GenericHID.Hand.kRight;
         GenericHID.Hand left = GenericHID.Hand.kLeft;
 
-        double forward = Utils.joystickDeadband(-OI.xbox.getY(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        double strafe = Utils.joystickDeadband(OI.xbox.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        double rotation = Utils.joystickDeadband(OI.xbox.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double forward = Utils.joystickDeadband(-RobotContainer.XboxDriver.getY(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double strafe = Utils.joystickDeadband(RobotContainer.XboxDriver.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double rotation = Utils.joystickDeadband(RobotContainer.XboxDriver.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
 
         // turns the joystick values into the heading of the robot
         forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;

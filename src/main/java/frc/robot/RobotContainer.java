@@ -6,13 +6,17 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commandgroups.FeedAndShoot;
 import frc.robot.commandgroups.PickupBalls;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.PTO.commands.SwitchSubsystems;
 import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.commands.SetStopper;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.FeedShooter;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
+import frc.robot.subsystems.drivetrain.commands.TurnToTarget;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -36,10 +40,12 @@ public class RobotContainer {
     public Shooter shooter = new Shooter();
     public Climber climber = new Climber();
     //    public VisionModule visionModule = new VisionModule();
-    public XboxController Xbox = new XboxController(1);
+    public static XboxController Xbox = new XboxController(1);
+    public static XboxController XboxDriver = new XboxController(2);
     public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
     public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);
     public JoystickButton x = new JoystickButton(Xbox, XboxController.Button.kX.value);
+    public JoystickButton xDriver = new JoystickButton(XboxDriver, XboxController.Button.kX.value);
     // The robot's subsystems and commands are defined here...
     public Intake intake = new Intake();
     public JoystickButton BL = new JoystickButton(Xbox, XboxController.Button.kBumperLeft.value);
@@ -48,7 +54,9 @@ public class RobotContainer {
     public Conveyor conveyor = new Conveyor();
     public JoystickButton LT = new JoystickButton(Xbox, XboxController.Button.kStickLeft.value);
 
-    public SwerveDrive swerveDrive = new SwerveDrive(false, false);
+    public SwerveDrive swerveDrive = new SwerveDrive(true, false);
+
+    public WebConstant visionOutput = new WebConstant("vision-output", 0);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -60,6 +68,7 @@ public class RobotContainer {
             startValueTuner();
             startFireLog();
         }
+        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
     }
 
     /**
@@ -70,15 +79,11 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
 
-        BR.whenPressed(new SwitchSubsystems(pto, true));
-        BL.whenPressed(new SwitchSubsystems(pto, false));
-
-        a.whileHeld(new FeedShooter(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
-        b.whileHeld(new PickupBalls(intake, funnel, conveyor));
-        x.whileHeld(new FeedShooter(conveyor, -Constants.Conveyor.CONVEYOR_MOTOR_POWER));
-        y.whileHeld(new Shoot(shooter));
-
-        LT.whenPressed(new ToggleLEDs());
+        a.whileHeld(new PickupBalls(intake, funnel, conveyor, true));
+        x.whileHeld(new FeedAndShoot(conveyor, shooter, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+        y.whileHeld(new PickupBalls(intake, funnel, conveyor, false));
+//        xDriver.whileHeld(new TurnToTarget(swerveDrive, visionOutput::get));
+        b.whileHeld(new FeedShooter(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
 
     }
 

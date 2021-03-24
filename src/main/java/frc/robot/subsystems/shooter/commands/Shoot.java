@@ -37,9 +37,12 @@ public class Shoot extends CommandBase {
     @Override
     public void execute() {
         final double currentTime = shootingTimer.get();
-        double velocity = shooter.estimateVelocityFromDistance(VisionModule.getTargetRawDistance(Math.toRadians(66)));
-        shooter.setVelocity(velocity, currentTime - lastTime);
-        shooter.setVelocityUp(velocity / 2.0, currentTime - lastTime);
+        double distance = VisionModule.getTargetRawDistance(Math.toRadians(66));
+        if (distance > 0) {
+            double velocity = shooter.estimateVelocityFromDistance(distance);
+            shooter.setVelocity(velocity, currentTime - lastTime);
+            shooter.setVelocityUp(velocity / 2.0, currentTime - lastTime);
+        }
         lastTime = currentTime;
 
     }
