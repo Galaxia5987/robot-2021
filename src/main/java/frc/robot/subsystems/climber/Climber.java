@@ -17,6 +17,7 @@ public class Climber extends SubsystemBase {
 
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_METER);
     private final Solenoid stopper = new Solenoid(Ports.Climber.STOPPER_FORWARD_CHANNEL);
+    private final Solenoid drum = new Solenoid(Ports.Climber.DRUM);
 
     /**
      * Get the climber's elevation relative to the ground.
@@ -60,6 +61,14 @@ public class Climber extends SubsystemBase {
             stopper.set(true);
     }
 
+    public void setDrumMode(PistonMode mode) {
+        if (mode == PistonMode.OPEN)
+            drum.set(true);
+        else
+            drum.set(false);
+    }
+
+
     /**
      * Toggle the piston mode of the piston responsible for the stopper.
      */
@@ -93,4 +102,6 @@ public class Climber extends SubsystemBase {
     public enum PistonMode {
         OPEN, CLOSED;
     }
+
+
 }

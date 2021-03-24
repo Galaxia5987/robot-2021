@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.LinearFilter;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Transform2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -15,9 +16,10 @@ import org.photonvision.PhotonUtils;
 
 import javax.annotation.Nullable;
 
+// todo:   camera.hasTargets()
 public class VisionModule extends SubsystemBase {
-    public static final PhotonCamera camera = new PhotonCamera(NetworkTableInstance.getDefault().getTable("photonvision"));
 
+    public static final PhotonCamera camera = new PhotonCamera("GalaxiaCam");
     private static LinearFilter filter = LinearFilter.movingAverage(10);
     private static double filteredDistance = -1;
 
@@ -41,6 +43,7 @@ public class VisionModule extends SubsystemBase {
 
     @Nullable
     public static Pose2d getPose(double cameraPitch) {
+        if (!camera.hasTargets()) return new Pose2d();
         return PhotonUtils.estimateFieldToRobot(Constants.Vision.HEIGHT, Constants.Vision.TARGET_HEIGHT,
                 cameraPitch, camera.getLatestResult().getBestTarget().getPitch(),
                 new Rotation2d(), new Rotation2d(), new Pose2d(), new Transform2d());
@@ -69,18 +72,17 @@ public class VisionModule extends SubsystemBase {
 
     @Override
     public void periodic() {
-//        double distance = getTargetRawDistance(RobotContainer.);
-//        if(distance == -1) {
-//            filteredDistance = null;
-//        }
-//        else {
-//            if (distance >= 0.1) {
-//                filteredDistance = calculateMovingAverage(distance);
-//                SmartDashboard.putNumber("FilteredDistance", filteredDistance);
-//            }
-//            SmartDashboard.putNumber("VisionDistance", getTargetRawDistance());
-//        }
-//        CustomDashboard.setHasVision(targetSeen());
+        double distance = getTargetRawDistance(Math.toRadians(34));
+        if(distance == -1) {
+            filteredDistance = -1;
+        }
+        else {
+            if (distance >= 0.1) {
+                filteredDistance = calculateMovingAverage(distance);
+                SmartDashboard.putNumber("FilteredDistance", filteredDistance);
+            }
+            SmartDashboard.putNumber("VisionDistance", distance);
+        }
     }
 
     @Nullable
