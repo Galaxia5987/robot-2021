@@ -1,92 +1,121 @@
 package frc.robot.utils;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.LinearFilter;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
-
+import frc.robot.Constants;
+import frc.robot.Robot;
+import org.photonvision.LEDMode;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 
 import javax.annotation.Nullable;
 
-
+// todo:   camera.hasTargets()
 public class VisionModule extends SubsystemBase {
-    private static NetworkTable visionTable = NetworkTableInstance.getDefault().getTable("chameleon-vision").getSubTable("ps3");
-    private static NetworkTableEntry visionAngle = visionTable.getEntry("targetYaw");
-    private static NetworkTableEntry visionPose = visionTable.getEntry("targetPose");
-    private static NetworkTableEntry visionValid = visionTable.getEntry("isValid");
-    public static NetworkTableEntry leds = visionTable.getEntry("leds");
 
+    public static final PhotonCamera camera = new PhotonCamera("GalaxiaCam");
     private static LinearFilter filter = LinearFilter.movingAverage(10);
-    private static Double filteredDistance = null;
-    private boolean isOn = false;
+    private static double filteredDistance = -1;
 
+    //
+
+    // "ledSetCommand" : "",
+    //  "ledsCanDim" : true,
+    //  "ledPWMRange" : [ 0, 100 ],
+    //  "ledPWMSetRange" : "",
+    //  "ledPWMFrequency" : 0,
+    //  "ledDimCommand" : "",
+    //  "ledBlinkCommand" : "",
+    //  "statusRGBPins" : [ ],
+    //  "cpuTempCommand" : "",
+    //  "cpuMemoryCommand" : "",
+    //  "cpuUtilCommand" : "",
+    //  "gpuMemoryCommand" : "",
+    //  "gpuTempCommand" : "",
+    //  "ramUtilCommand" : "",
+    //  "restartHardwareCommand" : "",
+    //  "vendorFOV" : -1.0
     /**
      * @return the angle to the target from the vision network table.
      */
     public static double getVisionAngle() {
-        return visionAngle.getDouble(0);
+        return camera.getLatestResult().getBestTarget().getPitch();
     }
 
     /**
      * @return whether the vision sees the target
      */
     public static boolean targetSeen() {
-        return visionValid.getBoolean(false);
+        return camera.hasTargets();
     }
 
-    public static void setLEDs(boolean on) {
-        leds.setBoolean(on);
+    public static void setLEDs(LEDMode ledMode) {
+        camera.setLED(ledMode);
     }
 
     @Nullable
-    public static Pose2d getPose() {
-        Double[] pose = visionPose.getDoubleArray(new Double[]{});
-        if (pose.length == 0) {
-            return null;
-        }
-        return new Pose2d(pose[0], pose[1], Rotation2d.fromDegrees(pose[2]));
+    public static Pose2d getPose(double cameraPitch) {
+        if (!camera.hasTargets()) return new Pose2d();
+        return PhotonUtils.estimateFieldToRobot(Constants.Vision.HEIGHT, Constants.Vision.TARGET_HEIGHT,
+                cameraPitch, camera.getLatestResult().getBestTarget().getPitch(),
+                new Rotation2d(), new Rotation2d(), new Pose2d(), new Transform2d());
     }
 
     /**
      * @return The distance the camera sees, in meters.
      */
-    @Nullable
-    public static Double getTargetRawDistance() {
-        Pose2d pose = getPose();
-        if (pose == null) return null;
+    public static double getTargetRawDistance(double cameraPitch) {
+        Pose2d pose = getPose(cameraPitch);
+        if (pose == null) return -1;
         return Math.sqrt(Math.pow(pose.getTranslation().getX(), 2) + Math.pow(pose.getTranslation().getY(), 2));
     }
 
+    public static double getHoodDistance() {
+        if (filteredDistance == -1) return -1;
+        return filteredDistance + Constants.Vision.VISION_MODULE_HOOD_DISTANCE;
+    }
 
-//
-//    @Nullable
-//    public static Double getRobotDistance() {
-//        if (filteredDistance == null) return null;
-//        double a = VISION_ROTATION_RADIUS + filteredDistance;
-//        double b = ROBOT_TO_TURRET_CENTER;
-//        return Math.sqrt(a * a + b * b - 2 * a * b * Math.cos(Math.toRadians(RobotContainer.turret.getAngle()))); //Cosine law
-//    }
+    public static double getRobotDistance() {
+        if (filteredDistance == -1) return -1;
+        double a = Constants.Vision.VISION_ROTATION_RADIUS + filteredDistance;
+        double b = Constants.Vision.ROBOT_TO_TURRET_CENTER;
+        return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2) - 2 * a * b * Math.cos(Math.toRadians(-Robot.navx.getAngle()))); //Cosine law
+    }
 
     @Override
     public void periodic() {
-        Double distance = getTargetRawDistance();
-        if(distance == null) {
-            filteredDistance = null;
+        double distance = getTargetRawDistance(Math.toRadians(34));
+        if(distance == -1) {
+            filteredDistance = -1;
         }
         else {
             if (distance >= 0.1) {
                 filteredDistance = calculateMovingAverage(distance);
                 SmartDashboard.putNumber("FilteredDistance", filteredDistance);
             }
-            SmartDashboard.putNumber("VisionDistance", getTargetRawDistance());
+            SmartDashboard.putNumber("VisionDistance", distance);
         }
     }
 
+    @Nullable
+    public static Pose2d getRobotPose() {
+//        Pose2d visionPose = getPose();
+        Pose2d visionPose = new Pose2d();
+
+        double robotDistance = getRobotDistance();
+        if (visionPose == null || robotDistance == -1) return null;
+        return new Pose2d(
+                UtilityFunctions.getPortLocation(false).getTranslation().getX() - visionPose.getRotation().getCos() * robotDistance,
+                UtilityFunctions.getPortLocation(false).getTranslation().getY() + visionPose.getRotation().getSin() * robotDistance,
+                Rotation2d.fromDegrees((-Robot.navx.getAngle()) - visionPose.getRotation().getDegrees())
+        );
+    }
 
     private static double calculateMovingAverage(double distance) {
         return filter.calculate(distance);

@@ -55,6 +55,7 @@
 *.zip
 *.tar.gz
 *.rar
+!jetty-all-9.4.0.v20161208-uber.jar
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
