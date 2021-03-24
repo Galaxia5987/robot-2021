@@ -25,7 +25,7 @@ public class LoadConveyor extends CommandBase {
         if (!Conveyor.isConveyorFull()) {
             if (conveyor.hasFunnelSensedObject() && !timer.hasElapsed(1.0)) {
                 timer.start();
-                conveyor.setPower(power);
+                conveyor.setPower(moderatePower(timer.get(), 2));
             } else {
                 conveyor.setPower(0);
                 timer.stop();
@@ -37,6 +37,13 @@ public class LoadConveyor extends CommandBase {
         }
         // TODO: Add override option in case that the sensor is "broken"
 
+    }
+
+
+    private double moderatePower(double elapsedTime, double cycleTime) {
+        if (elapsedTime > cycleTime) return power;
+        double m = power / cycleTime;
+        return Math.min(power, m * elapsedTime);
     }
 
     @Override
