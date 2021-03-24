@@ -24,6 +24,7 @@ import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.VisionModule;
+import frc.robot.utils.vision_commands.TurnOffLeds;
 import frc.robot.valuetuner.ValueTuner;
 import frc.robot.valuetuner.WebConstant;
 import org.photonvision.LEDMode;
@@ -53,6 +54,7 @@ public class RobotContainer {
     public JoystickButton y = new JoystickButton(Xbox, XboxController.Button.kY.value);
     public Conveyor conveyor = new Conveyor();
     public VisionModule visionModule = new VisionModule();
+    public JoystickButton LT = new JoystickButton(Xbox, XboxController.Button.kStickLeft.value);
 
 
     /**
@@ -100,6 +102,7 @@ public class RobotContainer {
         b.whenPressed(new SetStopper(climber, Climber.PistonMode.CLOSED));
         x.whenPressed(new SetDrum(climber, Climber.PistonMode.OPEN));
         y.whenPressed(new SetDrum(climber, Climber.PistonMode.CLOSED));
+        LT.whenPressed(new TurnOffLeds());
 
     }
 
