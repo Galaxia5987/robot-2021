@@ -20,31 +20,15 @@ import javax.annotation.Nullable;
 public class VisionModule extends SubsystemBase {
 
     public static final PhotonCamera camera = new PhotonCamera("GalaxiaCam");
-    private static LinearFilter filter = LinearFilter.movingAverage(10);
+    private static final LinearFilter filter = LinearFilter.movingAverage(10);
     private static double filteredDistance = -1;
 
-    //
-
-    // "ledSetCommand" : "",
-    //  "ledsCanDim" : true,
-    //  "ledPWMRange" : [ 0, 100 ],
-    //  "ledPWMSetRange" : "",
-    //  "ledPWMFrequency" : 0,
-    //  "ledDimCommand" : "",
-    //  "ledBlinkCommand" : "",
-    //  "statusRGBPins" : [ ],
-    //  "cpuTempCommand" : "",
-    //  "cpuMemoryCommand" : "",
-    //  "cpuUtilCommand" : "",
-    //  "gpuMemoryCommand" : "",
-    //  "gpuTempCommand" : "",
-    //  "ramUtilCommand" : "",
-    //  "restartHardwareCommand" : "",
-    //  "vendorFOV" : -1.0
     /**
      * @return the angle to the target from the vision network table.
      */
-    public static double getVisionAngle() {
+    @Nullable
+    public static Double getVisionAngle() {
+        if (!targetSeen()) return null;
         return camera.getLatestResult().getBestTarget().getPitch();
     }
 
@@ -61,7 +45,7 @@ public class VisionModule extends SubsystemBase {
 
     @Nullable
     public static Pose2d getPose(double cameraPitch) {
-        if (!camera.hasTargets()) return new Pose2d();
+        if (!targetSeen()) return null;
         return PhotonUtils.estimateFieldToRobot(Constants.Vision.HEIGHT, Constants.Vision.TARGET_HEIGHT,
                 cameraPitch, camera.getLatestResult().getBestTarget().getPitch(),
                 new Rotation2d(), new Rotation2d(), new Pose2d(), new Transform2d());
@@ -105,8 +89,7 @@ public class VisionModule extends SubsystemBase {
 
     @Nullable
     public static Pose2d getRobotPose() {
-//        Pose2d visionPose = getPose();
-        Pose2d visionPose = new Pose2d();
+        Pose2d visionPose = getPose(Math.toRadians(34));
 
         double robotDistance = getRobotDistance();
         if (visionPose == null || robotDistance == -1) return null;
