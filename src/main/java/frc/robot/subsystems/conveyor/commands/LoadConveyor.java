@@ -23,9 +23,9 @@ public class LoadConveyor extends CommandBase {
     @Override
     public void execute() {
         if (!Conveyor.isConveyorFull()) {
-            if (conveyor.hasFunnelSensedObject() && !timer.hasElapsed(1.0)) {
+            if (conveyor.hasFunnelSensedObject() && !timer.hasElapsed(2.5)) {
                 timer.start();
-                conveyor.setPower(moderatePower(timer.get(), 2));
+                conveyor.setPower(moderatePower(timer.get(), 2.5));
             } else {
                 conveyor.setPower(0);
                 timer.stop();

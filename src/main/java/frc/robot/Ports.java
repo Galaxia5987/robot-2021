@@ -19,6 +19,7 @@ public class Ports {
 
     public static final class Shooter {
         public static final int UP = 31;
+        public static final int solenoid = 4;
         public static final boolean MAIN_INVERTED = true;
         public static final boolean AUX_INVERTED = true;
         public static final boolean UP_INVERTED = false;

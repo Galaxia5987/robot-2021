@@ -4,9 +4,11 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.system.LinearSystem;
 import edu.wpi.first.wpilibj.system.LinearSystemLoop;
 import edu.wpi.first.wpilibj.util.Units;
@@ -21,6 +23,7 @@ import frc.robot.Ports;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.UnitModel;
+import frc.robot.utils.VisionModule;
 import webapp.FireLog;
 
 import java.io.InputStream;
@@ -40,6 +43,7 @@ import static frc.robot.Constants.Shooter.*;
 public class Shooter extends SubsystemBase {
     private final TalonFX upMotor = new TalonFX(Ports.Shooter.UP);
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
+    private final Solenoid solenoid = new Solenoid(Ports.Shooter.solenoid);
 
     private final LinearRegression velocityEstimator;
     private final Timer shootingTimer = new Timer();
@@ -220,6 +224,7 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         shootingTimer.start();
+        solenoid.set(true);
         final double currentTime = shootingTimer.get();
         double omega = getVelocity() * Units.inchesToMeters(4);
         FireLog.log("velocity", getVelocity());
@@ -234,5 +239,7 @@ public class Shooter extends SubsystemBase {
         lastOmega = omega;
         this.stateSpacePredictor = constructLinearSystem(J.get());
         this.upMotorStateSpacePredictor = constructLinearSystem(UP_MOTOR_J.get());
+        FireLog.log("dist", VisionModule.getTargetRawDistance(Math.toRadians(66)));
+        SmartDashboard.putNumber("dist", VisionModule.getTargetRawDistance(Math.toRadians(66)));
     }
 }

@@ -13,7 +13,7 @@ public class FeedAndShoot extends ParallelCommandGroup {
     public FeedAndShoot(Conveyor conveyor, Shooter shooter, double power) {
         addCommands(
                 new FeedShooter(conveyor, power),
-                new Shoot(shooter, velocity::get)
+                new Shoot(shooter)
         );
     }
 }

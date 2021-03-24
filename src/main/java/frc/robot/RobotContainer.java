@@ -11,15 +11,16 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commandgroups.PickupBalls;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.PTO.commands.SwitchSubsystems;
 import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.commands.SetDrum;
-import frc.robot.subsystems.climber.commands.SetStopper;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.FeedShooter;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.VisionModule;
 import frc.robot.utils.vision_commands.ToggleLEDs;
 import frc.robot.valuetuner.ValueTuner;
@@ -35,10 +36,12 @@ import webapp.Webserver;
  */
 public class RobotContainer {
     public static final PTO pto = new PTO();
-    public static final WebConstant velocity = new WebConstant("velocity", 0);
+    public static final WebConstant velocity = new WebConstant("velocity", 69);
+    public static final VisionModule vision = new VisionModule();
     public Funnel funnel = new Funnel();
     public Shooter shooter = new Shooter();
     public Climber climber = new Climber();
+    //    public VisionModule visionModule = new VisionModule();
     public XboxController Xbox = new XboxController(1);
     public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
     public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);
@@ -49,7 +52,6 @@ public class RobotContainer {
     public JoystickButton BR = new JoystickButton(Xbox, XboxController.Button.kBumperRight.value);
     public JoystickButton y = new JoystickButton(Xbox, XboxController.Button.kY.value);
     public Conveyor conveyor = new Conveyor();
-    public VisionModule visionModule = new VisionModule();
     public JoystickButton LT = new JoystickButton(Xbox, XboxController.Button.kStickLeft.value);
 
 
@@ -72,32 +74,15 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-//        a.whenPressed(new ToggleIntake(intake));
-//        BR.whileHeld(new StartIntake(intake, true));//transfers the balls to the Funnel
-//        BL.whileHeld(new StartFunnel(funnel,true));
-//
-//        b.whileHeld(new FeedShooter(conveyor, 0.7));
-//        y.whileHeld(new LoadConveyor(conveyor, 0.7));
-//        a.whileHeld(new PickupBalls(intake, funnel, conveyor));
-//        b.whenPressed(new SwitchSubsystems(pto, false));
-//        y.whileHeld(new FeedAndShoot(conveyor, shooter, 0.4));
-//        a.whenPressed(new InstantCommand(() -> {
-//            VisionModule.camera.setLED(LEDMode.kOff);
-//            System.out.println("Hey");
-//        }));
-//        BR.whileHeld(new FeedShooter(conveyor, 0.7));
-//        a.whenPressed(new SetStopper(climber, Climber.PistonMode.CLOSED));
-//        b.whenPressed(new SetStopper(climber, Climber.PistonMode.OPEN));
-//        x.whenPressed(new ManageClimb(climber, 0));
-//        y.whenPressed(new ManageClimb(climber, 0.2));
+
         BR.whenPressed(new SwitchSubsystems(pto, true));
         BL.whenPressed(new SwitchSubsystems(pto, false));
-//        a.whenPressed(new InstantCommand(() -> VisionModule.camera.setLED(LEDMode.kOff)));
 
-        a.whenPressed(new SetStopper(climber, Climber.PistonMode.OPEN));
-        b.whenPressed(new SetStopper(climber, Climber.PistonMode.CLOSED));
-        x.whenPressed(new SetDrum(climber, Climber.PistonMode.OPEN));
-        y.whenPressed(new SetDrum(climber, Climber.PistonMode.CLOSED));
+        a.whileHeld(new FeedShooter(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+        b.whileHeld(new PickupBalls(intake, funnel, conveyor));
+        x.whileHeld(new FeedShooter(conveyor, -Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+        y.whileHeld(new Shoot(shooter));
+
         LT.whenPressed(new ToggleLEDs());
 
     }

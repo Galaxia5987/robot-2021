@@ -22,14 +22,14 @@ public class Conveyor extends SubsystemBase {
     public final I2C.Port i2cPort = I2C.Port.kOnboard;
     public final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
 
-    private String colorString = " ";
-    private final ColorMatch colorMatcher = new ColorMatch();
-    private final Color BlueTarget = ColorMatch.makeColor(Constants.Conveyor.BLUE_RGB[0], Constants.Conveyor.BLUE_RGB[1], Constants.Conveyor.BLUE_RGB[2]);
-    private final Color GreenTarget = ColorMatch.makeColor(Constants.Conveyor.GREEN_RGB[0], Constants.Conveyor.GREEN_RGB[1], Constants.Conveyor.GREEN_RGB[2]);
-    private final Color RedTarget = ColorMatch.makeColor(Constants.Conveyor.RED_RGB[0], Constants.Conveyor.RED_RGB[1], Constants.Conveyor.RED_RGB[2]);
-    private final Color YellowTarget = ColorMatch.makeColor(Constants.Conveyor.YELLOW_RGB[0], Constants.Conveyor.YELLOW_RGB[1], Constants.Conveyor.YELLOW_RGB[2]);
+    private static String colorString = " ";
+    private static final ColorMatch colorMatcher = new ColorMatch();
+    private static final Color BlueTarget = ColorMatch.makeColor(Constants.Conveyor.BLUE_RGB[0], Constants.Conveyor.BLUE_RGB[1], Constants.Conveyor.BLUE_RGB[2]);
+    private static final Color GreenTarget = ColorMatch.makeColor(Constants.Conveyor.GREEN_RGB[0], Constants.Conveyor.GREEN_RGB[1], Constants.Conveyor.GREEN_RGB[2]);
+    private static final Color RedTarget = ColorMatch.makeColor(Constants.Conveyor.RED_RGB[0], Constants.Conveyor.RED_RGB[1], Constants.Conveyor.RED_RGB[2]);
+    private static final Color YellowTarget = ColorMatch.makeColor(Constants.Conveyor.YELLOW_RGB[0], Constants.Conveyor.YELLOW_RGB[1], Constants.Conveyor.YELLOW_RGB[2]);
 
-    private ColorMatchResult match;
+    private static ColorMatchResult match;
 
     public Conveyor() {
         motor.setInverted(Ports.Conveyor.IS_MOTOR_INVERTED);
@@ -111,7 +111,7 @@ public class Conveyor extends SubsystemBase {
      *
      * @return whether the funnel sensed an object.
      */
-    public boolean hasFunnelSensedObject() {
+    public static boolean hasFunnelSensedObject() {
         return colorString.equals("Yellow");
     }
 

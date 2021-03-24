@@ -13,7 +13,7 @@ public class PickupBalls extends ParallelCommandGroup {
 
     public PickupBalls(Intake intake, Funnel funnel, Conveyor conveyor) {
         addCommands(
-                new StartIntake(intake, true),
+                new StartIntake(intake, false),
                 new StartFunnel(funnel, true),
                 new LoadConveyor(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER)
         );

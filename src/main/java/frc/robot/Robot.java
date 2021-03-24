@@ -10,6 +10,7 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +26,7 @@ public class Robot extends TimedRobot {
     public static boolean debug = true;
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
+    public PowerDistributionPanel pdp = new PowerDistributionPanel();
     private Compressor compressor = new Compressor(0);
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
 
@@ -50,6 +52,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+
         // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
         // commands, running already-scheduled commands, removing finished or interrupted commands,
         // and running subsystem periodic() methods.  This must be called from the robot's periodic

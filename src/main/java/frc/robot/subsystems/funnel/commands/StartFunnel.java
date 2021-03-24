@@ -3,6 +3,8 @@ package frc.robot.subsystems.funnel.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.funnel.Funnel;
 
 /**
@@ -33,15 +35,16 @@ public class StartFunnel extends CommandBase {
 
     @Override
     public void execute() {
-        if (timmy.get() - last > 0.5) {
+        if (timmy.get() - last > 1) {
             funnel.toggle();
             last = timmy.get();
 //            funnel.setPower(0);
         } else {
-            if (isMovingUp)
-                funnel.setPower(Constants.Funnel.POWER);// in
-            else
-                funnel.setPower(-1 * Constants.Funnel.POWER);// out
+            if (!Conveyor.hasFunnelSensedObject()) {
+                funnel.setPower(isMovingUp ? Constants.Funnel.POWER : -Constants.Funnel.POWER);
+            } else {
+                funnel.setPower(Constants.Funnel.POWER_SLOW);
+            }
         }
     }
 

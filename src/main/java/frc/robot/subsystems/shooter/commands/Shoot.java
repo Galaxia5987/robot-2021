@@ -1,10 +1,14 @@
 package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.shooter.LinearRegression;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.utils.VisionModule;
 import org.ejml.ops.ConvertDMatrixStruct;
 import webapp.FireLog;
 
@@ -17,29 +21,27 @@ import java.util.function.Supplier;
  */
 public class Shoot extends CommandBase {
     private final Shooter shooter;
-    private final Supplier<Double> velocity;
     private final Timer shootingTimer = new Timer();
     private double lastTime = 0;
 
-    public Shoot(Shooter shooter, Supplier<Double> velocity) {
+    public Shoot(Shooter shooter) {
         this.shooter = shooter;
-        this.velocity = velocity;
         addRequirements(shooter);
     }
 
     @Override
     public void initialize() {
         shootingTimer.start();
-        shooter.setVelocity(velocity.get());
-        shooter.setVelocityUp(velocity.get() / 2.0);
     }
 
     @Override
     public void execute() {
         final double currentTime = shootingTimer.get();
-        shooter.setVelocity(velocity.get(), currentTime - lastTime);
-        shooter.setVelocityUp(velocity.get() / 2.0, currentTime - lastTime);
+        double velocity = shooter.estimateVelocityFromDistance(VisionModule.getTargetRawDistance(Math.toRadians(66)));
+        shooter.setVelocity(velocity, currentTime - lastTime);
+        shooter.setVelocityUp(velocity / 2.0, currentTime - lastTime);
         lastTime = currentTime;
+
     }
 
     @Override
