@@ -129,6 +129,13 @@ public final class Constants {
         public static final WebConstant KP_TURN = new WebConstant("KP_TURN", 0);
         public static final WebConstant KI_TURN = new WebConstant("KP_TURN", 0);
         public static final WebConstant KD_TURN = new WebConstant("KP_TURN", 0);
+
+        public static final WebConstant KP_MOVE = new WebConstant("KP_MOVE", 0);
+        public static final WebConstant KI_MOVE = new WebConstant("KI_MOVE", 0);
+        public static final WebConstant KD_MOVE = new WebConstant("KD_MOVE", 0);
+
+        public static final double DRIVE_SETPOINT = 0.965; // [m]
+        public static final double DRIVE_TOLERANCE = 0.05; // [m]
     }
 
     public static class SwerveModule {
