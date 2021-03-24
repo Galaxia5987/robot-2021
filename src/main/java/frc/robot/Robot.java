@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
     private Compressor compressor = new Compressor(0);
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
 
+
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
@@ -40,7 +42,7 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
         compressor.start();
-
+        navx.reset();
     }
 
     /**

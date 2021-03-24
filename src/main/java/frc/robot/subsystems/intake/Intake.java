@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
-import frc.robot.subsystems.UnitModel;
 
 /**
  * this subsystem takes the balls from the field to the funnel.
