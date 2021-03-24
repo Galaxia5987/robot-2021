@@ -20,7 +20,6 @@ public class HolonomicDrive extends CommandBase {
 
     @Override
     public void initialize() {
-        Robot.gyro.reset();
     }
 
     @Override
@@ -44,7 +43,7 @@ public class HolonomicDrive extends CommandBase {
         }
 
         FireLog.log("swerve angle by vectors", swerveDrive.getVelocity()[1]);
-        FireLog.log("swerve direction", Robot.gyro.getAngle());
+        FireLog.log("swerve direction", Robot.navx.getYaw());
     }
 
     @Override

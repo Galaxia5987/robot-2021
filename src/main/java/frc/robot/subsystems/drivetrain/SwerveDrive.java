@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Utils;
 import org.techfire225.webapp.FireLog;
 
@@ -55,7 +56,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
 
-        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(Robot.gyro.getAngle()));
+        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(Robot.navx.getYaw()));
 
         double[] velocities = calculateWheelVelocities(robotHeading);
         double[] polar;

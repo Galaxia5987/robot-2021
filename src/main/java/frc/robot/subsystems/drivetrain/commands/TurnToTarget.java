@@ -21,7 +21,7 @@ public class TurnToTarget extends CommandBase {
 
     @Override
     public void initialize() {
-        target = Robot.gyro.getYaw() + visionOutput;
+        target = Robot.navx.getYaw() + visionOutput;
         pid.setSetpoint(target);
         pid.setP(Constants.SwerveDrive.KP_TURN.get());
         pid.setI(Constants.SwerveDrive.KI_TURN.get());
@@ -30,9 +30,9 @@ public class TurnToTarget extends CommandBase {
 
     @Override
     public void execute() {
-        double power = pid.calculate(Robot.gyro.getYaw());
+        double power = pid.calculate(Robot.navx.getYaw());
         swerveDrive.holonomicDrive(0, 0, power);
-        SmartDashboard.putNumber("gyro", Robot.gyro.getYaw());
+        SmartDashboard.putNumber("gyro", Robot.navx.getYaw());
     }
 
     @Override
@@ -42,6 +42,6 @@ public class TurnToTarget extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(target - Robot.gyro.getYaw()) < Constants.SwerveDrive.TURN_TOLERANCE;
+        return Math.abs(target - Robot.navx.getYaw()) < Constants.SwerveDrive.TURN_TOLERANCE;
     }
 }

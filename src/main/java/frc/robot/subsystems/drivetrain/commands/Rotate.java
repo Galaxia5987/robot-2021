@@ -45,7 +45,7 @@ public class Rotate extends CommandBase {
         FireLog.log("angle ", swerveDrive.getModule(2).getAngle());
         FireLog.log("swerve velocity", swerveDrive.getVelocity()[0]);
         FireLog.log("swerve angle by vectors", swerveDrive.getVelocity()[1]);
-        FireLog.log("swerve direction", Robot.gyro.getAngle());
+        FireLog.log("swerve direction", Robot.navx.getYaw());
     }
 
     @Override

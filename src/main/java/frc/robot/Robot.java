@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
     private Compressor compressor = new Compressor(0);
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
 
+
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
@@ -39,8 +40,7 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
         compressor.start();
-    Robot.gyro.reset();
-
+        navx.reset();
     }
 
     /**

@@ -42,7 +42,6 @@ public class Ports {
         public static final boolean IS_MOTOR_INVERTED = true;
 
     }
-}
 
     public static class SwerveDrive {
         // front right

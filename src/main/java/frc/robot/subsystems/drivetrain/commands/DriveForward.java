@@ -35,7 +35,7 @@ public class DriveForward extends CommandBase {
         FireLog.log("target speed", target.get());
         FireLog.log("swerve velocity", swerveDrive.getVelocity()[0]);
         FireLog.log("swerve angle by vectors", swerveDrive.getVelocity()[1]);
-        FireLog.log("swerve direction", Robot.gyro.getAngle());
+        FireLog.log("swerve direction", Robot.navx.getYaw());
     }
 
     @Override
