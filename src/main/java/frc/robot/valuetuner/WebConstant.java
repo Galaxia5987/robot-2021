@@ -2,6 +2,8 @@ package frc.robot.valuetuner;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import static spark.Spark.post;
+
 
 /**
  * This class holds all the key value constants that will show up in the value tuner.

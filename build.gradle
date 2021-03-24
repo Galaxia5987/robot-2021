@@ -1,7 +1,11 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2021.1.2"
+    id "edu.wpi.first.GradleRIO" version "2021.2.2"
 }
+
+wpi.maven.useDevelopment = true
+wpi.wpilibVersion = '2021.+'
+
 
 apply plugin: "java"
 
@@ -58,16 +62,21 @@ repositories {
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
     implementation wpi.deps.wpilib()
+    implementation 'junit:junit:4.12'
     nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
 
 
     implementation "com.github.Oblarg.Oblog:lib:3.1.0"
-    implementation name: 'jetty-all-9.4.0.v20161208-uber'
+
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
 
     implementation 'org.ghrobotics.FalconLibrary:wpi:2020.2.2'
@@ -81,22 +90,18 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    testImplementation 'junit:junit:4.12'
-
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+//"groupId": "org.photonvision.lib",
+//      "artifactId": "PhotonLib-java",
+//      "version": "2021.1.2"
+    implementation group: "org.photonvision.lib", name: "PhotonLib-java", version: "2021.1.2"
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
-    simulation wpi.deps.sim.driverstation(wpi.platforms.desktop, false)
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
+//    implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '11.0.1'
 
-    // Websocket extensions require additional configuration.
-    // simulation wpi.deps.sim.ws_server(wpi.platforms.desktop, false)
-    // simulation wpi.deps.sim.ws_client(wpi.platforms.desktop, false)
-}
-
-// Simulation configuration (e.g. environment variables).
-sim {
-    // Sets the websocket client remote host.
-    // envVar "HALSIMWS_HOST", "10.0.0.2"
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
