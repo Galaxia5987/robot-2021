@@ -10,13 +10,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.PTO.commands.SwitchSubsystems;
 import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.commands.ManageClimb;
 import frc.robot.subsystems.climber.commands.SetDrum;
 import frc.robot.subsystems.climber.commands.SetStopper;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -24,10 +21,9 @@ import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.VisionModule;
-import frc.robot.utils.vision_commands.TurnOffLeds;
+import frc.robot.utils.vision_commands.ToggleLEDs;
 import frc.robot.valuetuner.ValueTuner;
 import frc.robot.valuetuner.WebConstant;
-import org.photonvision.LEDMode;
 import webapp.Webserver;
 
 
@@ -102,7 +98,7 @@ public class RobotContainer {
         b.whenPressed(new SetStopper(climber, Climber.PistonMode.CLOSED));
         x.whenPressed(new SetDrum(climber, Climber.PistonMode.OPEN));
         y.whenPressed(new SetDrum(climber, Climber.PistonMode.CLOSED));
-        LT.whenPressed(new TurnOffLeds());
+        LT.whenPressed(new ToggleLEDs());
 
     }
 
