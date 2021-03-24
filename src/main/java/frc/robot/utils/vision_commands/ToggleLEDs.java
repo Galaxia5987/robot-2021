@@ -5,7 +5,7 @@ import frc.robot.utils.VisionModule;
 import org.photonvision.LEDMode;
 
 /**
- * Once upon a time, Quezar (2021's robot) had a little poo poo, and in order to toggle the LEDs we needed first to blink and then to turn the LEDs on
+ * Once upon a time, Quasar (2021's robot) had a little poo poo, and in order to toggle the LEDs we needed first to blink and then to turn the LEDs on.
  */
 public class ToggleLEDs extends ParallelCommandGroup {
 
