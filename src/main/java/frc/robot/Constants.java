@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.util.Units;
-
 import frc.robot.valuetuner.WebConstant;
 
 /**
@@ -16,7 +15,8 @@ public final class Constants {
 
     public static final double LOOP_PERIOD = 0.02; // [s]
     public static final double NOMINAL_VOLTAGE = 12; // [volts]
-    public static final int TALON_TIMEOUT = 10; //Waiting period for configurations [ms].
+    public static final int TALON_TIMEOUT = 10; // Waiting period for configurations [ms].
+    public static final boolean ENABLE_CURRENT_LIMIT = true;
 
     public static class Climber {
         public static final double TICKS_PER_METER = 2048 * 0.03 * Math.PI * 100;
@@ -70,7 +70,7 @@ public final class Constants {
 
     public static final class Funnel {
         public static final double POWER = 0.8; //the default output of Funnel's motor (%)
-        public static final double POWER_SLOW = 0.45;
+        public static final double POWER_SLOW = 0.4;
     }
 
     // TODO: Change the values
@@ -104,7 +104,6 @@ public final class Constants {
         public static final Pose2d RED_INNER_POWER_PORT_LOCATION = new Pose2d();
         public static final Pose2d RED_OUTER_POWER_PORT_LOCATION = new Pose2d();
     }
-    public static final boolean ENABLE_CURRENT_LIMIT = true;
 
     public static class SwerveDrive {
 
