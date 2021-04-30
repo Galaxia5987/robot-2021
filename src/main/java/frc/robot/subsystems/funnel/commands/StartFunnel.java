@@ -35,15 +35,17 @@ public class StartFunnel extends CommandBase {
 
     @Override
     public void execute() {
-        if (timmy.get() - last > 1) {
-            funnel.toggle();
-            last = timmy.get();
-//            funnel.setPower(0);
-        } else {
-            if (!Conveyor.hasFunnelSensedObject()) {
-                funnel.setPower(isMovingUp ? Constants.Funnel.POWER : -Constants.Funnel.POWER);
+        if (isMovingUp) {
+            if (timmy.get() - last > 1) {
+                funnel.toggle();
+                last = timmy.get();
+                //            funnel.setPower(0);
             } else {
-                funnel.setPower(Constants.Funnel.POWER_SLOW);
+                if (!Conveyor.hasFunnelSensedObject()) {
+                    funnel.setPower(isMovingUp ? Constants.Funnel.POWER : -Constants.Funnel.POWER);
+                } else {
+                    funnel.setPower(Constants.Funnel.POWER_SLOW);
+                }
             }
         }
     }
