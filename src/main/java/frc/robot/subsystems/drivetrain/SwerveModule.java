@@ -82,7 +82,7 @@ public class SwerveModule extends SubsystemBase {
      * @return the speed of the wheel in [m/s]
      */
     public double getSpeed() {
-        return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(1));
+        return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(0));
     }
 
     /**
