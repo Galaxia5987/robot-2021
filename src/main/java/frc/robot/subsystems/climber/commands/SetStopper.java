@@ -14,7 +14,6 @@ public class SetStopper extends InstantCommand {
     public SetStopper(Climber climber, Climber.PistonMode mode) {
         this.climber = climber;
         this.mode = mode;
-        addRequirements(climber);
     }
 
     @Override

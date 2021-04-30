@@ -10,7 +10,6 @@ public class SetDrum extends InstantCommand {
     public SetDrum(Climber climber, Climber.PistonMode mode) {
         this.climber = climber;
         this.mode = mode;
-        addRequirements(climber);
     }
 
     @Override
