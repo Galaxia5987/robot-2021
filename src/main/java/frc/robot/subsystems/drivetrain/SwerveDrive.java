@@ -55,8 +55,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param rotation the rotation Z of the joystick
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
-
-        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(Robot.navx.getYaw() + 90));
+        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(180 - Robot.navx.getYaw()));
 
         double[] velocities = calculateWheelVelocities(robotHeading);
         double[] polar;
