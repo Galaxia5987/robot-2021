@@ -1,6 +1,8 @@
 package frc.robot.commandgroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.subsystems.PTO.PTO;
+import frc.robot.subsystems.PTO.commands.SwitchSubsystems;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.FeedShooter;
 import frc.robot.subsystems.shooter.Shooter;
@@ -10,8 +12,9 @@ import static frc.robot.RobotContainer.velocity;
 
 public class FeedAndShoot extends ParallelCommandGroup {
 
-    public FeedAndShoot(Conveyor conveyor, Shooter shooter, double power) {
+    public FeedAndShoot(PTO pto, Conveyor conveyor, Shooter shooter, double power) {
         addCommands(
+                new SwitchSubsystems(pto, false),
                 new FeedShooter(conveyor, power),
                 new Shoot(shooter)
         );
