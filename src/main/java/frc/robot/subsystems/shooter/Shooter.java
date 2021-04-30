@@ -190,7 +190,10 @@ public class Shooter extends SubsystemBase {
     public void setPowerUp(double power) {
         if (RobotContainer.pto.getState() == PTO.GearboxState.CLIMBER) return;
 
-        upMotor.set(ControlMode.PercentOutput, power, DemandType.ArbitraryFeedForward, ARBITRARY_FEED_FORWARD_UP);
+        if (Math.abs(power) < 0.01)
+            upMotor.set(ControlMode.PercentOutput, 0);
+        else
+            upMotor.set(ControlMode.PercentOutput, power, DemandType.ArbitraryFeedForward, ARBITRARY_FEED_FORWARD_UP);
     }
 
     /**
