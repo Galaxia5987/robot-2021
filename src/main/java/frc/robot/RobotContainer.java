@@ -5,23 +5,30 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commandgroups.FeedAndShoot;
+import frc.robot.commandgroups.FeedAndShootWithoutVision;
 import frc.robot.commandgroups.PickupBalls;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.PTO.commands.SwitchSubsystems;
 import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.commands.PercentClimb;
 import frc.robot.subsystems.climber.commands.SetStopper;
+import frc.robot.subsystems.climber.commands.StartClimb;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.FeedShooter;
+import frc.robot.subsystems.conveyor.commands.MinimizeConveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
-import frc.robot.subsystems.drivetrain.commands.TurnToTarget;
+import frc.robot.subsystems.drivetrain.commands.*;
 import frc.robot.subsystems.funnel.Funnel;
+import frc.robot.subsystems.funnel.commands.StartFunnel;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
+import frc.robot.subsystems.shooter.commands.ShootWithoutVision;
 import frc.robot.utils.VisionModule;
+import frc.robot.utils.vision_commands.ChangeLEDs;
 import frc.robot.utils.vision_commands.ToggleLEDs;
 import frc.robot.valuetuner.ValueTuner;
 import org.techfire225.webapp.Webserver;
@@ -40,8 +47,8 @@ public class RobotContainer {
     public Shooter shooter = new Shooter();
     public Climber climber = new Climber();
     //    public VisionModule visionModule = new VisionModule();
-    public static XboxController Xbox = new XboxController(1);
-    public static XboxController XboxDriver = new XboxController(2);
+    public static XboxController Xbox = new XboxController(2);
+    public static XboxController XboxDriver = new XboxController(3);
     public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
     public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);
     public JoystickButton x = new JoystickButton(Xbox, XboxController.Button.kX.value);
@@ -53,6 +60,8 @@ public class RobotContainer {
     public JoystickButton y = new JoystickButton(Xbox, XboxController.Button.kY.value);
     public Conveyor conveyor = new Conveyor();
     public JoystickButton LT = new JoystickButton(Xbox, XboxController.Button.kStickLeft.value);
+    public JoystickButton start = new JoystickButton(Xbox, XboxController.Button.kStart.value);
+    public JoystickButton stop = new JoystickButton(Xbox, XboxController.Button.kBack.value);
 
     public SwerveDrive swerveDrive = new SwerveDrive(true, false);
 
@@ -68,8 +77,11 @@ public class RobotContainer {
             startValueTuner();
             startFireLog();
         }
-        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
+//        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
+//        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
+//        swerveDrive.setDefaultCommand(new DriveForward(swerveDrive));
     }
+
 
     /**
      * Use this method to define your button->command mappings.  Buttons can be created by
@@ -79,12 +91,21 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
 
-        a.whileHeld(new PickupBalls(intake, funnel, conveyor, true));
-        x.whileHeld(new FeedAndShoot(conveyor, shooter, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
-        y.whileHeld(new PickupBalls(intake, funnel, conveyor, false));
-//        xDriver.whileHeld(new TurnToTarget(swerveDrive, visionOutput::get));
-        b.whileHeld(new FeedShooter(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
-
+//        a.whileHeld(new PickupBalls(intake, funnel, conveyor, true));
+        a.whenPressed(new ChangeLEDs(true));
+        b.whenPressed(new ChangeLEDs(false));
+//        a.whileHeld(new FeedShooter(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+//        b.whileHeld(new PickupBalls(intake, funnel, conveyor, false));
+//        x.whileHeld(new FeedAndShoot(pto, conveyor, shooter, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+//        y.whileHeld(new PickupBalls(intake, funnel, conveyor, true));
+//        xDriver.whileHeld(new InstantCommand(() -> swerveDrive.lock()));
+//        b.whileHeld(new FeedShooter(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+//        BR.whileHeld(new FeedShooter(conveyor, -Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+//        BL.whileHeld(new FeedAndShootWithoutVision(conveyor, shooter, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+//        a.whenPressed(new InstantCommand(() -> intake.togglePiston()));
+//        LT.whileHeld(new StartFunnel(funnel, false));
+//        start.whenPressed(new StartClimb(pto, climber));
+//        stop.whileHeld(new PercentClimb(climber, () -> Xbox.getY(GenericHID.Hand.kLeft)));
     }
 
 
@@ -96,7 +117,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-
         // An ExampleCommand will run in autonomous
         return null;
     }

@@ -73,10 +73,7 @@ public class Climber extends SubsystemBase {
      * Toggle the piston mode of the piston responsible for the stopper.
      */
     public void toggleStopper() {
-        if (stopper.get() == false)
-            stopper.set(true);
-        else
-            stopper.set(false);
+        stopper.set(!stopper.get());
     }
 
     @Override

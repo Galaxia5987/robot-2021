@@ -110,8 +110,8 @@ public class PTO extends SubsystemBase {
      * @param isClimber whether the new state is the climber subsystem.
      */
     public void changePiston(boolean isClimber) {
-        GearboxState state = isClimber ? GearboxState.CLIMBER : GearboxState.SHOOTER;
-        if (getState() == state) return;
+//        GearboxState state = isClimber ? GearboxState.CLIMBER : GearboxState.SHOOTER;
+//        if (getState() == state) return;
         
         if (isClimber) {
             piston.set(true);
