@@ -98,6 +98,7 @@ public class SwerveModule extends SubsystemBase {
      * @param speed the speed of the wheel in [m/s]
      */
     public void setSpeed(double speed) {
+        //System.out.println("fff" + speed) ;
         driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(speed));
     }
 

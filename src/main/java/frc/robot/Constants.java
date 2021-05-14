@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.valuetuner.WebConstant;
 
@@ -165,7 +166,7 @@ public final class Constants {
         public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
         public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
 
-        public static final int[] ZERO_POSITION = {-759, 342, 1268, 2325};
+        public static final int[] ZERO_POSITION = {768, 175, 763, 806};
 
         // sick man
         // the module that has more friction in the rotating mechanism
@@ -180,6 +181,18 @@ public final class Constants {
         public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
         public static final int VOLTAGE_SATURATION = 12; // volts
 
+    }
+
+    public static class Autonomous {
+        public static final double MAX_ACCELERATION = 2;
+        public static final double MAX_VELOCITY = 3;
+        public static final double kPThetaController = 1;
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints();
+        public static final double kPXController = 4;
+        public static final double kPYController = 1;
+        public static final double MAX_CENTRIPETAL_ACCELERATION = 1.2;
+
+        public static final String TEST_PATH =  "paths/Test.wpilib.json";
     }
 
 }

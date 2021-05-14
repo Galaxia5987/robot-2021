@@ -1,9 +1,19 @@
 package frc.robot.subsystems.drivetrain;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.RobotContainer;
 import frc.robot.Utils;
 import org.techfire225.webapp.FireLog;
 
@@ -14,18 +24,39 @@ import static frc.robot.Ports.SwerveDrive.*;
  */
 public class SwerveDrive extends SubsystemBase {
 
-    private static double[][] dynamics = new double[8][3];
-    private SwerveModule[] swerveModules = new SwerveModule[4];
-
+    private static final double[][] dynamics = new double[8][3];
     // calculates the distance from the center of the robot to the wheels
-    private static double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
-    private static double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
-
+    private static final double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
+    private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
     // the sign vectors of Rx and Ry
-    private static double[] signX = {1, 1, -1, -1};
-    private static double[] signY = {-1, 1, -1, 1};
-
+    private static final double[] signX = {1, 1, -1, -1};
+    private static final double[] signY = {-1, 1, -1, 1};
     private static boolean isFieldOriented;
+
+    private final Timer timer = new Timer();
+
+    public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+            new Translation2d(signX[0] * Rx, signY[0] * Ry),
+            new Translation2d(signX[1] * Rx, signY[1] * Ry),
+            new Translation2d(signX[2] * Rx, signY[2] * Ry),
+            new Translation2d(signX[3] * Rx, signY[3] * Ry)
+    );
+
+    private final SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
+            new Rotation2d(Math.toRadians(Robot.navx.getYaw())),
+            new Pose2d(),
+            kinematics,
+            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+            VecBuilder.fill(Units.degreesToRadians(0.01)),
+            VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))
+    );
+
+    private TrajectoryConfig config = new TrajectoryConfig(Constants.Autonomous.MAX_VELOCITY,
+            Constants.Autonomous.MAX_ACCELERATION)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(kinematics);
+
+    private final SwerveModule[] swerveModules = new SwerveModule[4];
 
     public SwerveDrive(boolean isFieldOriented, boolean testMode) {
         createInverseMatrix();
@@ -44,45 +75,10 @@ public class SwerveDrive extends SubsystemBase {
                     Constants.SwerveModule.ANGLE_PIDF, Constants.SwerveModule.DRIVE_PIDF);
         }
 
-        this.isFieldOriented = isFieldOriented;
-    }
+        SwerveDrive.isFieldOriented = isFieldOriented;
 
-    /**
-     * Sets the wheels of the robot to the calculated angle and speed.
-     *
-     * @param forward  the Y value of the joystick
-     * @param strafe   the X value of the joystick
-     * @param rotation the rotation Z of the joystick
-     */
-    public void holonomicDrive(double forward, double strafe, double rotation) {
-        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(180 - Robot.navx.getYaw()));
-
-        double[] velocities = calculateWheelVelocities(robotHeading);
-        double[] polar;
-        double[][] controls = new double[4][2];
-
-        // converts the cartesian velocities to polar and transfers them to a control matrix
-        for (int i = 0; i < 4; i++) {
-            polar = Utils.cartesianToPolar(velocities[2 * i + 1], velocities[2 * i]);
-            controls[i][0] = polar[0];
-            controls[i][1] = polar[1];
-        }
-
-        // feeds the corresponding control to each wheel
-        for (int k = 0; k < 4; k++) {
-            swerveModules[k].setSpeed(controls[k][0]);
-            swerveModules[k].setAngle(controls[k][1]);
-        }
-
-        double sumx = 0;
-        double sumy = 0;
-        for (int j = 0; j < 4; j++) {
-            sumx += velocities[j * 2];
-            sumy += velocities[j * 2 + 1];
-        }
-        double[] target = Utils.cartesianToPolar(sumx, sumy);
-        FireLog.log("target velocity", target[0]);
-        FireLog.log("target angle", target[1]);
+        timer.reset();
+        timer.start();
     }
 
     /**
@@ -122,6 +118,48 @@ public class SwerveDrive extends SubsystemBase {
     public static double[] calculateWheelVelocities(double[] robotHeading) {
         // multiplies M by the robotHeading to obtain the wheel velocities
         return Utils.matrixVectorMult(dynamics, robotHeading);
+    }
+
+    public SwerveDriveKinematics getKinematics() {
+        return kinematics;
+    }
+
+    /**
+     * Sets the wheels of the robot to the calculated angle and speed.
+     *
+     * @param forward  the Y value of the joystick
+     * @param strafe   the X value of the joystick
+     * @param rotation the rotation Z of the joystick
+     */
+    public void holonomicDrive(double forward, double strafe, double rotation) {
+        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(180 - Robot.navx.getYaw()));
+
+        double[] velocities = calculateWheelVelocities(robotHeading);
+        double[] polar;
+        double[][] controls = new double[4][2];
+
+        // converts the cartesian velocities to polar and transfers them to a control matrix
+        for (int i = 0; i < 4; i++) {
+            polar = Utils.cartesianToPolar(velocities[2 * i + 1], velocities[2 * i]);
+            controls[i][0] = polar[0];
+            controls[i][1] = polar[1];
+        }
+
+        // feeds the corresponding control to each wheel
+        for (int k = 0; k < 4; k++) {
+            swerveModules[k].setSpeed(controls[k][0]);
+            swerveModules[k].setAngle(controls[k][1]);
+        }
+
+        double sumx = 0;
+        double sumy = 0;
+        for (int j = 0; j < 4; j++) {
+            sumx += velocities[j * 2];
+            sumy += velocities[j * 2 + 1];
+        }
+        double[] target = Utils.cartesianToPolar(sumx, sumy);
+        FireLog.log("target velocity", target[0]);
+        FireLog.log("target angle", target[1]);
     }
 
     /**
@@ -252,5 +290,36 @@ public class SwerveDrive extends SubsystemBase {
             swerveModule.setAngle(swerveModule.getAngle());
         }
     }
+
+    public Pose2d getPose() {
+        return odometry.getEstimatedPosition();
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        odometry.resetPosition(pose, new Rotation2d(Robot.navx.getYaw()));
+    }
+
+    public TrajectoryConfig getConfig() {
+        return config;
+    }
+
+
+    @Override
+    public void periodic() {
+        SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
+        for (int i = 0; i < 4; i++) {
+            swerveModuleState[i] = new SwerveModuleState(swerveModules[i].getSpeed(), new Rotation2d(Math.toRadians(90) - swerveModules[i].getAngle()));
+            SmartDashboard.putNumber("" + i, swerveModuleState[i].angle.getDegrees());
+            SmartDashboard.putNumber("vel" + i, swerveModuleState[i].speedMetersPerSecond);
+            SmartDashboard.putNumber("correct angle " + i, swerveModules[i].getAngle());
+
+        }
+
+        odometry.updateWithTime(timer.get(),
+                new Rotation2d(Math.toRadians(Robot.navx.getYaw())),
+                swerveModuleState
+        );
+    }
+
 
 }
