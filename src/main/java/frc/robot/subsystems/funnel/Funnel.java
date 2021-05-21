@@ -3,7 +3,6 @@ package frc.robot.subsystems.funnel;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
 
@@ -12,7 +11,7 @@ import frc.robot.Ports;
  */
 public class Funnel extends SubsystemBase {
     private VictorSPX motor = new VictorSPX(Ports.Funnel.MOTOR);
-    private Solenoid blop = new Solenoid(Ports.Funnel.blop);
+    private Solenoid blop = new Solenoid(Ports.Funnel.BLOP);
 
 
     public Funnel() {
