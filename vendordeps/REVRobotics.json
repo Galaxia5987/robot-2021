@@ -27,7 +27,6 @@
         "linuxathena",
         "linuxraspbian"
       ],
-      "groupId": "com.revrobotics.frc",
       "headerClassifier": "headers",
       "libName": "SparkMaxDriver",
       "sharedLibrary": false,

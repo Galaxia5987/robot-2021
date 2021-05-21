@@ -71,7 +71,7 @@ public class VisionModule extends SubsystemBase {
     public static double getRobotDistance() {
         if (filteredDistance == -1) return -1;
         double a = Constants.Vision.VISION_ROTATION_RADIUS + filteredDistance;
-        double b = Constants.Vision.ROBOT_TO_TURRET_CENTER;
+        double b = Constants.Vision.VISION_TO_CENTER;
         return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2) - 2 * a * b * Math.cos(Math.toRadians(-Robot.navx.getAngle()))); //Cosine law
     }
 
@@ -104,5 +104,5 @@ public class VisionModule extends SubsystemBase {
             }
             SmartDashboard.putNumber("VisionDistance", distance);
         }
-    }
+	}
 }
