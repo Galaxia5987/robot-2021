@@ -51,6 +51,7 @@ public class Shooter extends SubsystemBase {
     private LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
     private double lastOmega = 0;
     private double lastTime = 1;
+    private boolean visionUp = false;
 
     public Shooter() {
         this.stateSpacePredictor = constructLinearSystem(J.get());
@@ -228,10 +229,15 @@ public class Shooter extends SubsystemBase {
         setPowerUp(0);
     }
 
+    public void togglePiston() {
+        solenoid.set(!visionUp);
+        visionUp = !visionUp;
+    }
+
     @Override
     public void periodic() {
         shootingTimer.start();
-        solenoid.set(true);
+//        solenoid.set(true);
         final double currentTime = shootingTimer.get();
         double omega = getVelocity() * Units.inchesToMeters(4);
         FireLog.log("velocity", getVelocity());
