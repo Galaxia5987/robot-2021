@@ -1,6 +1,5 @@
 package frc.robot.subsystems.intake.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.intake.Intake;
 
@@ -9,7 +8,8 @@ import frc.robot.subsystems.intake.Intake;
  * i.e. opened --> closed & closed --> opened
  */
 public class ToggleIntake extends InstantCommand {
-    private Intake intake;
+    private final Intake intake;
+
     public ToggleIntake(Intake i) {
         intake = i;
         addRequirements(intake);
