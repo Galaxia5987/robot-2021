@@ -102,6 +102,7 @@ public final class Constants {
         public static final double ROBOT_TO_TURRET_CENTER = 0.3079;
         public static final double HEIGHT = 0.66;
         public static final double TARGET_HEIGHT = 2.23;
+        public static final double VISION_TO_CENTER = 0;
 
         public static final Pose2d RED_INNER_POWER_PORT_LOCATION = new Pose2d();
         public static final Pose2d RED_OUTER_POWER_PORT_LOCATION = new Pose2d();

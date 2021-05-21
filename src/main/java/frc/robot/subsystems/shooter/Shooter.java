@@ -4,15 +4,12 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.Solenoid;
-import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.ControlType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.system.LinearSystem;
 import edu.wpi.first.wpilibj.system.LinearSystemLoop;
 import edu.wpi.first.wpilibj.util.Units;
@@ -27,9 +24,6 @@ import frc.robot.Ports;
 import frc.robot.RobotContainer;
 import frc.robot.UnitModel;
 import frc.robot.subsystems.PTO.PTO;
-import frc.robot.utils.VisionModule;
-import frc.robot.subsystems.UnitModel;
-import frc.robot.valuetuner.WebConstant;
 import org.apache.commons.lang.math.DoubleRange;
 import webapp.FireLog;
 
@@ -55,21 +49,13 @@ public class Shooter extends SubsystemBase {
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
     private final Solenoid solenoid = new Solenoid(Ports.Shooter.solenoid);
 
-    private final LinearRegression velocityEstimator;
     private final Timer shootingTimer = new Timer();
-
     private LinearSystemLoop<N1, N1, N1> upMotorStateSpacePredictor;
     private LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
-    private LinearSystemLoop<N1, N1, N1> upMotorStateSpacePredictor;
     private State state;
     private double lastOmega = 0;
     private double lastTime = 1;
     private boolean visionUp = false;
-
-    private WebConstant kp = new WebConstant("kp", 0);
-    private WebConstant ki = new WebConstant("ki", 0);
-    private WebConstant kd = new WebConstant("kd", 0);
-    private WebConstant kf = new WebConstant("kf", 0);
 
     public Shooter() {
         this.stateSpacePredictor = constructLinearSystem(J.get());
@@ -77,16 +63,6 @@ public class Shooter extends SubsystemBase {
 
         upMotor.setInverted(Ports.Shooter.UP_INVERTED);
 
-//        hoodPID.setP(kp.get());
-//        hoodPID.setI(ki.get());
-//        hoodPID.setD(kd.get());
-//        hoodPID.setIZone(0);
-//        hoodPID.setFF(kf.get());
-//        hoodPID.setSmartMotionMaxVelocity(2000, 0);
-//        hoodPID.setSmartMotionMaxAccel(1500, 0);
-//        hoodPID.setSmartMotionAllowedClosedLoopError(0.01, 0);
-//        hoodPID.setSmartMotionMinOutputVelocity(0, 0);
-//        hoodPID.setOutputRange(-1, 1);
         this.state = State.HIGH;
     }
 
@@ -134,13 +110,7 @@ public class Shooter extends SubsystemBase {
 
     // hood
     public void changeState(State newState) {
-//        System.out.println("POsi" + hoodMotor.getEncoder().getPosition());
-
-//        double distance = state.getDistance(newState);
-//        System.out.println(distance);
-//        hoodPID.setReference(newState.position, ControlType.kSmartMotion); // it's maybe apply power directly to the spark max
-        hoodMotor.set(kp.get());
-//        System.out.println(hoodMotor.get());
+        this.state = newState;
     }
 
     /**
@@ -166,28 +136,7 @@ public class Shooter extends SubsystemBase {
 
         return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
     }
-	
-    /**
-     * @return the velocity of the shooter. [RPS]
-     * @see #setVelocity(double, double)
-     */
-    public double getVelocity() {
-        if (RobotContainer.pto.getState() == PTO.GearboxState.CLIMBER) {
-            return 0;
-        }
 
-        return unitModel.toVelocity(RobotContainer.pto.getMaster().getSelectedSensorVelocity());
-    }
-
-    /**
-     * Set the velocity to apply by the motor.
-     *
-     * @param velocity the desired velocity at which the motor will rotate. [RPS]
-     * @see #setVelocity(double, double)
-     */
-    public void setVelocity(double velocity) {
-        setVelocity(velocity, Constants.LOOP_PERIOD);
-    }
 
     public double getCurrent() {
         return RobotContainer.pto.getMaster().getSupplyCurrent();
@@ -283,7 +232,7 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         shootingTimer.start();
-//        solenoid.set(true);
+
         final double currentTime = shootingTimer.get();
         double omega = getVelocity() * Units.inchesToMeters(4);
         FireLog.log("velocity", getVelocity());
@@ -298,11 +247,6 @@ public class Shooter extends SubsystemBase {
         lastOmega = omega;
         this.stateSpacePredictor = constructLinearSystem(J.get());
         this.upMotorStateSpacePredictor = constructLinearSystem(UP_MOTOR_J.get());
-
-//        hoodPID.setP(kp.get());
-//        hoodPID.setI(ki.get());
-//        hoodPID.setD(kd.get());
-//        hoodPID.setFF(kf.get());
     }
 
     public enum State {
