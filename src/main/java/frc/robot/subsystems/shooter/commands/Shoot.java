@@ -9,6 +9,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.shooter.LinearRegression;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.VisionModule;
+import frc.robot.valuetuner.WebConstant;
 import org.ejml.ops.ConvertDMatrixStruct;
 import webapp.FireLog;
 
@@ -23,6 +24,7 @@ public class Shoot extends CommandBase {
     private final Shooter shooter;
     private final Timer shootingTimer = new Timer();
     private double lastTime = 0;
+    public WebConstant vel = new WebConstant("velocity", 0);
 
     public Shoot(Shooter shooter) {
         this.shooter = shooter;
@@ -39,9 +41,10 @@ public class Shoot extends CommandBase {
         final double currentTime = shootingTimer.get();
         double distance = VisionModule.getTargetRawDistance(Math.toRadians(66));
         if (distance > 0) {
-            double velocity = shooter.estimateVelocityFromDistance(distance);
-            shooter.setVelocity(velocity, currentTime - lastTime);
-            shooter.setVelocityUp(velocity / 2.0, currentTime - lastTime);
+            SmartDashboard.putNumber("vision-distance", distance);
+//            double velocity = shooter.estimateVelocityFromDistance(distance);
+            shooter.setVelocity(vel.get(), currentTime - lastTime);
+//            shooter.setVelocityUp(velocity / 2.0, currentTime - lastTime);
         }
         lastTime = currentTime;
 

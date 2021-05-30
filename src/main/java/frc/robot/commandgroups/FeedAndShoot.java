@@ -8,7 +8,7 @@ import frc.robot.subsystems.conveyor.commands.FeedShooter;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
-import static frc.robot.RobotContainer.velocity;
+//import static frc.robot.RobotContainer.velocity;
 
 public class FeedAndShoot extends ParallelCommandGroup {
 

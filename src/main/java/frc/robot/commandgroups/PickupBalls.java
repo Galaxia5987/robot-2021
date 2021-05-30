@@ -9,11 +9,13 @@ import frc.robot.subsystems.funnel.commands.StartFunnel;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.StartIntake;
 
+import java.util.function.DoubleSupplier;
+
 public class PickupBalls extends ParallelCommandGroup {
 
-    public PickupBalls(Intake intake, Funnel funnel, Conveyor conveyor, boolean up) {
+    public PickupBalls(Intake intake, Funnel funnel, Conveyor conveyor, DoubleSupplier power, boolean up) {
         addCommands(
-                new StartIntake(intake, up),
+                new StartIntake(intake, power, up),
                 new StartFunnel(funnel, up),
                 new LoadConveyor(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER)
         );

@@ -2,10 +2,10 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
@@ -25,7 +25,6 @@ import frc.robot.RobotContainer;
 import frc.robot.UnitModel;
 import frc.robot.subsystems.PTO.PTO;
 import org.apache.commons.lang.math.DoubleRange;
-import webapp.FireLog;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,28 +41,21 @@ import static frc.robot.Constants.Shooter.*;
  * @since 2021
  */
 public class Shooter extends SubsystemBase {
-
-    // hood
-    public final CANSparkMax hoodMotor = new CANSparkMax(Ports.Shooter.HOOD, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final TalonFX upMotor = new TalonFX(Ports.Shooter.UP);
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
-    private final Solenoid solenoid = new Solenoid(Ports.Shooter.solenoid);
+    private final Solenoid solenoid = new Solenoid(Ports.Shooter.SOLENOID);
 
     private final Timer shootingTimer = new Timer();
     private LinearSystemLoop<N1, N1, N1> upMotorStateSpacePredictor;
     private LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
-    private State state;
-    private double lastOmega = 0;
-    private double lastTime = 1;
+
     private boolean visionUp = false;
 
     public Shooter() {
         this.stateSpacePredictor = constructLinearSystem(J.get());
-        this.upMotorStateSpacePredictor = constructLinearSystem(UP_MOTOR_J.get());
+        this.upMotorStateSpacePredictor = constructLinearSystem(UP_MOTOR_J);
 
         upMotor.setInverted(Ports.Shooter.UP_INVERTED);
-
-        this.state = State.HIGH;
     }
 
     /**
@@ -88,15 +80,6 @@ public class Shooter extends SubsystemBase {
         setVelocity(velocity, Constants.LOOP_PERIOD);
     }
 
-    /**
-     * Estimate the velocity that the shooter should apply in order to reach the target.
-     *
-     * @param distance the distance from the target. [meters]
-     * @return the velocity that should be applied by the shooter in order to reach the target.[RPS]
-     */
-    public double estimateVelocityFromDistance(double distance) {
-        return state.velocityEstimator.estimateVelocityFromDistance(distance);
-    }
 
     /**
      * Get whether the flywheel has reached the desired velocity in order to reach the target.
@@ -104,13 +87,9 @@ public class Shooter extends SubsystemBase {
      * @param setpoint the desired velocity at the motor will rotate. [RPS]
      * @return whether the flywheel reaches the desired velocity.
      */
+    @SuppressWarnings("unused")
     public boolean hasReachedSetpoint(double setpoint) {
         return Math.abs(getVelocity() - setpoint) < Constants.Shooter.VELOCITY_TOLERANCE;
-    }
-
-    // hood
-    public void changeState(State newState) {
-        this.state = newState;
     }
 
     /**
@@ -235,65 +214,20 @@ public class Shooter extends SubsystemBase {
 
         final double currentTime = shootingTimer.get();
         double omega = getVelocity() * Units.inchesToMeters(4);
-        FireLog.log("velocity", getVelocity());
+        /*FireLog.log("velocity", getVelocity());
         FireLog.log("up-velocity", unitModel.toVelocity(upMotor.getSelectedSensorVelocity()));
         FireLog.log("radial-velocity", omega);
         FireLog.log("setpoint", RobotContainer.velocity.get());
         FireLog.log("accl-omega", (omega - lastOmega) / (currentTime - lastTime));
         FireLog.log("voltage", 12);
         FireLog.log("current", getCurrent());
-        lastTime = currentTime;
+        */
 
-        lastOmega = omega;
         this.stateSpacePredictor = constructLinearSystem(J.get());
-        this.upMotorStateSpacePredictor = constructLinearSystem(UP_MOTOR_J.get());
+        this.upMotorStateSpacePredictor = constructLinearSystem(UP_MOTOR_J);
+
     }
 
-    public enum State {
-        // TODO: must use real path to csv
-        LOW(9.119082451, new DoubleRange(0, 0), "/Low.csv"),
-        MIDDLE(0.571429014, new DoubleRange(0, 0), "/Middle.csv"),
-        HIGH(-2.976187944, new DoubleRange(0, 0), "/High.csv");
 
-        public final DoubleRange shootingRange; // [min, max] meters
-        public final LinearRegression velocityEstimator;
-        private final double position; //[ticks]
 
-        State(double position, DoubleRange range, String pathToCsv) {
-            this.position = position;
-            this.shootingRange = range;
-            this.velocityEstimator = new LinearRegression(readCSV(pathToCsv));
-        }
-
-        //distance - meters
-        public static State getOptimalState(double distance) {
-            State current = LOW;
-            double minVelocity = LOW.velocityEstimator.estimateVelocityFromDistance(distance);
-            for (State state : State.values()) {
-                double currentVelocity = state.velocityEstimator.estimateVelocityFromDistance(distance);
-                if (currentVelocity < minVelocity) {
-                    minVelocity = currentVelocity;
-                    current = state;
-                }
-            }
-            return current;
-        }
-
-        /**
-         * Internal function to create an input stream reader, in order values from the shooting experiments.
-         *
-         * @return a reader to the CSV.6
-         */
-        private InputStreamReader readCSV(String path) {
-            InputStream is = getClass().getResourceAsStream(path);
-            assert is != null : "Can't create input stream";
-
-            return new InputStreamReader(is);
-        }
-
-        // ticks
-        public double getDistance(State other) {
-            return other.position - position;
-        }
-    }
 }

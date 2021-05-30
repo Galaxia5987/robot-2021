@@ -17,8 +17,8 @@ public class ShootWithoutVision extends CommandBase {
 
     @Override
     public void execute() {
-        shooter.setVelocity(77);
-        shooter.setVelocityUp(77/2.0);
+        shooter.setVelocity(35);
+        shooter.setVelocityUp(35/2.0);
     }
 
     @Override

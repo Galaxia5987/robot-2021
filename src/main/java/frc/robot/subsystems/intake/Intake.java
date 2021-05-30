@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
     }
 
     /**
-     * toggles piston's state (opened --> closed || closed -- > opened)
+     * toggles piston's state (opened to closed || closed to opened)
      */
     public void togglePiston() {
         solenoid.toggle();

@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.VisionModule;
 import org.photonvision.LEDMode;
+import org.techfire225.webapp.FireLog;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -26,13 +26,12 @@ import org.photonvision.LEDMode;
  * project.
  */
 public class Robot extends TimedRobot {
+    public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     public static boolean debug = true;
+    public PowerDistributionPanel pdp = new PowerDistributionPanel();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
-    public PowerDistributionPanel pdp = new PowerDistributionPanel();
     private Compressor compressor = new Compressor(0);
-    public static final AHRS navx = new AHRS(SPI.Port.kMXP);
-
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -112,6 +111,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        FireLog.log("hood_velocity", m_robotContainer.hood.getHoodVelocity());
+        FireLog.log("hood_position", m_robotContainer.hood.getHoodPosition());
     }
 
     @Override

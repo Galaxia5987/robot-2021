@@ -44,13 +44,15 @@ public class VisionModule extends SubsystemBase {
 
     @Nullable
     public static Pose2d getPose(double cameraPitch) {
-        if (!targetSeen() || camera.getLatestResult() == null || camera.getLatestResult().getBestTarget() == null) return null;
+        if (!targetSeen() || camera.getLatestResult() == null || camera.getLatestResult().getBestTarget() == null)
+            return null;
         return PhotonUtils.estimateFieldToRobot(Constants.Vision.HEIGHT, Constants.Vision.TARGET_HEIGHT,
                 cameraPitch, camera.getLatestResult().getBestTarget().getPitch(),
                 new Rotation2d(), new Rotation2d(), new Pose2d(), new Transform2d()); //TODO: use real rotations
     }
 
     /**
+     * @param cameraPitch the angle of the camera.
      * @return The distance the camera sees, in meters.
      */
     public static double getTargetRawDistance(double cameraPitch) {
@@ -104,5 +106,5 @@ public class VisionModule extends SubsystemBase {
             }
             SmartDashboard.putNumber("VisionDistance", distance);
         }
-	}
+    }
 }

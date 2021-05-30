@@ -1,31 +1,28 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commandgroups.ShootAndAdjust;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.FeedShooter;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.autonomous.FollowPath;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.funnel.Funnel;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.commands.AdjustHood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.*;
 import frc.robot.utils.VisionModule;
-import frc.robot.utils.vision_commands.ChangeLEDs;
 import frc.robot.valuetuner.ValueTuner;
 import frc.robot.valuetuner.WebConstant;
+import org.photonvision.LEDMode;
 import org.techfire225.webapp.Webserver;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Path;
-import java.util.Locale;
 
 
 /**
@@ -34,7 +31,7 @@ import java.util.Locale;
  */
 public class RobotContainer {
     public static final PTO pto = new PTO();
-    public static final WebConstant velocity = new WebConstant("velocity", 69);
+//    public static final WebConstant velocity = new WebConstant("velocity", 69);
     public static final VisionModule vision = new VisionModule();
     //    public VisionModule visionModule = new VisionModule();
     public static XboxController Xbox = new XboxController(2);
@@ -42,6 +39,7 @@ public class RobotContainer {
     public Funnel funnel = new Funnel();
     public Shooter shooter = new Shooter();
     public Climber climber = new Climber();
+    public Hood hood = new Hood();
     public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
     public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);
     public JoystickButton x = new JoystickButton(Xbox, XboxController.Button.kX.value);
@@ -60,7 +58,7 @@ public class RobotContainer {
 
     public WebConstant visionOutput = new WebConstant("vision-output", 0);
 
-    Trajectory trajectory = new Trajectory();
+    private Trajectory trajectory = new Trajectory();
 
 
     /**
@@ -74,16 +72,13 @@ public class RobotContainer {
             startValueTuner();
             startFireLog();
         }
-        try {
-            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(Constants.Autonomous.TEST_PATH);
-            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+
     }
 
+
     private void configureDefaultCommands() {
-        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
+
+//        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
     }
 
     /**
@@ -93,6 +88,19 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        a.whenPressed(new AdjustHood(hood, Hood.State.HIGH));
+        b.whenPressed(new AdjustHood(hood, Hood.State.LOW));
+        x.whenPressed(new AdjustHood(hood, Hood.State.MIDDLE));
+        y.whileHeld(new FeedShooter(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+        BR.whileHeld(new ShootAndAdjust(shooter, hood));
+        start.whenPressed(() -> VisionModule.setLEDs(LEDMode.kOff));
+        stop.whenPressed(() -> VisionModule.setLEDs(LEDMode.kOn));
+        BL.whenPressed(new ToggleVisionPiston(shooter));
+//        a.whileHeld(new PickupBalls(intake, funnel, conveyor, visionOutput::get, true));
+//        b.whileHeld(new ShootWithoutVision(shooter));
+//        x.whileHeld(new FeedShooter(conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+//        y.whileHeld(new Outtake(funnel, conveyor));
+//        BR.whenPressed(new ToggleIntake(intake));
     }
 
 
@@ -105,6 +113,7 @@ public class RobotContainer {
         // An ExampleCommand will run in autonomous
         return new FollowPath(swerveDrive, trajectory);
     }
+
 
     /**
      * Initiates the value tuner.

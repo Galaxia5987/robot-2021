@@ -84,9 +84,9 @@ public class Climber extends SubsystemBase {
         RobotContainer.pto.getMaster().config_kI(0, Constants.Climber.KI.get(), Constants.TALON_TIMEOUT);
         RobotContainer.pto.getMaster().config_kD(0, Constants.Climber.KD.get(), Constants.TALON_TIMEOUT);
         RobotContainer.pto.getMaster().config_kF(0, Constants.Climber.KF.get(), Constants.TALON_TIMEOUT);
-        FireLog.log("Height", getHeight());
-        FireLog.log("Velocity", getVelocity());
-        FireLog.log("Target Velocity", 0);
+//        FireLog.log("Height", getHeight());
+//        FireLog.log("Velocity", getVelocity());
+//        FireLog.log("Target Velocity", 0);
     }
 
     public void setPower(double v) {

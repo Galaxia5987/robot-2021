@@ -3,6 +3,7 @@ package frc.robot.subsystems.conveyor.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.funnel.Funnel;
 
 
 /**
@@ -22,19 +23,16 @@ public class LoadConveyor extends CommandBase {
 
     @Override
     public void execute() {
-        if (!Conveyor.isConveyorFull()) {
-            if (conveyor.hasFunnelSensedObject() && !timer.hasElapsed(2.5)) {
-                timer.start();
-                conveyor.setPower(moderatePower(timer.get(), 2.5));
-            } else {
-                conveyor.setPower(0);
-                timer.stop();
-                timer.reset();
-            }
+        if (Conveyor.hasFunnelSensedObject() && !timer.hasElapsed(2)) {
+            timer.start();
+            conveyor.setPower(moderatePower(timer.get(), 2));
         } else {
-            // TODO: turn on LEDs to notify that the conveyor is full
             conveyor.setPower(0);
+            timer.stop();
+            timer.reset();
         }
+
+        // TODO: turn on LEDs to notify that the conveyor is full
         // TODO: Add override option in case that the sensor is "broken"
 
     }

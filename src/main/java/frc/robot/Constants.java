@@ -37,6 +37,7 @@ public final class Constants {
     public static final class Shooter {
         public static final int TICKS_PER_ROTATION = 2048;
 
+
         // NOTE: these are the only constants you need to change.
         // TODO: Calibrate
         public static final double VELOCITY_TOLERANCE = .2; // [RPS]
@@ -58,20 +59,34 @@ public final class Constants {
         public static final double OMEGA = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
         public static final double kV = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA * FREE_CURRENT);// took from FRC examples.
 
-        public static final String PATH_TO_CSV = "/Shooting.csv";
-
         public static final double ALLOWED_ERROR = 0.03;// [m]
-        public static final WebConstant UP_MOTOR_J = new WebConstant("UP_J", 0.00055);
+        public static final double UP_MOTOR_J = 0.00055;
         public static final double ARBITRARY_FEED_FORWARD_UP = 0.2;
+
+        public static final WebConstant HOOD_KP = new WebConstant("HOOD_KP", 6);
+        public static final WebConstant HOOD_KI = new WebConstant("HOOD_KI", 0);
+        public static final WebConstant HOOD_KD = new WebConstant("HOOD_KD", 0.02);
+        public static final WebConstant HOOD_KF = new WebConstant("HOOD_KF", 0.1);
+        public static final WebConstant HOOD_BOTTOM_KP = new WebConstant("HOOD_BOTTOM_KP", 0);
+        public static final WebConstant HOOD_BOTTOM_KI = new WebConstant("HOOD_BOTTOM_KI", 0);
+        public static final WebConstant HOOD_BOTTOM_KD = new WebConstant("HOOD_BOTTOM_KD", 0);
+        public static final WebConstant HOOD_BOTTOM_KF = new WebConstant("HOOD_BOTTOM_KF", 0);
+        public static final double ACCELERATION = 2; // [m/sec^2]
+        public static final double CRUISE_VELOCITY = 1; // [m/sec]
+        public static final int MIN_HOOD_POSITION = -5267;
+        public static final int MAX_HOOD_POSITION = MIN_HOOD_POSITION + (82+5552);
+        public static final int STUCK_POSITION = MIN_HOOD_POSITION  + (5552-932);
+        public static final int POSITION_TOLERANCE = 10;
+        public static final WebConstant HOOD_ARBITRARY_KF = new WebConstant("ARBITRARY_KF", 4);
     }
 
     public static final class Intake {
-        public static final double VELOCITY = 0.5; // the target velocity of intake's motor(m/s)
+        public static final WebConstant POWER = new WebConstant("INTAKE_POWER", 0.5); // the target power of intake's motor(%)
     }
 
     public static final class Funnel {
-        public static final double POWER = 0.8; //the default output of Funnel's motor (%)
-        public static final double POWER_SLOW = 0.4;
+        public static final double POWER = 0.6; //the default output of Funnel's motor (%)
+        public static final double POWER_SLOW = 0.3;
     }
 
     // TODO: Change the values
@@ -93,7 +108,7 @@ public final class Constants {
         public static final double[] RED_RGB = {0.492, 0.348, 0.145};
         public static final double[] BLUE_RGB = {0.132, 0.427, 0.442};
         public static final double CONVEYOR_MOTOR_RETURN_POWER = 0; // [%]
-        public static final double CONVEYOR_MOTOR_POWER = 0.8;
+        public static final double CONVEYOR_MOTOR_POWER = 0.6;
     }
 
     public static final class Vision {
@@ -194,7 +209,12 @@ public final class Constants {
         public static final double kPYController = 1;
         public static final double MAX_CENTRIPETAL_ACCELERATION = 1.2;
 
-        public static final String TEST_PATH =  "paths/Test.wpilib.json";
+        public static final String TEST_PATH = "paths/Test.wpilib.json";
+        public static final String INITIATION_TO_TRENCH_PATH = "paths/InitiationToTrench.wpilib.json";
+        public static final String SHOOT_TO_SAFE_TRENCH_PATH = "paths/ShootToSafeTrench.wpilib.json";
+        public static final String TRENCH_TO_SHOOT_PATH = "paths/TrenchToShoot.wpilib.json";
+        public static final String INITIATION_TO_SAFE_TRENCH_PATH = "paths/InitiationToSafeTrench.wpilib.json";
+        public static final String SAFE_TRENCH_TO_SHOOT_PATH = "paths/SafeTrenchToShoot.wpilib.json";
     }
 
 }

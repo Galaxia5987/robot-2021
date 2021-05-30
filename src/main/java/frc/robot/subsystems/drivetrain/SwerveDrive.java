@@ -185,6 +185,8 @@ public class SwerveDrive extends SubsystemBase {
 
     /**
      * Calculates the angles for which the wheels will lock in place.
+     *
+     * @return an array.
      */
     public double[] calculateLockAngles() {
         double[] lockAngles = new double[4];
