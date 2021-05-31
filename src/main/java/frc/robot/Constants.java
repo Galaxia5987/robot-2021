@@ -62,22 +62,24 @@ public final class Constants {
         public static final double ALLOWED_ERROR = 0.03;// [m]
         public static final double UP_MOTOR_J = 0.00055;
         public static final double ARBITRARY_FEED_FORWARD_UP = 0.2;
+    }
 
-        public static final WebConstant HOOD_KP = new WebConstant("HOOD_KP", 6);
-        public static final WebConstant HOOD_KI = new WebConstant("HOOD_KI", 0);
-        public static final WebConstant HOOD_KD = new WebConstant("HOOD_KD", 0.02);
-        public static final WebConstant HOOD_KF = new WebConstant("HOOD_KF", 0.1);
-        public static final WebConstant HOOD_BOTTOM_KP = new WebConstant("HOOD_BOTTOM_KP", 0);
-        public static final WebConstant HOOD_BOTTOM_KI = new WebConstant("HOOD_BOTTOM_KI", 0);
-        public static final WebConstant HOOD_BOTTOM_KD = new WebConstant("HOOD_BOTTOM_KD", 0);
-        public static final WebConstant HOOD_BOTTOM_KF = new WebConstant("HOOD_BOTTOM_KF", 0);
+    public static final class Hood {
+        public static final WebConstant KP = new WebConstant("HOOD_KP", 4.5);
+        public static final WebConstant KI = new WebConstant("HOOD_KI", 0.01);
+        public static final WebConstant KD = new WebConstant("HOOD_KD", 0);
+        public static final WebConstant KF = new WebConstant("HOOD_KF", 0.8);
+        public static final WebConstant BOTTOM_KP = new WebConstant("HOOD_BOTTOM_KP", 0);
+        public static final WebConstant BOTTOM_KI = new WebConstant("HOOD_BOTTOM_KI", 0);
+        public static final WebConstant BOTTOM_KD = new WebConstant("HOOD_BOTTOM_KD", 0);
+        public static final WebConstant BOTTOM_KF = new WebConstant("HOOD_BOTTOM_KF", 0);
         public static final double ACCELERATION = 2; // [m/sec^2]
         public static final double CRUISE_VELOCITY = 1; // [m/sec]
-        public static final int MIN_HOOD_POSITION = -5267;
-        public static final int MAX_HOOD_POSITION = MIN_HOOD_POSITION + (82+5552);
-        public static final int STUCK_POSITION = MIN_HOOD_POSITION  + (5552-932);
-        public static final int POSITION_TOLERANCE = 10;
-        public static final WebConstant HOOD_ARBITRARY_KF = new WebConstant("ARBITRARY_KF", 4);
+        public static final int MIN_POSITION = 3;
+        public static final int MAX_POSITION = MIN_POSITION + (82 + 5552);
+        public static final int STUCK_POSITION = MIN_POSITION + (5552 - 932);
+        public static final int POSITION_TOLERANCE = 20;
+        public static final WebConstant ARBITRARY_KF = new WebConstant("ARBITRARY_KF", 4);
     }
 
     public static final class Intake {
@@ -85,7 +87,7 @@ public final class Constants {
     }
 
     public static final class Funnel {
-        public static final double POWER = 0.6; //the default output of Funnel's motor (%)
+        public static final double POWER = 0.3; //the default output of Funnel's motor (%)
         public static final double POWER_SLOW = 0.3;
     }
 
@@ -116,7 +118,7 @@ public final class Constants {
         public static final double VISION_ROTATION_RADIUS = 0.2646;
         public static final double ROBOT_TO_TURRET_CENTER = 0.3079;
         public static final double HEIGHT = 0.66;
-        public static final double TARGET_HEIGHT = 2.23;
+        public static final double TARGET_HEIGHT = 1.9;
         public static final double VISION_TO_CENTER = 0;
 
         public static final Pose2d RED_INNER_POWER_PORT_LOCATION = new Pose2d();
@@ -183,7 +185,7 @@ public final class Constants {
         public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
         public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
 
-        public static final int[] ZERO_POSITION = {768, 175, 763, 806};
+        public static final int[] ZERO_POSITION = {1279, 685, 239, 272};
 
         // sick man
         // the module that has more friction in the rotating mechanism

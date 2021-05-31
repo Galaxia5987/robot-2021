@@ -24,7 +24,7 @@ public class Shoot extends CommandBase {
     private final Shooter shooter;
     private final Timer shootingTimer = new Timer();
     private double lastTime = 0;
-    public WebConstant vel = new WebConstant("velocity", 0);
+    public WebConstant vel  = new WebConstant("velocity", 0);
 
     public Shoot(Shooter shooter) {
         this.shooter = shooter;
@@ -39,7 +39,7 @@ public class Shoot extends CommandBase {
     @Override
     public void execute() {
         final double currentTime = shootingTimer.get();
-        double distance = VisionModule.getTargetRawDistance(Math.toRadians(66));
+        double distance = VisionModule.getTargetRawDistance(Math.toRadians(56));
         if (distance > 0) {
             SmartDashboard.putNumber("vision-distance", distance);
 //            double velocity = shooter.estimateVelocityFromDistance(distance);

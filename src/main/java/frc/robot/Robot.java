@@ -111,8 +111,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        FireLog.log("hood_velocity", m_robotContainer.hood.getHoodVelocity());
-        FireLog.log("hood_position", m_robotContainer.hood.getHoodPosition());
+        FireLog.log("hood_velocity", m_robotContainer.hood.getVelocity());
+        FireLog.log("hood_position", m_robotContainer.hood.getPosition());
     }
 
     @Override

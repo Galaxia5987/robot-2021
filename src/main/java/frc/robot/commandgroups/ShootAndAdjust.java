@@ -11,7 +11,7 @@ public class ShootAndAdjust extends ParallelCommandGroup {
     public ShootAndAdjust(Shooter shooter, Hood hood) {
         addCommands(
                 new Shoot(shooter),
-                new AdjustHood(hood, Hood.State.MIDDLE)
+                new AdjustHood(hood, hood::getState)
         );
     }
 

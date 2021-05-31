@@ -19,16 +19,19 @@ public class Ports {
 
     public static final class Shooter {
         public static final int UP = 31;
-        public static final int HOOD = 34;
         public static final int SOLENOID = 4;
 
         public static final boolean MAIN_INVERTED = true;
         public static final boolean AUX_INVERTED = true;
         public static final boolean UP_INVERTED = false;
         public static final boolean IS_SENSOR_INVERTED = false;
-        public static final boolean IS_HOOD_INVERTED = true;
-        public static final boolean IS_HOOD_SENSOR_INVERTED = true;
 
+    }
+
+    public static final class Hood {
+        public static final int MOTOR = 34;
+        public static final boolean IS_INVERTED = true;
+        public static final boolean IS_SENSOR_INVERTED = true;
     }
 
     public static final class Intake {

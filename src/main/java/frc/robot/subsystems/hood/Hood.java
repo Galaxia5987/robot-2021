@@ -16,27 +16,25 @@ import java.io.InputStreamReader;
 import static frc.robot.Constants.Shooter.*;
 
 public class Hood extends SubsystemBase {
-
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
-    private TalonSRX hoodMotor = new TalonSRX(Ports.Shooter.HOOD);
-
-    private State hoodState = State.MIDDLE;
+    private final TalonSRX motor = new TalonSRX(Ports.Hood.MOTOR);
+    private State state = State.CLOSED;
 
     public Hood() {
-        hoodMotor.setInverted(Ports.Shooter.IS_HOOD_INVERTED);
+        motor.setInverted(Ports.Hood.IS_INVERTED);
 
-        hoodMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, Constants.TALON_TIMEOUT);
-        hoodMotor.setSensorPhase(Ports.Shooter.IS_HOOD_SENSOR_INVERTED);
-        hoodMotor.config_kP(0, Constants.Shooter.HOOD_KP.get(), Constants.TALON_TIMEOUT);
-        hoodMotor.config_kI(0, Constants.Shooter.HOOD_KI.get(), Constants.TALON_TIMEOUT);
-        hoodMotor.config_kD(0, Constants.Shooter.HOOD_KD.get(), Constants.TALON_TIMEOUT);
-        hoodMotor.config_kF(0, HOOD_KF.get(), Constants.TALON_TIMEOUT);
+        motor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, Constants.TALON_TIMEOUT);
+        motor.setSensorPhase(Ports.Hood.IS_SENSOR_INVERTED);
+        motor.config_kP(0, Constants.Hood.KP.get(), Constants.TALON_TIMEOUT);
+        motor.config_kI(0, Constants.Hood.KI.get(), Constants.TALON_TIMEOUT);
+        motor.config_kD(0, Constants.Hood.KD.get(), Constants.TALON_TIMEOUT);
+        motor.config_kF(0, Constants.Hood.KF.get(), Constants.TALON_TIMEOUT);
 
-        hoodMotor.configMotionCruiseVelocity(unitModel.toTicks100ms(Constants.Shooter.CRUISE_VELOCITY), Constants.TALON_TIMEOUT);
-        hoodMotor.configMotionAcceleration(unitModel.toTicks100ms(Constants.Shooter.ACCELERATION), Constants.TALON_TIMEOUT);
+        motor.configMotionCruiseVelocity(unitModel.toTicks100ms(Constants.Hood.CRUISE_VELOCITY), Constants.TALON_TIMEOUT);
+        motor.configMotionAcceleration(unitModel.toTicks100ms(Constants.Hood.ACCELERATION), Constants.TALON_TIMEOUT);
 
-        hoodMotor.enableVoltageCompensation(true);
-        hoodMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        motor.enableVoltageCompensation(true);
+        motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
     }
 
     /**
@@ -46,7 +44,7 @@ public class Hood extends SubsystemBase {
      * @return the velocity that should be applied by the shooter in order to reach the target.[RPS]
      */
     public double estimateVelocityFromDistance(double distance) {
-        return hoodState.velocityEstimator.estimateVelocityFromDistance(distance);
+        return state.velocityEstimator.estimateVelocityFromDistance(distance);
     }
 
 
@@ -55,42 +53,50 @@ public class Hood extends SubsystemBase {
      *
      * @param newState the new state of the hood.
      */
-    public void changeHoodState(State newState) {
-        if (newState.position < MAX_HOOD_POSITION && newState.position > MIN_HOOD_POSITION) {
+    public void changeState(State newState) {
+        if (newState.position < Constants.Hood.MAX_POSITION && newState.position > Constants.Hood.MIN_POSITION) {
             double gain = 0.02;
-            if (STUCK_POSITION - getHoodPosition() > 0) {
+            if (Constants.Hood.STUCK_POSITION - getPosition() > 0) {
                 gain *= -1;
             }
-//            hoodMotor.set(ControlMode.MotionMagic, newState.position, DemandType.ArbitraryFeedForward,
-//                    Constants.Shooter.HOOD_ARBITRARY_KF.get() / ((STUCK_POSITION - getHoodPosition())/ MAX_HOOD_POSITION + gain));
-            hoodMotor.set(ControlMode.MotionMagic, newState.position);
-            this.hoodState = newState;
-            System.out.println(Constants.Shooter.HOOD_ARBITRARY_KF.get() / ((STUCK_POSITION - getHoodPosition())/ MAX_HOOD_POSITION + gain));
+//yy            hoodMotor.set(ControlMode.MotionMagic, newState.position, DemandType.ArbitraryFeedForward,
+//                    Constants.Hood.HOOD_ARBITRARY_KF.get() / ((STUCK_POSITION - getHoodPosition())/ MAX_HOOD_POSITION + gain));
+            motor.set(ControlMode.MotionMagic, newState.position);
+            this.state = newState;
+            System.out.println(Constants.Hood.ARBITRARY_KF.get() / ((Constants.Hood.STUCK_POSITION - getPosition()) / Constants.Hood.MAX_POSITION + gain));
         }
     }
 
-    public void setHoodPID() {
-        hoodMotor.config_kP(0, Constants.Shooter.HOOD_KP.get(), Constants.TALON_TIMEOUT);
-        hoodMotor.config_kI(0, Constants.Shooter.HOOD_KI.get(), Constants.TALON_TIMEOUT);
-        hoodMotor.config_kD(0, Constants.Shooter.HOOD_KD.get(), Constants.TALON_TIMEOUT);
-        hoodMotor.config_kF(0, HOOD_KF.get(), Constants.TALON_TIMEOUT);
+    public State getState() {
+        return state;
+    }
+
+    public void updatePID() {
+        motor.config_kP(0, Constants.Hood.KP.get(), Constants.TALON_TIMEOUT);
+        motor.config_kI(0, Constants.Hood.KI.get(), Constants.TALON_TIMEOUT);
+        motor.config_kD(0, Constants.Hood.KD.get(), Constants.TALON_TIMEOUT);
+        motor.config_kF(0, Constants.Hood.KF.get(), Constants.TALON_TIMEOUT);
     }
 
 
-    public double getHoodVelocity() {
-        return unitModel.toVelocity(hoodMotor.getSelectedSensorVelocity());
+    public double getVelocity() {
+        return unitModel.toVelocity(motor.getSelectedSensorVelocity());
     }
 
-    public double getHoodPosition() {
-        return hoodMotor.getSelectedSensorPosition();
+    public double getPosition() {
+        return motor.getSelectedSensorPosition();
     }
-    public void stopHood() {
-        hoodMotor.set(ControlMode.PercentOutput, 0);
+
+    public void stop() {
+        motor.set(ControlMode.PercentOutput, 0);
     }
+
     public enum State {
-        LOW(MIN_HOOD_POSITION + 200, new DoubleRange(0, 0), "/Low.csv"),
-        MIDDLE(MIN_HOOD_POSITION + 3500, new DoubleRange(0, 0), "/Middle.csv"),
-        HIGH(MAX_HOOD_POSITION - 200, new DoubleRange(0, 0), "/High.csv");
+        CLOSED(Constants.Hood.MIN_POSITION + 200, new DoubleRange(0, 0), "/Low.csv"),
+        LOW(Constants.Hood.MIN_POSITION + 1500, new DoubleRange(0, 0), "/Low.csv"),
+        MIDDLE(Constants.Hood.MIN_POSITION + 3500, new DoubleRange(0, 0), "/Middle.csv"),
+        HIGH(Constants.Hood.MIN_POSITION + 4000, new DoubleRange(0, 0), "/High.csv"),
+        OPEN(Constants.Hood.MAX_POSITION - 200, new DoubleRange(0, 0), "/High.csv");
 
         public final DoubleRange shootingRange; // [min, max] meters
         public final LinearRegression velocityEstimator;
@@ -109,8 +115,8 @@ public class Hood extends SubsystemBase {
          * @return the optimal state.
          */
         public static State getOptimalState(double distance) {
-            State current = LOW;
-            double minVelocity = LOW.velocityEstimator.estimateVelocityFromDistance(distance);
+            State current = CLOSED;
+            double minVelocity = CLOSED.velocityEstimator.estimateVelocityFromDistance(distance);
             for (State state : State.values()) {
                 double currentVelocity = state.velocityEstimator.estimateVelocityFromDistance(distance);
                 if (currentVelocity < minVelocity) {
