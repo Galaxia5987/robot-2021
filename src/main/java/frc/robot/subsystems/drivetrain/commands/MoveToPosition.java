@@ -6,39 +6,62 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.VisionModule;
+import frc.robot.valuetuner.WebConstant;
+import org.techfire225.webapp.FireLog;
 
 public class MoveToPosition extends CommandBase {
 
-    private SwerveDrive swerveDrive;
-    private PIDController drivePID = new PIDController(Constants.SwerveDrive.KP_MOVE.get(),
+    private final SwerveDrive swerveDrive;
+    private final VisionModule vision;
+    private final PIDController drivePID = new PIDController(Constants.SwerveDrive.KP_MOVE.get(),
             Constants.SwerveDrive.KI_MOVE.get(), Constants.SwerveDrive.KD_MOVE.get());
-    private PIDController anglePID = new PIDController(Constants.SwerveDrive.KP_TURN.get(),
+    private final PIDController anglePID = new PIDController(Constants.SwerveDrive.KP_TURN.get(),
             Constants.SwerveDrive.KI_TURN.get(), Constants.SwerveDrive.KD_TURN.get());
+    private final WebConstant angle = new WebConstant("vision-yaw", 0);
     private double startAngle;
     private double angleTarget;
     private double horizontalTarget;
 
-    public MoveToPosition(SwerveDrive swerveDrive) {
+    public MoveToPosition(SwerveDrive swerveDrive, VisionModule vision) {
         this.swerveDrive = swerveDrive;
+        this.vision = vision;
+
+        addRequirements(swerveDrive);
     }
 
     @Override
     public void initialize() {
-        drivePID.setPID(0, 0 , 0);
+//        drivePID.setPID(0, 0, 0);
         anglePID.setPID(Constants.SwerveDrive.KP_TURN.get(),
                 Constants.SwerveDrive.KI_TURN.get(), Constants.SwerveDrive.KD_TURN.get());
-        angleTarget = Robot.navx.getYaw() + VisionModule.getVisionAngle();
+        var visionAngle = angle.get();
+//        if (visionAngle) {
+        angleTarget = Robot.navx.getYaw() + visionAngle;
+        anglePID.setSetpoint(0);
+        anglePID.setTolerance(1);
         startAngle = Robot.navx.getYaw();
-        horizontalTarget = VisionModule.getTargetRawDistance(55) * Math.tan(Math.abs(Math.toRadians(Robot.navx.getYaw() - startAngle)));
+/*            var distance = vision.getTargetRawDistance();
+            if (distance.isPresent()) {
+                horizontalTarget = distance.getAsDouble() * Math.tan(Math.abs(Math.toRadians(Robot.navx.getYaw() - startAngle)));
+            }*/
+//        }
     }
 
     @Override
     public void execute() {
-        double forward = drivePID.calculate(VisionModule.getTargetRawDistance(55), Constants.SwerveDrive.DRIVE_SETPOINT);
-        double strafe = drivePID.calculate(VisionModule.getTargetRawDistance(55) *
+        /*
+        var distance = vision.getTargetRawDistance();
+        if (distance.isPresent()) {
+        double forward = drivePID.calculate(distance.getAsDouble(), Constants.SwerveDrive.DRIVE_SETPOINT);
+        double strafe = drivePID.calculate(distance.getAsDouble() *
                 Math.tan(Math.abs(Math.toRadians(Robot.navx.getYaw() - startAngle))), horizontalTarget);
-        double rotation = anglePID.calculate(Robot.navx.getYaw(), angleTarget);
-        swerveDrive.holonomicDrive(forward, strafe, rotation);
+*/
+        double rotation = anglePID.calculate(Math.IEEEremainder(Robot.navx.getYaw() - angleTarget, 360));
+        swerveDrive.holonomicDrive(0, 0, rotation);
+        FireLog.log("swerve-set-point", 0);
+        FireLog.log("swerve-rotation", Math.IEEEremainder(Robot.navx.getYaw() - angleTarget, 360));
+
+
     }
 
     @Override
@@ -48,8 +71,11 @@ public class MoveToPosition extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(angleTarget - Robot.navx.getYaw()) < Constants.SwerveDrive.TURN_TOLERANCE) &&
-                (Math.abs(Constants.SwerveDrive.DRIVE_SETPOINT - VisionModule.getTargetRawDistance(55)) < Constants.SwerveDrive.DRIVE_TOLERANCE) &&
-                (Math.abs(horizontalTarget - VisionModule.getTargetRawDistance(55) * Math.tan(Math.toRadians(Robot.navx.getYaw() - startAngle))) < Constants.SwerveDrive.DRIVE_TOLERANCE);
+/*        var distance = vision.getTargetRawDistance();
+        return distance.isPresent() && (Math.abs(angleTarget - Robot.navx.getYaw()) < Constants.SwerveDrive.TURN_TOLERANCE) &&
+                (Math.abs(Constants.SwerveDrive.DRIVE_SETPOINT - distance.getAsDouble()) < Constants.SwerveDrive.DRIVE_TOLERANCE) &&
+                (Math.abs(horizontalTarget - distance.getAsDouble() * Math.tan(Math.toRadians(Robot.navx.getYaw() - startAngle))) < Constants.SwerveDrive.DRIVE_TOLERANCE);
+        */
+        return anglePID.atSetpoint();
     }
 }
