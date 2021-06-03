@@ -11,25 +11,24 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
-import frc.robot.utils.DeadbandProximity;
 
 import static frc.robot.Constants.Conveyor.*;
 
 public class Conveyor extends SubsystemBase {
-    private static int balls = Constants.Conveyor.INITIAL_BALLS_AMOUNT;
-
-    private final TalonFX motor = new TalonFX(Ports.Conveyor.MOTOR);
-    public final I2C.Port i2cPort = I2C.Port.kOnboard;
-    public final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
-
-    private static String colorString = " ";
     private static final ColorMatch colorMatcher = new ColorMatch();
+    private static final ColorMatch colorMatcher2 = new ColorMatch();
     private static final Color BlueTarget = ColorMatch.makeColor(Constants.Conveyor.BLUE_RGB[0], Constants.Conveyor.BLUE_RGB[1], Constants.Conveyor.BLUE_RGB[2]);
     private static final Color GreenTarget = ColorMatch.makeColor(Constants.Conveyor.GREEN_RGB[0], Constants.Conveyor.GREEN_RGB[1], Constants.Conveyor.GREEN_RGB[2]);
     private static final Color RedTarget = ColorMatch.makeColor(Constants.Conveyor.RED_RGB[0], Constants.Conveyor.RED_RGB[1], Constants.Conveyor.RED_RGB[2]);
     private static final Color YellowTarget = ColorMatch.makeColor(Constants.Conveyor.YELLOW_RGB[0], Constants.Conveyor.YELLOW_RGB[1], Constants.Conveyor.YELLOW_RGB[2]);
-
-    private static ColorMatchResult match;
+    private static int balls = Constants.Conveyor.INITIAL_BALLS_AMOUNT;
+    private static String colorString = " ";
+    private static String colorStringNavx = "";
+    public final I2C.Port i2cPort = I2C.Port.kOnboard;
+    public final I2C.Port i2cPort2 = I2C.Port.kMXP;
+    public final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
+    public final ColorSensorV3 navxColorSensor = new ColorSensorV3(i2cPort2);
+    private final TalonFX motor = new TalonFX(Ports.Conveyor.MOTOR);
 
     public Conveyor() {
         motor.setInverted(Ports.Conveyor.IS_MOTOR_INVERTED);
@@ -37,6 +36,11 @@ public class Conveyor extends SubsystemBase {
         colorMatcher.addColorMatch(GreenTarget);
         colorMatcher.addColorMatch(RedTarget);
         colorMatcher.addColorMatch(YellowTarget);
+
+        colorMatcher2.addColorMatch(BlueTarget);
+        colorMatcher2.addColorMatch(GreenTarget);
+        colorMatcher2.addColorMatch(RedTarget);
+        colorMatcher2.addColorMatch(YellowTarget);
 
         motor.configPeakOutputForward(FORWARD_PEAK, Constants.TALON_TIMEOUT);
         motor.configPeakOutputReverse(REVERSE_PEAK, Constants.TALON_TIMEOUT);
@@ -81,6 +85,19 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
+     * Get whether the funnel sensed an object.
+     *
+     * @return whether the funnel sensed an object.
+     */
+    public static boolean hasFunnelSensedObject() {
+        return colorString.equals("Yellow");
+    }
+
+    public static boolean hasNavxFunnelSensedObject() {
+        return colorStringNavx.equals("Yellow");
+    }
+
+    /**
      * Get whether the power applied by the motor is upward, i.e moving up.
      *
      * @return whether the power applied by the motor is upward.
@@ -105,21 +122,10 @@ public class Conveyor extends SubsystemBase {
         setPower(0);
     }
 
-
-    /**
-     * Get whether the funnel sensed an object.
-     *
-     * @return whether the funnel sensed an object.
-     */
-    public static boolean hasFunnelSensedObject() {
-        return colorString.equals("Yellow");
-    }
-
-
     /*
     Returns the currently detected color as a string
      */
-    private String colorToString() {
+    private String colorToString(ColorMatchResult match) {
         String colorInString;
         if (match.color == BlueTarget) {
             colorInString = "Blue";
@@ -137,10 +143,17 @@ public class Conveyor extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Color detectedColor = colorSensor.getColor();
-        match = colorMatcher.matchClosestColor(detectedColor);
-        colorString = colorToString();
-        SmartDashboard.putString("color" ,colorString);
 
+        Color detectedColor = colorSensor.getColor();
+        ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
+        colorString = colorToString(match);
+        SmartDashboard.putString("color", colorString);
+
+        Color detectedColorNavx = navxColorSensor.getColor();
+        ColorMatchResult matchNavx = colorMatcher2.matchClosestColor(detectedColorNavx);
+        colorStringNavx = colorToString(matchNavx);
+        SmartDashboard.putString("color-navx", colorStringNavx);
+        SmartDashboard.putBoolean("robotrio sensor", Conveyor.hasFunnelSensedObject());
+        SmartDashboard.putBoolean("navx sensor", Conveyor.hasNavxFunnelSensedObject());
     }
 }
