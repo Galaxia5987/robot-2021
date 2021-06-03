@@ -68,6 +68,8 @@ public class RobotContainer {
         // Configure the button bindings
         configureDefaultCommands();
         configureButtonBindings();
+        vision.setLEDs(LEDMode.kOn);
+
         if (Robot.debug) {
             startValueTuner();
             startFireLog();
