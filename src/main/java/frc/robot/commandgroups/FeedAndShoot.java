@@ -1,12 +1,15 @@
 package frc.robot.commandgroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.Constants;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.PTO.commands.SwitchSubsystems;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.FeedShooter;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
+import frc.robot.utils.VisionModule;
 
 //import static frc.robot.RobotContainer.velocity;
 
