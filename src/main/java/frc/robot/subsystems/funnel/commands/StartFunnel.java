@@ -15,7 +15,6 @@ public class StartFunnel extends CommandBase {
     private Funnel funnel;
     private boolean isMovingUp;
     private Timer timmy = new Timer();
-    private Timer timer = new Timer();
     private double last = 0;
 
     public StartFunnel(Funnel funnel, boolean isMovingUp) {
@@ -36,10 +35,6 @@ public class StartFunnel extends CommandBase {
 
     @Override
     public void execute() {
-        if (Conveyor.hasFunnelSensedObject() && timer.get() == 0) {
-            timer.reset();
-            timer.start();
-        }
 
         if (isMovingUp) {
             if (timmy.get() - last > 1) {
@@ -49,13 +44,6 @@ public class StartFunnel extends CommandBase {
             } else {
                 if (!Conveyor.hasFunnelSensedObject()) {
                     funnel.setPower(isMovingUp ? Constants.Funnel.POWER : -Constants.Funnel.POWER);
-                    timer.reset();
-                } else {
-                    if (timer.hasElapsed(0.6)) {
-                        funnel.setPower(Constants.Funnel.POWER_SLOW);
-                    } else {
-                        funnel.setPower(0);
-                    }
                 }
             }
         }
