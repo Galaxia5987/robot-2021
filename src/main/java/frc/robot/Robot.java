@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
     public PowerDistributionPanel pdp = new PowerDistributionPanel();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
-    private Compressor compressor = new Compressor(0);
+    private final Compressor compressor = new Compressor(0);
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
-        VisionModule.setLEDs(LEDMode.kOn);
+        m_robotContainer.hood.resetPosition();
         compressor.start();
         navx.reset();
     }
