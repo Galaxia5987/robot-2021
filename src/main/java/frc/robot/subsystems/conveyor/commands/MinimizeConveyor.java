@@ -23,7 +23,7 @@ public class MinimizeConveyor extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return conveyor.hasFunnelSensedObject();
+        return Conveyor.hasFunnelSensedObject();
     }
 
     @Override
