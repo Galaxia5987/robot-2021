@@ -19,7 +19,7 @@
 *.dylib
 *.dll
 
-# Fortran module files
+# Fortran vision files
 *.mod
 *.smod
 
