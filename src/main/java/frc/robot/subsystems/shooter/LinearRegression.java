@@ -64,14 +64,23 @@ public class LinearRegression {
     public double estimateVelocityFromDistance(double distance) {
         double[] distances = getClosestDistances(distance);
 
-        if (Math.abs(distances[0] - distance) <= Constants.Shooter.ALLOWED_ERROR) {
-            return distanceVelocityMap.get(distances[0]);
+        if (distance > distances[1]) {
+            Double value = distanceVelocityMap.get(distances[1]);
+            return value != null ? value : 0;
         }
+        System.out.println(distanceVelocityMap);
 
-        double lowerVelocity = distanceVelocityMap.get(distances[0]);
-        double higherVelocity = distanceVelocityMap.get(distances[1]);
+        Double lowerVelocity = distanceVelocityMap.get(distances[0]);
+        if (lowerVelocity == null)
+            lowerVelocity = 0d;
+        Double higherVelocity = distanceVelocityMap.get(distances[1]);
+        if (higherVelocity == null)
+            higherVelocity = 0d;
         // y = mx + b
         // m = delta y / delta x
+        if (distances[1] == distances[0]) {
+            return 0;
+        }
         double m = (higherVelocity - lowerVelocity) / (distances[1] - distances[0]);
         // b = y - m*x
         double b = higherVelocity - m * distances[1];
@@ -88,13 +97,15 @@ public class LinearRegression {
     private double[] getClosestDistances(double distance) {
         Set<Double> keys = distanceVelocityMap.keySet();
         double min = 0;
-
+        double value = 0;
         for (double val : keys) {
             if (val > distance) {
                 return new double[]{min, val};
             }
             min = val;
+            value = val;
         }
-        return new double[]{min, min}; //Out of range, either way the robot can't shoot at this distance
+        System.out.println(min + " " + value);
+        return new double[]{min, value}; //Out of range, either way the robot can't shoot at this distance
     }
 }
