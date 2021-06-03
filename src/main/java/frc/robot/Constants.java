@@ -41,9 +41,9 @@ public final class Constants {
         // NOTE: these are the only constants you need to change.
         // TODO: Calibrate
         public static final double VELOCITY_TOLERANCE = .2; // [RPS]
-        public static final double MODEL_TOLERANCE = 1;
-        public static final double ENCODER_TOLERANCE = 0.1; // [ticks]
-        public static final WebConstant J = new WebConstant("J", 0.00045); //moment of inertia [kg * m^2]
+        public static final double MODEL_TOLERANCE = 2;
+        public static final double ENCODER_TOLERANCE = 1; // [ticks]
+        public static final WebConstant J = new WebConstant("J", 0.000429); // moment of inertia [kg * m^2]
         public static final double ARBITRARY_FEED_FORWARD = 0; // [%] https://docs.ctre-phoenix.com/en/latest/ch16_ClosedLoop.html#do-i-need-to-use-arbitrary-feed-forward
 
 
@@ -69,16 +69,13 @@ public final class Constants {
         public static final WebConstant KI = new WebConstant("HOOD_KI", 0.01);
         public static final WebConstant KD = new WebConstant("HOOD_KD", 0);
         public static final WebConstant KF = new WebConstant("HOOD_KF", 0.8);
-        public static final WebConstant BOTTOM_KP = new WebConstant("HOOD_BOTTOM_KP", 0);
-        public static final WebConstant BOTTOM_KI = new WebConstant("HOOD_BOTTOM_KI", 0);
-        public static final WebConstant BOTTOM_KD = new WebConstant("HOOD_BOTTOM_KD", 0);
-        public static final WebConstant BOTTOM_KF = new WebConstant("HOOD_BOTTOM_KF", 0);
         public static final double ACCELERATION = 2; // [m/sec^2]
         public static final double CRUISE_VELOCITY = 1; // [m/sec]
-        public static final int MIN_POSITION = 3;
+        public static final int MIN_POSITION = -2744;
+        public static final WebConstant POSITION = new WebConstant("Hood_position", MIN_POSITION);
         public static final int MAX_POSITION = MIN_POSITION + (82 + 5552);
         public static final int STUCK_POSITION = MIN_POSITION + (5552 - 932);
-        public static final int POSITION_TOLERANCE = 20;
+        public static final int POSITION_TOLERANCE = 5;
         public static final WebConstant ARBITRARY_KF = new WebConstant("ARBITRARY_KF", 4);
     }
 
@@ -87,8 +84,8 @@ public final class Constants {
     }
 
     public static final class Funnel {
-        public static final double POWER = 0.3; //the default output of Funnel's motor (%)
-        public static final double POWER_SLOW = 0.3;
+        public static final double POWER = 0.5; //the default output of Funnel's motor (%)
+        public static final double POWER_SLOW = 0.4;
     }
 
     // TODO: Change the values
@@ -110,7 +107,7 @@ public final class Constants {
         public static final double[] RED_RGB = {0.492, 0.348, 0.145};
         public static final double[] BLUE_RGB = {0.132, 0.427, 0.442};
         public static final double CONVEYOR_MOTOR_RETURN_POWER = 0; // [%]
-        public static final double CONVEYOR_MOTOR_POWER = 0.6;
+        public static final double CONVEYOR_MOTOR_POWER = 0.9;
     }
 
     public static final class Vision {
@@ -118,11 +115,14 @@ public final class Constants {
         public static final double VISION_ROTATION_RADIUS = 0.2646;
         public static final double ROBOT_TO_TURRET_CENTER = 0.3079;
         public static final double HEIGHT = 0.66;
-        public static final double TARGET_HEIGHT = 1.9;
+        public static final double TARGET_HEIGHT = 2.5;
         public static final double VISION_TO_CENTER = 0;
 
         public static final Pose2d RED_INNER_POWER_PORT_LOCATION = new Pose2d();
         public static final Pose2d RED_OUTER_POWER_PORT_LOCATION = new Pose2d();
+
+        public static final int LOW_ANGLE = 34;
+        public static final int HIGH_ANGLE = 56;
     }
 
     public static class SwerveDrive {
@@ -147,8 +147,8 @@ public final class Constants {
         public static final double TURN_TOLERANCE = 2; // degrees
 
         public static final WebConstant KP_TURN = new WebConstant("KP_TURN", 0);
-        public static final WebConstant KI_TURN = new WebConstant("KP_TURN", 0);
-        public static final WebConstant KD_TURN = new WebConstant("KP_TURN", 0);
+        public static final WebConstant KI_TURN = new WebConstant("KI_TURN", 0);
+        public static final WebConstant KD_TURN = new WebConstant("KD_TURN", 0);
 
         public static final WebConstant KP_MOVE = new WebConstant("KP_MOVE", 0);
         public static final WebConstant KI_MOVE = new WebConstant("KI_MOVE", 0);
@@ -185,7 +185,7 @@ public final class Constants {
         public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
         public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
 
-        public static final int[] ZERO_POSITION = {1279, 685, 239, 272};
+        public static final int[] ZERO_POSITION = {775, 176, 765, 796};
 
         // sick man
         // the module that has more friction in the rotating mechanism
