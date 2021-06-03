@@ -15,12 +15,13 @@ import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.ToggleIntake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.utils.VisionModule;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
 public class TrenchShot extends SequentialCommandGroup {
-    public TrenchShot(SwerveDrive swerve, Intake intake, Funnel funnel, Conveyor conveyor, Shooter shooter, PTO pto) {
+    public TrenchShot(SwerveDrive swerve, Intake intake, Funnel funnel, Conveyor conveyor, Shooter shooter, VisionModule vision, PTO pto) {
         Trajectory initiationToTrench = new Trajectory(), trenchToShoot = new Trajectory(), shootToSafeTrench = new Trajectory();
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(Constants.Autonomous.INITIATION_TO_TRENCH_PATH);
@@ -34,7 +35,7 @@ public class TrenchShot extends SequentialCommandGroup {
             ex.printStackTrace();
         }
         addCommands(new FollowPath(swerve, initiationToTrench), new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true).withTimeout(2), new ToggleIntake(intake),
-                new FollowPath(swerve, trenchToShoot), new FeedAndShoot(pto, conveyor, shooter, Constants.Conveyor.CONVEYOR_MOTOR_POWER).withTimeout(4),
+//                new FollowPath(swerve, trenchToShoot), new FeedAndShoot(pto, conveyor, shooter, hood, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER).withTimeout(4),
                 new FollowPath(swerve, shootToSafeTrench), new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true), new ToggleIntake(intake));
     }
 }

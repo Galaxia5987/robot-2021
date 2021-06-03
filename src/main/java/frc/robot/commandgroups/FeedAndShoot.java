@@ -12,11 +12,11 @@ import frc.robot.subsystems.shooter.commands.Shoot;
 
 public class FeedAndShoot extends ParallelCommandGroup {
 
-    public FeedAndShoot(PTO pto, Conveyor conveyor, Shooter shooter, double power) {
+    public FeedAndShoot(PTO pto, Conveyor conveyor, Shooter shooter, Hood hood, VisionModule vision, double power) {
         addCommands(
                 new SwitchSubsystems(pto, false),
                 new FeedShooter(conveyor, power),
-                new Shoot(shooter)
+                new Shoot(shooter, vision, hood, false)
         );
     }
 }

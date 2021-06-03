@@ -2,18 +2,11 @@ package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.shooter.LinearRegression;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.VisionModule;
 import frc.robot.valuetuner.WebConstant;
-import org.ejml.ops.ConvertDMatrixStruct;
-import webapp.FireLog;
-
-import java.util.function.Supplier;
 
 /**
  * This command keeps the shooter in the specified velocity.
@@ -22,12 +15,18 @@ import java.util.function.Supplier;
  */
 public class Shoot extends CommandBase {
     private final Shooter shooter;
+    private final VisionModule vision;
+    private final Hood hood;
     private final Timer shootingTimer = new Timer();
+    public WebConstant vel = new WebConstant("velocity", 0);
+    private boolean manual;
     private double lastTime = 0;
-    public WebConstant vel  = new WebConstant("velocity", 0);
 
-    public Shoot(Shooter shooter) {
+    public Shoot(Shooter shooter, VisionModule vision, Hood hood, boolean manual) {
         this.shooter = shooter;
+        this.vision = vision;
+        this.hood = hood;
+        this.manual = manual;
         addRequirements(shooter);
     }
 
@@ -39,12 +38,19 @@ public class Shoot extends CommandBase {
     @Override
     public void execute() {
         final double currentTime = shootingTimer.get();
-        double distance = VisionModule.getTargetRawDistance(Math.toRadians(56));
-        if (distance > 0) {
-            SmartDashboard.putNumber("vision-distance", distance);
-//            double velocity = shooter.estimateVelocityFromDistance(distance);
-            shooter.setVelocity(vel.get(), currentTime - lastTime);
+        var optionalDistance = vision.getTargetRawDistance();
+        if (optionalDistance.isPresent()) {
+            double distance = optionalDistance.getAsDouble();
+            if (distance > 0) {
+                SmartDashboard.putNumber("vision-distance", distance);
+                double velocity = hood.estimateVelocityFromDistance(distance);
+                if (manual) {
+                    velocity = vel.get();
+                }
+                SmartDashboard.putNumber("hood-velocity", velocity);
+                shooter.setVelocity(velocity, currentTime - lastTime);
 //            shooter.setVelocityUp(velocity / 2.0, currentTime - lastTime);
+            }
         }
         lastTime = currentTime;
 

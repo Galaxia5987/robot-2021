@@ -1,19 +1,19 @@
 package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.utils.VisionModule;
 
 public class ToggleVisionPiston extends InstantCommand {
-    private final Shooter shooter;
+    private final VisionModule vision;
 
-    public ToggleVisionPiston(Shooter shooter) {
-        this.shooter = shooter;
-        addRequirements(shooter);
+    public ToggleVisionPiston(VisionModule vision) {
+        this.vision = vision;
+        addRequirements(this.vision);
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        shooter.togglePiston();
+        vision.togglePiston();
     }
 }

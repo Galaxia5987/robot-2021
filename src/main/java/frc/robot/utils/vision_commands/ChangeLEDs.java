@@ -6,14 +6,16 @@ import org.photonvision.LEDMode;
 
 public class ChangeLEDs extends InstantCommand {
 
+    private VisionModule vision;
     private final boolean on;
 
-    public ChangeLEDs(boolean on) {
+    public ChangeLEDs(VisionModule vision, boolean on) {
+        this.vision = vision;
         this.on = on;
     }
 
     @Override
     public void initialize() {
-        VisionModule.setLEDs(on ? LEDMode.kOn : LEDMode.kOff);
+        vision.setLEDs(on ? LEDMode.kOn : LEDMode.kOff);
     }
 }
