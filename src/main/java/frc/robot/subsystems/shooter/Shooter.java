@@ -2,17 +2,13 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
 import edu.wpi.first.wpilibj.system.LinearSystem;
 import edu.wpi.first.wpilibj.system.LinearSystemLoop;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.Matrix;
 import edu.wpi.first.wpiutil.math.Nat;
@@ -24,10 +20,7 @@ import frc.robot.Ports;
 import frc.robot.RobotContainer;
 import frc.robot.UnitModel;
 import frc.robot.subsystems.PTO.PTO;
-import org.apache.commons.lang.math.DoubleRange;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.techfire225.webapp.FireLog;
 
 import static frc.robot.Constants.Shooter.*;
 
@@ -43,13 +36,10 @@ import static frc.robot.Constants.Shooter.*;
 public class Shooter extends SubsystemBase {
     private final TalonFX upMotor = new TalonFX(Ports.Shooter.UP);
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
-    private final Solenoid solenoid = new Solenoid(Ports.Shooter.SOLENOID);
 
     private final Timer shootingTimer = new Timer();
     private LinearSystemLoop<N1, N1, N1> upMotorStateSpacePredictor;
     private LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
-
-    private boolean visionUp = false;
 
     public Shooter() {
         this.stateSpacePredictor = constructLinearSystem(J.get());
@@ -129,6 +119,7 @@ public class Shooter extends SubsystemBase {
      * @see #setPower(double)
      */
     public void setVelocity(double velocity, double timeInterval) {
+        timeInterval = Math.max(20, timeInterval);
         stateSpacePredictor.setNextR(VecBuilder.fill(velocity)); //r = reference (setpoint)
         stateSpacePredictor.correct(VecBuilder.fill(getVelocity()));
         stateSpacePredictor.predict(timeInterval);
@@ -203,31 +194,19 @@ public class Shooter extends SubsystemBase {
         setPowerUp(0);
     }
 
-    public void togglePiston() {
-        solenoid.set(!visionUp);
-        visionUp = !visionUp;
-    }
-
     @Override
     public void periodic() {
         shootingTimer.start();
 
-        final double currentTime = shootingTimer.get();
-        double omega = getVelocity() * Units.inchesToMeters(4);
-        /*FireLog.log("velocity", getVelocity());
+        FireLog.log("velocity", getVelocity());
         FireLog.log("up-velocity", unitModel.toVelocity(upMotor.getSelectedSensorVelocity()));
-        FireLog.log("radial-velocity", omega);
-        FireLog.log("setpoint", RobotContainer.velocity.get());
-        FireLog.log("accl-omega", (omega - lastOmega) / (currentTime - lastTime));
         FireLog.log("voltage", 12);
         FireLog.log("current", getCurrent());
-        */
 
         this.stateSpacePredictor = constructLinearSystem(J.get());
         this.upMotorStateSpacePredictor = constructLinearSystem(UP_MOTOR_J);
 
     }
-
 
 
 }
