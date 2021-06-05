@@ -1,23 +1,18 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commandgroups.FunnelAndShoot;
-import frc.robot.commandgroups.Outtake;
-import frc.robot.commandgroups.PickupBalls;
+import frc.robot.commandgroups.autonomous.FiveNineEightSeven;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.FeedShooter;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.autonomous.FollowPath;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.commands.AdjustHood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.ToggleVisionPiston;
@@ -34,16 +29,15 @@ import org.techfire225.webapp.Webserver;
 public class RobotContainer {
     public static final PTO pto = new PTO();
     public static final VisionModule vision = new VisionModule();
+    public static final SwerveDrive swerveDrive = new SwerveDrive(true, false);
     public static XboxController XboxDriver = new XboxController(3);
     public static XboxController Xbox = new XboxController(2);
-    public Funnel funnel = new Funnel();
-    public Shooter shooter = new Shooter();
-    public Climber climber = new Climber();
-    public Intake intake = new Intake();
-    public Hood hood = new Hood();
-    public Conveyor conveyor = new Conveyor();
-    public SwerveDrive swerveDrive = new SwerveDrive(true, false);
-
+    public final Funnel funnel = new Funnel();
+    public final Shooter shooter = new Shooter();
+    public final Climber climber = new Climber();
+    public final Intake intake = new Intake();
+    public final Hood hood = new Hood();
+    public final Conveyor conveyor = new Conveyor();
     public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
     public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);
     public JoystickButton y = new JoystickButton(Xbox, XboxController.Button.kY.value);
@@ -51,15 +45,12 @@ public class RobotContainer {
     public JoystickButton RB = new JoystickButton(Xbox, XboxController.Button.kBumperRight.value);
     public JoystickButton LB = new JoystickButton(Xbox, XboxController.Button.kBumperLeft.value);
     public JoystickButton RT = new JoystickButton(Xbox, XboxController.Axis.kRightTrigger.value);
-    public JoystickButton LT = new JoystickButton(Xbox, XboxController.Axis.kLeftTrigger.value);
+    public Joystick LT = new Joystick(XboxController.Axis.kLeftTrigger.value);
     public JoystickButton R = new JoystickButton(Xbox, XboxController.Button.kStickRight.value);
     public JoystickButton L = new JoystickButton(Xbox, XboxController.Button.kStickLeft.value);
     public JoystickButton start = new JoystickButton(Xbox, XboxController.Button.kStart.value);
     public JoystickButton back = new JoystickButton(Xbox, XboxController.Button.kBack.value);
     public JoystickButton xDriver = new JoystickButton(XboxDriver, XboxController.Button.kX.value);
-
-    private Trajectory trajectory = new Trajectory();
-
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -89,16 +80,30 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-//        a.whenPressed(new AdjustHood(hood, Hood.State.HIGH));
-//        R.whenPressed(new AdjustHood(hood, Hood.State.MIDDLE));
-//        L.whenPressed(new AdjustHood(hood, Hood.State.LOW));
-//        b.whenPressed(new AdjustHood(hood, Hood.State.CLOSED));
-//        RB.whileHeld(new FunnelAndShoot(hood, shooter, funnel, conveyor, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
-//        start.whenPressed(() -> VisionModule.setLEDs(LEDMode.kOff));
-//        back.whenPressed(() -> VisionModule.setLEDs(LEDMode.kOn));
-//        LB.whenPressed(new ToggleVisionPiston(shooter));
-        a.whileHeld(new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true));
-        b.whileHeld(new Outtake(funnel, conveyor));
+/*        a.whenPressed(new AdjustHood(hood, Hood.State.MIDDLE_LOW));
+        R.whenPressed(new AdjustHood(hood, Hood.State.LOW));
+        L.whenPressed(new AdjustHood(hood, Hood.State.HIGH));
+        b.whenPressed(new AdjustHood(hood, Hood.State.CLOSED));
+        RB.whileHeld(new FunnelAndShoot(hood, shooter, funnel, conveyor, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, false));
+//        RB.whileHeld(new FeedAndShoot(pto, conveyor, shooter, hood, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+        start.whenPressed(() -> vision.setLEDs(LEDMode.kOff));
+        back.whenPressed(new ToggleVisionPiston(vision));
+//        LB.whileHeld(new PickupBallsFeeder(intake, funnel, conveyor, Constants.Intake.POWER::get, true));
+        LB.whileHeld(new FunnelAndShoot(hood, shooter, funnel, conveyor, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, true));
+
+        x.whileHeld(new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, false));
+        y.whileHeld(new StartFunnel(funnel, false));*/
+
+//        a.whenPressed(new AdjustHood(hood, Hood.State.LOW));
+//        b.whenPressed(new AdjustHood(hood, Hood.State.MIDDLE_LOW));
+//        x.whenPressed(new AdjustHood(hood, Hood.State.MIDDLE));
+//        y.whenPressed(new AdjustHood(hood, Hood.State.HIGH));
+//        a.whileHeld(new MoveToPosition(swerveDrive, vision));
+//        x.whileHeld(new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true));
+//        RB.whileHeld(new FunnelAndShoot(hood, shooter, funnel, conveyor, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, true));
+        start.whenPressed(() -> vision.setLEDs(LEDMode.kOff));
+        back.whenPressed(() -> vision.setLEDs(LEDMode.kOn));
+        b.whenPressed(new ToggleVisionPiston(vision));
     }
 
 
@@ -109,7 +114,10 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new FollowPath(swerveDrive, trajectory);
+//        return new ShootAndSafeTrench(swerveDrive, vision, shooter, hood);
+//        return new ShootFromInitiation(swerveDrive, vision, funnel, conveyor, shooter, hood);
+//        return new AutoForward(swerveDrive);
+        return new FiveNineEightSeven(swerveDrive);
     }
 
 

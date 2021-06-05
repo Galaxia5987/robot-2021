@@ -31,11 +31,24 @@ public class SwerveDrive extends SubsystemBase {
     // the sign vectors of Rx and Ry
     private static final double[] signX = {1, 1, -1, -1};
     private static final double[] signY = {-1, 1, -1, 1};
+
+//    private static final double[] signXTrajectory = {-1, 1, -1, 1};
+    private static final double[] signXTrajectory = {1, 1, -1, -1};
+//    private static final double[] signYTrajectory = {-1, -1, 1, 1};
+    private static final double[] signYTrajectory = {-1, 1, -1, 1};
+
     private static boolean isFieldOriented;
 
     private final Timer timer = new Timer();
 
     public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+            new Translation2d(signXTrajectory[0] * Rx, signYTrajectory[0] * Ry),
+            new Translation2d(signXTrajectory[1] * Rx, signYTrajectory[1] * Ry),
+            new Translation2d(signXTrajectory[2] * Rx, signYTrajectory[2] * Ry),
+            new Translation2d(signXTrajectory[3] * Rx, signYTrajectory[3] * Ry)
+    );
+
+    public final SwerveDriveKinematics kinematicsOdometry = new SwerveDriveKinematics(
             new Translation2d(signX[0] * Rx, signY[0] * Ry),
             new Translation2d(signX[1] * Rx, signY[1] * Ry),
             new Translation2d(signX[2] * Rx, signY[2] * Ry),
@@ -43,11 +56,11 @@ public class SwerveDrive extends SubsystemBase {
     );
 
     private final SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
-            new Rotation2d(Math.toRadians(Robot.navx.getYaw())),
-            new Pose2d(),
-            kinematics,
+            new Rotation2d(Math.toRadians(-Robot.navx.getYaw())),
+            new Pose2d(new Translation2d(), new Rotation2d(0)),
+            kinematicsOdometry,
             VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-            VecBuilder.fill(Units.degreesToRadians(0.01)),
+            VecBuilder.fill(Units.degreesToRadians(1000)),
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))
     );
 
@@ -77,6 +90,9 @@ public class SwerveDrive extends SubsystemBase {
 
         SwerveDrive.isFieldOriented = isFieldOriented;
 
+        odometry.resetPosition(convertTrajectoryToOdometry(new Pose2d(3.059, 5.86, new Rotation2d())), new Rotation2d(Math.toRadians(-Robot.navx.getYaw())));
+        System.out.println(-Robot.navx.getYaw());
+        System.out.println(odometry.getEstimatedPosition().getRotation().getDegrees());
         timer.reset();
         timer.start();
     }
@@ -297,6 +313,20 @@ public class SwerveDrive extends SubsystemBase {
         return odometry.getEstimatedPosition();
     }
 
+    public Pose2d getPoseForTrajectory() {
+        Pose2d pose = odometry.getEstimatedPosition();
+        return convertOdometryToTrajectory(pose);
+    }
+
+    public Pose2d convertOdometryToTrajectory(Pose2d pose) {
+        return new Pose2d(pose.getY(), -pose.getX(), pose.getRotation());
+    }
+
+    public Pose2d convertTrajectoryToOdometry(Pose2d pose) {
+        return new Pose2d(-pose.getY(), pose.getX(), pose.getRotation());
+    }
+
+
     public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(pose, new Rotation2d(Robot.navx.getYaw()));
     }
@@ -311,16 +341,22 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {
             swerveModuleState[i] = new SwerveModuleState(swerveModules[i].getSpeed(), new Rotation2d(Math.toRadians(90) - swerveModules[i].getAngle()));
-            SmartDashboard.putNumber("" + i, swerveModuleState[i].angle.getDegrees());
+            SmartDashboard.putNumber("angle " + i, swerveModuleState[i].angle.getDegrees());
             SmartDashboard.putNumber("vel" + i, swerveModuleState[i].speedMetersPerSecond);
             SmartDashboard.putNumber("correct angle " + i, swerveModules[i].getAngle());
 
         }
 
         odometry.updateWithTime(timer.get(),
-                new Rotation2d(Math.toRadians(Robot.navx.getYaw())),
+                new Rotation2d(Math.toRadians(-Robot.navx.getYaw())),
                 swerveModuleState
         );
+
+        Pose2d pose = getPose();
+        SmartDashboard.putNumber("x-pose", pose.getX());
+        SmartDashboard.putNumber("y-pose", pose.getY());
+        SmartDashboard.putNumber("theta-pose", pose.getRotation().getDegrees());
+        SmartDashboard.putNumber("navx angle", Robot.navx.getYaw());
     }
 
 

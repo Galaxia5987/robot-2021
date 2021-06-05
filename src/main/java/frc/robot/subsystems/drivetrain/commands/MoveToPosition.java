@@ -15,9 +15,8 @@ public class MoveToPosition extends CommandBase {
     private final VisionModule vision;
     private final PIDController drivePID = new PIDController(Constants.SwerveDrive.KP_MOVE.get(),
             Constants.SwerveDrive.KI_MOVE.get(), Constants.SwerveDrive.KD_MOVE.get());
-    private final PIDController anglePID = new PIDController(Constants.SwerveDrive.KP_TURN.get(),
-            Constants.SwerveDrive.KI_TURN.get(), Constants.SwerveDrive.KD_TURN.get());
-    private final WebConstant angle = new WebConstant("vision-yaw", 0);
+    private final PIDController anglePID = new PIDController(Constants.SwerveDrive.KP_TURN,
+            Constants.SwerveDrive.KI_TURN.get(), Constants.SwerveDrive.KD_TURN);
     private double startAngle;
     private double angleTarget;
     private double horizontalTarget;
@@ -32,14 +31,14 @@ public class MoveToPosition extends CommandBase {
     @Override
     public void initialize() {
 //        drivePID.setPID(0, 0, 0);
-        anglePID.setPID(Constants.SwerveDrive.KP_TURN.get(),
-                Constants.SwerveDrive.KI_TURN.get(), Constants.SwerveDrive.KD_TURN.get());
-        var visionAngle = angle.get();
-//        if (visionAngle) {
-        angleTarget = Robot.navx.getYaw() + visionAngle;
-        anglePID.setSetpoint(0);
-        anglePID.setTolerance(1);
-        startAngle = Robot.navx.getYaw();
+        var visionAngle = vision.getVisionYaw();
+        System.out.println(visionAngle);
+        if (visionAngle.isPresent()) {
+            angleTarget = -swerveDrive.getPose().getRotation().getDegrees() + visionAngle.getAsDouble();
+            anglePID.setSetpoint(0);
+            anglePID.setTolerance(1);
+            startAngle = -swerveDrive.getPose().getRotation().getDegrees();
+        }
 /*            var distance = vision.getTargetRawDistance();
             if (distance.isPresent()) {
                 horizontalTarget = distance.getAsDouble() * Math.tan(Math.abs(Math.toRadians(Robot.navx.getYaw() - startAngle)));
@@ -56,10 +55,11 @@ public class MoveToPosition extends CommandBase {
         double strafe = drivePID.calculate(distance.getAsDouble() *
                 Math.tan(Math.abs(Math.toRadians(Robot.navx.getYaw() - startAngle))), horizontalTarget);
 */
-        double rotation = anglePID.calculate(Math.IEEEremainder(Robot.navx.getYaw() - angleTarget, 360));
+        double rotation = anglePID.calculate(Math.IEEEremainder(-swerveDrive.getPose().getRotation().getDegrees() - angleTarget, 360));
         swerveDrive.holonomicDrive(0, 0, rotation);
-        FireLog.log("swerve-set-point", 0);
-        FireLog.log("swerve-rotation", Math.IEEEremainder(Robot.navx.getYaw() - angleTarget, 360));
+        FireLog.log("swerve-set-point", angleTarget);
+        FireLog.log("swerve-rotation", Math.IEEEremainder(-swerveDrive.getPose().getRotation().getDegrees(), 360));
+        FireLog.log("swerve-error", Math.IEEEremainder(-swerveDrive.getPose().getRotation().getDegrees() - angleTarget, 360));
 
 
     }

@@ -71,6 +71,8 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.selectProfileSlot(0, 0);
         driveMotor.selectProfileSlot(1, 0);
 
+        driveMotor.setSelectedSensorPosition(0);
+
         this.wheel = wheel;
 
         this.anglePIDF = anglePIDF;
@@ -82,6 +84,8 @@ public class SwerveModule extends SubsystemBase {
      * @return the speed of the wheel in [m/s]
      */
     public double getSpeed() {
+        if (wheel == 1)
+            return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(1));
         return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(0));
     }
 
@@ -109,6 +113,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setAngle(double angle) {
         double targetAngle = getTargetAngle(angle, getAngle());
+//        System.out.println(wheel + " : " + targetAngle);
         angleMotor.set(ControlMode.Position, angleUnitModel.toTicks(targetAngle) + Constants.SwerveModule.ZERO_POSITION[wheel]);
     }
 

@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrain.autonomous;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -24,7 +25,7 @@ public class FollowPath extends SwerveControllerCommand {
     private final SwerveDrive swerveDrive;
 
     public FollowPath(SwerveDrive swerveDrive, Trajectory trajectory) {
-        super(trajectory, swerveDrive::getPose,
+        super(trajectory, swerveDrive::getPoseForTrajectory,
                 swerveDrive.kinematics,
                 new PIDController(Constants.Autonomous.kPXController, 0, 0),
                 new PIDController(Constants.Autonomous.kPYController, 0, 0),
@@ -32,7 +33,7 @@ public class FollowPath extends SwerveControllerCommand {
                     enableContinuousInput(-Math.PI, Math.PI);
                 }}, (SwerveModuleState[] states) -> {
                     for (int i = 0; i < states.length; i++) {
-                        swerveDrive.getModule(i).setAngle(states[i].angle.getRadians());
+                        swerveDrive.getModule(i).setAngle(-states[i].angle.getRadians());
                         swerveDrive.getModule(i).setSpeed(states[i].speedMetersPerSecond);
                     }
                 }, swerveDrive);
@@ -43,7 +44,6 @@ public class FollowPath extends SwerveControllerCommand {
     @Override
     public void initialize() {
         super.initialize();
-        swerveDrive.resetOdometry(trajectory.getInitialPose());
     }
 
     @Override

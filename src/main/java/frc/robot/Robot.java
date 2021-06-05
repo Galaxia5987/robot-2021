@@ -9,13 +9,13 @@ package frc.robot;
 
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.VisionModule;
+import org.ghrobotics.lib.debug.FalconDashboard;
 import org.photonvision.LEDMode;
 import org.techfire225.webapp.FireLog;
 
@@ -41,10 +41,11 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
+        navx.reset();
         m_robotContainer = new RobotContainer();
         m_robotContainer.hood.resetPosition();
         compressor.start();
-        navx.reset();
+
     }
 
     /**
@@ -86,6 +87,7 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
+        FalconDashboard.INSTANCE.setFollowingPath(true);
     }
 
     /**
@@ -93,6 +95,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
+        FalconDashboard.INSTANCE.setPathX(Units.metersToFeet(RobotContainer.swerveDrive.getPoseForTrajectory().getX()));
+        FalconDashboard.INSTANCE.setPathY(Units.metersToFeet(RobotContainer.swerveDrive.getPoseForTrajectory().getY()));
+        FalconDashboard.INSTANCE.setPathHeading(RobotContainer.swerveDrive.getPoseForTrajectory().getRotation().getRadians());
     }
 
     @Override
@@ -104,6 +109,7 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        FalconDashboard.INSTANCE.setFollowingPath(false);
     }
 
     /**

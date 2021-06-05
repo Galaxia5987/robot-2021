@@ -71,7 +71,7 @@ public final class Constants {
         public static final WebConstant KF = new WebConstant("HOOD_KF", 0.8);
         public static final double ACCELERATION = 2; // [m/sec^2]
         public static final double CRUISE_VELOCITY = 1; // [m/sec]
-        public static final int MIN_POSITION = -2744;
+        public static final int MIN_POSITION = -1;
         public static final WebConstant POSITION = new WebConstant("Hood_position", MIN_POSITION);
         public static final int MAX_POSITION = MIN_POSITION + (82 + 5552);
         public static final int STUCK_POSITION = MIN_POSITION + (5552 - 932);
@@ -127,14 +127,15 @@ public final class Constants {
 
     public static class SwerveDrive {
 
-        public static final double TICKS_PER_METER = 2048 / (4 * 0.0254 * Math.PI) * 7.5;
+        public static final double THIS_SHOULD_BE_1_ASK_AMIR = 1;
+        public static final double TICKS_PER_METER = 2048 / (4 * 0.0254 * Math.PI) * 7.5 * THIS_SHOULD_BE_1_ASK_AMIR;
         public static final int TICKS_IN_ENCODER = 1024;
         public static final double TICKS_PER_RAD = TICKS_IN_ENCODER / (2 * Math.PI);
 
         public static final int MAX_CURRENT = 35; // in ampere
 
-        public static final double ROBOT_LENGTH = 0.75; // in meters
-        public static final double ROBOT_WIDTH = 0.75; // in meters
+        public static final double ROBOT_LENGTH = 0.58; // in meters
+        public static final double ROBOT_WIDTH = 0.58; // in meters
 
         // the speed of the robot, this constant multiplies the speed outputs from the joysticks
         public static final double SPEED_MULTIPLIER = 4 / Math.sqrt(2);
@@ -146,9 +147,9 @@ public final class Constants {
 
         public static final double TURN_TOLERANCE = 2; // degrees
 
-        public static final WebConstant KP_TURN = new WebConstant("KP_TURN", 0);
-        public static final WebConstant KI_TURN = new WebConstant("KI_TURN", 0);
-        public static final WebConstant KD_TURN = new WebConstant("KD_TURN", 0);
+        public static final double KP_TURN = 0.05;
+        public static final WebConstant KI_TURN = new WebConstant("KI_TURN", 0.02);
+        public static final double KD_TURN = 0;
 
         public static final WebConstant KP_MOVE = new WebConstant("KP_MOVE", 0);
         public static final WebConstant KI_MOVE = new WebConstant("KI_MOVE", 0);
@@ -185,7 +186,7 @@ public final class Constants {
         public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
         public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
 
-        public static final int[] ZERO_POSITION = {775, 176, 765, 796};
+        public static final int[] ZERO_POSITION = {1288, 687, 238, 270};
 
         // sick man
         // the module that has more friction in the rotating mechanism
@@ -203,12 +204,12 @@ public final class Constants {
     }
 
     public static class Autonomous {
-        public static final double MAX_ACCELERATION = 2;
+        public static final double MAX_ACCELERATION = 0.5;
         public static final double MAX_VELOCITY = 3;
-        public static final double kPThetaController = 1;
+        public static final double kPThetaController = 2;
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints();
-        public static final double kPXController = 4;
-        public static final double kPYController = 1;
+        public static final double kPXController = 1.2;
+        public static final double kPYController = 1.2;
         public static final double MAX_CENTRIPETAL_ACCELERATION = 1.2;
 
         public static final String TEST_PATH = "paths/Test.wpilib.json";
@@ -217,6 +218,18 @@ public final class Constants {
         public static final String TRENCH_TO_SHOOT_PATH = "paths/TrenchToShoot.wpilib.json";
         public static final String INITIATION_TO_SAFE_TRENCH_PATH = "paths/InitiationToSafeTrench.wpilib.json";
         public static final String SAFE_TRENCH_TO_SHOOT_PATH = "paths/SafeTrenchToShoot.wpilib.json";
+        public static final String FORWARD_PATH = "paths/Forward.wpilib.json";
+        public static final String FORWARD_Y_PATH = "paths/ForwardY.wpilib.json";
+        public static final String LEFT_TURN_PATH = "paths/LeftTurn.wpilib.json";
+        public static final String TEST_ITST_PATH = "paths/TestITST.wpilib.json";
+        public static final String INITIATION_TO_SHOOT_PATH = "paths/InitiationToShoot.wpilib.json";
+        public static final String INITIATION_TO_FIVE_PATH = "InitiationToFive.wpilib.json";
+        public static final String FIVE_PATH = "Five.wpilib.json";
+        public static final String FIVE_TO_NINE_PATH = "FiveToNine.wpilib.json";
+        public static final String NINE_PATH = "Nine.wpilib.json";
+        public static final String NINE_TO_EIGHT_PATH = "NineToEight.wpilib.json";
+        public static final String EIGHT_PATH = "Eight.wpilib.json";
+        public static final String EIGHT_TO_SEVEN_PATH = "EightToSeven.wpilib.json";
+        public static final String SEVEN_PATH = "Seven.wpilib.json";
     }
-
 }
