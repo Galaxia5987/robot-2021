@@ -12,8 +12,8 @@ public class ShootAndAdjust extends ParallelCommandGroup {
     public ShootAndAdjust(Shooter shooter, VisionModule vision, Hood hood, boolean manual) {
         System.out.println("Distance" + vision.getTargetRawDistance().orElse(0));
         addCommands(
-                new Shoot(shooter, vision, hood, manual)
-//                new AdjustHood(hood, () -> vision.getTargetRawDistance().orElse(0))
+                new Shoot(shooter, vision, hood, manual),
+                new AdjustHood(hood, () -> vision.getTargetRawDistance().orElse(0))
         );
     }
 

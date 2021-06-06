@@ -32,7 +32,7 @@ public class FiveNineEightSeven extends SequentialCommandGroup {
             Path trajectoryPath3 = Filesystem.getDeployDirectory().toPath().resolve(Constants.Autonomous.FIVE_TO_NINE_PATH);
             fiveToNine = TrajectoryUtil.fromPathweaverJson(trajectoryPath3);
             Path trajectoryPath4 = Filesystem.getDeployDirectory().toPath().resolve(Constants.Autonomous.NINE_PATH);
-            nine = TrajectoryUtil.fromPathweaverJson(trajectoryPath4);J
+            nine = TrajectoryUtil.fromPathweaverJson(trajectoryPath4);
             Path trajectoryPath5 = Filesystem.getDeployDirectory().toPath().resolve(Constants.Autonomous.NINE_TO_EIGHT_PATH);
             nineToEight = TrajectoryUtil.fromPathweaverJson(trajectoryPath5);
             Path trajectoryPath6 = Filesystem.getDeployDirectory().toPath().resolve(Constants.Autonomous.EIGHT_PATH);

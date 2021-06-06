@@ -34,18 +34,14 @@ import static frc.robot.Constants.Shooter.*;
  * @since 2021
  */
 public class Shooter extends SubsystemBase {
-    private final TalonFX upMotor = new TalonFX(Ports.Shooter.UP);
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
 
     private final Timer shootingTimer = new Timer();
-    private LinearSystemLoop<N1, N1, N1> upMotorStateSpacePredictor;
     private LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
 
     public Shooter() {
         this.stateSpacePredictor = constructLinearSystem(J.get());
-        this.upMotorStateSpacePredictor = constructLinearSystem(UP_MOTOR_J);
 
-        upMotor.setInverted(Ports.Shooter.UP_INVERTED);
     }
 
     /**
@@ -145,53 +141,10 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
-     * Set the velocity to apply by the motor.
-     *
-     * @param velocity the desired velocity at which the motor will rotate. [RPS]
-     * @see #setVelocity(double, double)
-     */
-    public void setVelocityUp(double velocity) {
-        setVelocityUp(velocity, Constants.LOOP_PERIOD);
-    }
-
-    /**
-     * Set the velocity to apply by the motor.
-     *
-     * @param velocity     the desired velocity at which the motor will rotate. [RPS]
-     * @param timeInterval the time interval from the last call of this function. [sec]
-     * @see #setPower(double)
-     */
-    public void setVelocityUp(double velocity, double timeInterval) {
-        upMotorStateSpacePredictor.setNextR(VecBuilder.fill(velocity)); //r = reference (setpoint)
-        upMotorStateSpacePredictor.correct(VecBuilder.fill(getVelocity()));
-        upMotorStateSpacePredictor.predict(timeInterval);
-
-        double voltageToApply = upMotorStateSpacePredictor.getU(0); // u = input, calculated by the input.
-        // returns the voltage to apply (between -12 and 12)
-        setPowerUp(voltageToApply / Constants.NOMINAL_VOLTAGE); // map to be between -1 and 1
-    }
-
-    /**
-     * Set the power to apply by the motor.
-     *
-     * @param power the power at which the motor will rotate. [percentage, between -1 and 1]
-     * @see #stop()
-     */
-    public void setPowerUp(double power) {
-        if (RobotContainer.pto.getState() == PTO.GearboxState.CLIMBER) return;
-
-        if (Math.abs(power) < 0.01)
-            upMotor.set(ControlMode.PercentOutput, 0);
-        else
-            upMotor.set(ControlMode.PercentOutput, power, DemandType.ArbitraryFeedForward, ARBITRARY_FEED_FORWARD_UP);
-    }
-
-    /**
      * Stop the shooter.
      */
     public void stop() {
         setPower(0);
-        setPowerUp(0);
     }
 
     @Override
@@ -199,13 +152,10 @@ public class Shooter extends SubsystemBase {
         shootingTimer.start();
 
         FireLog.log("velocity", getVelocity());
-        FireLog.log("up-velocity", unitModel.toVelocity(upMotor.getSelectedSensorVelocity()));
         FireLog.log("voltage", 12);
         FireLog.log("current", getCurrent());
 
         this.stateSpacePredictor = constructLinearSystem(J.get());
-        this.upMotorStateSpacePredictor = constructLinearSystem(UP_MOTOR_J);
-
     }
 
 

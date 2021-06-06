@@ -15,8 +15,8 @@ public class FunnelAndShoot extends ParallelCommandGroup {
         addCommands(
                 new FeedShooter(conveyor, power),
                 new StartFunnel(funnel, true),
-//                new ShootAndAdjust(shooter, vision, hood, manual)
-                new Shoot(shooter, vision, hood, manual)
+                new ShootAndAdjust(shooter, vision, hood, manual)
+//                new Shoot(shooter, vision, hood, manual)
         );
     }
 }

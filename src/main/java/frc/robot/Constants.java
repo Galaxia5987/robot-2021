@@ -71,7 +71,7 @@ public final class Constants {
         public static final WebConstant KF = new WebConstant("HOOD_KF", 0.8);
         public static final double ACCELERATION = 2; // [m/sec^2]
         public static final double CRUISE_VELOCITY = 1; // [m/sec]
-        public static final int MIN_POSITION = -1;
+        public static final int MIN_POSITION = 83;
         public static final WebConstant POSITION = new WebConstant("Hood_position", MIN_POSITION);
         public static final int MAX_POSITION = MIN_POSITION + (82 + 5552);
         public static final int STUCK_POSITION = MIN_POSITION + (5552 - 932);
@@ -80,7 +80,7 @@ public final class Constants {
     }
 
     public static final class Intake {
-        public static final WebConstant POWER = new WebConstant("INTAKE_POWER", 0.5); // the target power of intake's motor(%)
+        public static final WebConstant POWER = new WebConstant("INTAKE_POWER", 0.7); // the target power of intake's motor(%)
     }
 
     public static final class Funnel {
@@ -108,6 +108,8 @@ public final class Constants {
         public static final double[] BLUE_RGB = {0.132, 0.427, 0.442};
         public static final double CONVEYOR_MOTOR_RETURN_POWER = 0; // [%]
         public static final double CONVEYOR_MOTOR_POWER = 0.9;
+        public static final double CONVEYOR_MOTOR_POWER_SLOW = 0.4;
+        public static final double CONVEYOR_MOTOR_POWER_LOAD = 0.75;
     }
 
     public static final class Vision {
@@ -204,7 +206,7 @@ public final class Constants {
     }
 
     public static class Autonomous {
-        public static final double MAX_ACCELERATION = 0.5;
+        public static final double MAX_ACCELERATION = 1;
         public static final double MAX_VELOCITY = 3;
         public static final double kPThetaController = 2;
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints();
@@ -223,13 +225,15 @@ public final class Constants {
         public static final String LEFT_TURN_PATH = "paths/LeftTurn.wpilib.json";
         public static final String TEST_ITST_PATH = "paths/TestITST.wpilib.json";
         public static final String INITIATION_TO_SHOOT_PATH = "paths/InitiationToShoot.wpilib.json";
-        public static final String INITIATION_TO_FIVE_PATH = "InitiationToFive.wpilib.json";
-        public static final String FIVE_PATH = "Five.wpilib.json";
-        public static final String FIVE_TO_NINE_PATH = "FiveToNine.wpilib.json";
-        public static final String NINE_PATH = "Nine.wpilib.json";
-        public static final String NINE_TO_EIGHT_PATH = "NineToEight.wpilib.json";
-        public static final String EIGHT_PATH = "Eight.wpilib.json";
-        public static final String EIGHT_TO_SEVEN_PATH = "EightToSeven.wpilib.json";
-        public static final String SEVEN_PATH = "Seven.wpilib.json";
+        public static final String INITIATION_TO_FIVE_PATH = "paths/InitiationToFive.wpilib.json";
+        public static final String FIVE_PATH = "paths/Five.wpilib.json";
+        public static final String FIVE_TO_NINE_PATH = "paths/FiveToNine.wpilib.json";
+        public static final String NINE_PATH = "paths/Nine.wpilib.json";
+        public static final String NINE_TO_EIGHT_PATH = "paths/NineToEight.wpilib.json";
+        public static final String EIGHT_PATH = "paths/Eight.wpilib.json";
+        public static final String EIGHT_TO_SEVEN_PATH = "paths/EightToSeven.wpilib.json";
+        public static final String SEVEN_PATH = "paths/Seven.wpilib.json";
+        public static final String PICKUP_BALLS_PATH = "paths/ForwardPickup.wpilib.json";
+        public static final String PICKUP_TO_INITIATION_PATH = "paths/PickupToInitiation.wpilib.json";
     }
 }

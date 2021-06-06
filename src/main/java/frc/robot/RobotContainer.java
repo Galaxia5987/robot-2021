@@ -4,14 +4,21 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commandgroups.autonomous.FiveNineEightSeven;
+import frc.robot.commandgroups.FunnelAndShoot;
+import frc.robot.commandgroups.PickupBalls;
+import frc.robot.commandgroups.autonomous.ShootAndSafeTrench;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.StartConveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
+import frc.robot.subsystems.drivetrain.commands.MoveToPosition;
 import frc.robot.subsystems.funnel.Funnel;
+import frc.robot.subsystems.funnel.commands.StartFunnel;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -85,7 +92,7 @@ public class RobotContainer {
         L.whenPressed(new AdjustHood(hood, Hood.State.HIGH));
         b.whenPressed(new AdjustHood(hood, Hood.State.CLOSED));
         RB.whileHeld(new FunnelAndShoot(hood, shooter, funnel, conveyor, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, false));
-//        RB.whileHeld(new FeedAndShoot(pto, conveyor, shooter, hood, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
+        RB.whileHeld(new FeedAndShoot(pto, conveyor, shooter, hood, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
         start.whenPressed(() -> vision.setLEDs(LEDMode.kOff));
         back.whenPressed(new ToggleVisionPiston(vision));
 //        LB.whileHeld(new PickupBallsFeeder(intake, funnel, conveyor, Constants.Intake.POWER::get, true));
@@ -98,12 +105,20 @@ public class RobotContainer {
 //        b.whenPressed(new AdjustHood(hood, Hood.State.MIDDLE_LOW));
 //        x.whenPressed(new AdjustHood(hood, Hood.State.MIDDLE));
 //        y.whenPressed(new AdjustHood(hood, Hood.State.HIGH));
+        a.whileHeld(new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true));
+        b.whileHeld(new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, false));
 //        a.whileHeld(new MoveToPosition(swerveDrive, vision));
+//        RB.whileHeld(new FeedShooter(conveyor,Constants.Conveyor.CONVEYOR_MOTOR_POWER));
 //        x.whileHeld(new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true));
-//        RB.whileHeld(new FunnelAndShoot(hood, shooter, funnel, conveyor, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, true));
+//RB.whileHeld(new FunnelAndShoot(hood, shooter, funnel, conveyor, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, true));
         start.whenPressed(() -> vision.setLEDs(LEDMode.kOff));
-        back.whenPressed(() -> vision.setLEDs(LEDMode.kOn));
-        b.whenPressed(new ToggleVisionPiston(vision));
+        back.whenPressed(new ToggleVisionPiston(vision));
+        RB.whileHeld(new FunnelAndShoot(hood, shooter, funnel, conveyor, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, true));
+//        LB.whileHeld(new StartIntake(intake, Constants.Intake.POWER::get, true));
+//        LB.whenPressed(new ToggleVisionPiston(vision));
+        LB.whileHeld(new MoveToPosition(swerveDrive, vision));
+        y.whileHeld(new ParallelCommandGroup(new StartConveyor(conveyor), new StartFunnel(funnel, true)));
+
     }
 
 
@@ -117,7 +132,8 @@ public class RobotContainer {
 //        return new ShootAndSafeTrench(swerveDrive, vision, shooter, hood);
 //        return new ShootFromInitiation(swerveDrive, vision, funnel, conveyor, shooter, hood);
 //        return new AutoForward(swerveDrive);
-        return new FiveNineEightSeven(swerveDrive);
+        return new ShootAndSafeTrench(swerveDrive, vision, shooter, hood, intake, funnel, conveyor);
+//        return new FiveNineEightSeven(swerveDrive);
     }
 
 

@@ -52,6 +52,7 @@ public class Ports {
         public static final int MOTOR = 41;
         public static final boolean IS_MOTOR_INVERTED = true;
 
+        public static final int LIMIT_SWITCH = 0;
     }
 
     public static class SwerveDrive {
