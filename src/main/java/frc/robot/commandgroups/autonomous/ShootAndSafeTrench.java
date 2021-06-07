@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
+import frc.robot.commandgroups.ConveyorShooter;
 import frc.robot.commandgroups.FunnelAndShoot;
 import frc.robot.commandgroups.PickupBalls;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -47,9 +48,13 @@ public class ShootAndSafeTrench extends SequentialCommandGroup {
                         new ToggleVisionPiston(vision)
                 ),
                 new WaitCommand(1),
-                new ParallelDeadlineGroup(new WaitCommand(2), new MoveToPosition(swerveDrive, vision), new AdjustHood(hood, () -> vision.getTargetRawDistance().orElse(0))
+                new ParallelDeadlineGroup(new WaitCommand(2),
+                        new MoveToPosition(swerveDrive, vision),
+                        new AdjustHood(hood, vision, () -> vision.getTargetRawDistance().orElse(0))
                 ),
-                new FunnelAndShoot(hood, shooter, funnel, conveyor, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, false).withTimeout(4),
+//                        new WaitUntilCommand(() -> shooter.hasReachedSetpoint(hood.estimateVelocityFromDistance(vision.getTargetRawDistance().orElse(0)))),
+//                new FunnelAndShoot(hood, shooter, funnel, conveyor, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, false).withTimeout(4),
+                new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER).withTimeout(4),
                 new FollowPath(swerveDrive, trajectory),
 //                new WaitCommand(.5),
                 new PickupBallsWhileDriving(intake, funnel, conveyor, swerveDrive).withTimeout(4),

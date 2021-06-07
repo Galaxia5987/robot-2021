@@ -16,7 +16,7 @@ public class AutoForward extends SequentialCommandGroup {
     public AutoForward(SwerveDrive swerveDrive) {
         Trajectory forward = new Trajectory();
         try {
-            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(Constants.Autonomous.SHOOT_TO_SAFE_TRENCH_PATH);
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(Constants.Autonomous.INITIATION_TO_SHOOT_PATH);
             forward = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
         } catch (IOException ex) {
             System.out.println("Couldn't find the autonomous file...");
