@@ -28,6 +28,7 @@ import org.techfire225.webapp.FireLog;
 public class Robot extends TimedRobot {
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     public static boolean debug = true;
+    public static double startAngle;
     public PowerDistributionPanel pdp = new PowerDistributionPanel();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
@@ -44,6 +45,7 @@ public class Robot extends TimedRobot {
         navx.reset();
         m_robotContainer = new RobotContainer();
         m_robotContainer.hood.resetPosition();
+        startAngle = navx.getYaw();
         compressor.start();
 
     }
