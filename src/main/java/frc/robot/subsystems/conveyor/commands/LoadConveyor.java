@@ -15,8 +15,7 @@ public class LoadConveyor extends CommandBase {
     private final double power;
     private final Timer timer = new Timer();
     private final Funnel funnel;
-    private boolean powerConveyor;
-    private boolean first;
+    private boolean last;
 
     public LoadConveyor(Conveyor conveyor, double power, Funnel funnel) {
         this.conveyor = conveyor;
@@ -28,11 +27,10 @@ public class LoadConveyor extends CommandBase {
 
     @Override
     public void initialize() {
-/*//        last = Conveyor.hasFunnelSensedObject();
-        timer.reset();
+        last = Conveyor.hasFunnelSensedObject();
+       /* timer.reset();
         timer.start();
         powerConveyor = false;*/
-        funnel.setPower(Constants.Funnel.POWER);
     }
 
     @Override
@@ -70,7 +68,8 @@ public class LoadConveyor extends CommandBase {
         }*/
         if (Conveyor.hasFunnelSensedObject()) {
             conveyor.setPower(Constants.Conveyor.CONVEYOR_MOTOR_POWER_LOAD);
-        } else {
+        }
+        else {
             conveyor.setPower(0);
         }
 

@@ -11,8 +11,6 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.VisionModule;
 
-//import static frc.robot.RobotContainer.velocity;
-
 public class FeedAndShoot extends ParallelCommandGroup {
 
     public FeedAndShoot(PTO pto, Conveyor conveyor, Shooter shooter, Hood hood, VisionModule vision, double power) {

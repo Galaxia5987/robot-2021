@@ -15,7 +15,7 @@ public class FeedAndShootWithoutVision extends ParallelCommandGroup {
         addCommands(
                 new FeedShooter(conveyor, power),
                 new SwitchSubsystems(pto, false),
-                new ShootWithoutVision(shooter)
+                new ShootWithoutVision(shooter, 50)
         );
     }
 

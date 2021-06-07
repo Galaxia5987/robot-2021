@@ -9,6 +9,7 @@ public class StartConveyor extends CommandBase {
 
     public StartConveyor(Conveyor conveyor) {
         this.conveyor = conveyor;
+        addRequirements(conveyor);
     }
 
     @Override

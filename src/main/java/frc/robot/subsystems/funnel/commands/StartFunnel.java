@@ -41,10 +41,6 @@ public class StartFunnel extends CommandBase {
                 funnel.toggle();
                 last = timmy.get();
                 //            funnel.setPower(0);
-            } else {
-                if (!Conveyor.hasFunnelSensedObject()) {
-                    funnel.setPower(isMovingUp ? Constants.Funnel.POWER : -Constants.Funnel.POWER);
-                }
             }
         }
     }

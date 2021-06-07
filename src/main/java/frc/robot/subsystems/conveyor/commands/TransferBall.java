@@ -10,6 +10,7 @@ public class TransferBall extends CommandBase {
 
     public TransferBall(Funnel funnel) {
         this.funnel = funnel;
+        addRequirements(funnel);
     }
 
     @Override
