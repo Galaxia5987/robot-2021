@@ -8,6 +8,7 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.UnitModel;
 import frc.robot.subsystems.shooter.LinearRegression;
+import frc.robot.utils.VisionModule;
 import org.apache.commons.lang.math.DoubleRange;
 import org.techfire225.webapp.FireLog;
 
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.function.IntSupplier;
 
 import static frc.robot.Constants.Shooter.TICKS_PER_ROTATION;
@@ -108,7 +110,7 @@ public class Hood extends SubsystemBase {
     }
 
     public void resetPosition() {
-//        Constants.Hood.MIN_POSITION = motor.getSelectedSensorPosition();
+        Constants.Hood.MIN_POSITION = motor.getSelectedSensorPosition();
     }
 
     @Override
@@ -120,10 +122,10 @@ public class Hood extends SubsystemBase {
 
     public enum State {
         CLOSED(Constants.Hood.MIN_POSITION + 200, new DoubleRange(0, 0), "/Low.csv"),
-        LOW(Constants.Hood.MIN_POSITION + 1500, new DoubleRange(0.75, 1.7), "/Low.csv"),
-        MIDDLE_LOW(Constants.Hood.MIN_POSITION + 2500, new DoubleRange(1.7, 2.5), "/Middle_Low.csv"),
-        MIDDLE(Constants.Hood.MIN_POSITION + 3000, new DoubleRange(2.5, 3.3), "/Middle.csv"),
-        HIGH(Constants.Hood.MIN_POSITION + 3450, new DoubleRange(3.3, 4.5), "/High.csv"),
+        LOW(Constants.Hood.MIN_POSITION + 1500, new DoubleRange(1, 1.62), "/Low.csv"),
+        MIDDLE_LOW(Constants.Hood.MIN_POSITION + 2500, new DoubleRange(1.48, 3.1), "/Middle_Low.csv"),
+        MIDDLE(Constants.Hood.MIN_POSITION + 3000, new DoubleRange(3.1, 3.38), "/Middle.csv"),
+        HIGH(Constants.Hood.MIN_POSITION + 3450, new DoubleRange(3.84, 4.48), "/High.csv"),
         ABOVE_HIGH(() -> Constants.Hood.MIN_POSITION + 3750, new DoubleRange(4.5, 6), "/Above_High.csv"),
         OPEN(Constants.Hood.MAX_POSITION - 200, new DoubleRange(0, 0), "/High.csv");
 
@@ -147,25 +149,17 @@ public class Hood extends SubsystemBase {
          * @param distance the distance from the target. [m]
          * @return the optimal state.
          */
-        public static State getOptimalState(double distance) {
+        public static State getOptimalState(VisionModule vision, double distance) {
             var filtered = Arrays.stream(State.values())
-                    .filter(state -> state.shootingRange.getMinimumDouble() < distance && state.shootingRange.getMaximumDouble() > distance)
+                    .filter(state -> state.shootingRange.getMinimumDouble() <= distance && state.shootingRange.getMaximumDouble() >= distance)
                     .min(Comparator.comparingDouble(state -> state.velocityEstimator.estimateVelocityFromDistance(distance)));
-            return filtered.orElse(State.CLOSED);
-        /*    State current = CLOSED;
-            double minVelocity = CLOSED.velocityEstimator.estimateVelocityFromDistance(distance);
-            for (State state : State.values()) {
-                double currentVelocity = state.velocityEstimator.estimateVelocityFromDistance(distance);
-                if (currentVelocity < minVelocity) {
-                    minVelocity = currentVelocity;
-                    current = state;
-                }
+
+            if (vision.getCurrentPitch() == Math.toRadians(Constants.Vision.HIGH_ANGLE)
+                    && (distance >= 1.48 && distance <= 1.62)) {
+                filtered = Optional.of(State.MIDDLE_LOW);
             }
-            return current;
-        */
+            return filtered.orElse(State.CLOSED);
         }
-
-
 
         /**
          * Internal function to create an input stream reader, in order values from the shooting experiments.

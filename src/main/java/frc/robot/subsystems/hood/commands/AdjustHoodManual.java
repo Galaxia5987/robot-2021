@@ -3,6 +3,7 @@ package frc.robot.subsystems.hood.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.utils.VisionModule;
 import org.techfire225.webapp.FireLog;
 
 import java.util.function.Supplier;
@@ -12,8 +13,8 @@ public class AdjustHoodManual extends CommandBase {
     private final Hood hood;
     private final Supplier<Hood.State> state;
 
-    public AdjustHoodManual(Hood hood, double distance) {
-        this(hood, Hood.State.getOptimalState(distance));
+    public AdjustHoodManual(Hood hood, VisionModule vision, double distance) {
+        this(hood, Hood.State.getOptimalState(vision, distance));
     }
 
     public AdjustHoodManual(Hood hood, Hood.State state) {
