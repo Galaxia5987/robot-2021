@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -27,9 +28,9 @@ public class HolonomicDrive extends CommandBase {
         GenericHID.Hand right = GenericHID.Hand.kRight;
         GenericHID.Hand left = GenericHID.Hand.kLeft;
 
-        double forward = -Utils.joystickDeadband(RobotContainer.Xbox.getY(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        double strafe = Utils.joystickDeadband(RobotContainer.Xbox.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        double rotation = -Utils.joystickDeadband(RobotContainer.Xbox.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double forward = smoothInput(-Utils.joystickDeadband(RobotContainer.XboxDriver.getY(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
+        double strafe = smoothInput(Utils.joystickDeadband(RobotContainer.XboxDriver.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
+        double rotation = smoothInput(-Utils.joystickDeadband(RobotContainer.XboxDriver.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
 
         // turns the joystick values into the heading of the robot
         forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;
@@ -45,6 +46,11 @@ public class HolonomicDrive extends CommandBase {
         FireLog.log("swerve angle by vectors", swerveDrive.getVelocity()[1]);
         FireLog.log("swerve direction", Robot.navx.getYaw());
     }
+
+    private double smoothInput(double input) {
+        return Math.pow(input, 3) * 0.8;
+    }
+
 
     @Override
     public boolean isFinished() {

@@ -90,7 +90,7 @@ public class SwerveDrive extends SubsystemBase {
 
         SwerveDrive.isFieldOriented = isFieldOriented;
 
-        odometry.resetPosition(convertTrajectoryToOdometry(new Pose2d(3.059, 5.86, new Rotation2d())), new Rotation2d(Math.toRadians(-Robot.navx.getYaw())));
+        odometry.resetPosition(convertTrajectoryToOdometry(new Pose2d(3.159, 5.86, new Rotation2d())), new Rotation2d(Math.toRadians(-Robot.navx.getYaw())));
         System.out.println(-Robot.navx.getYaw());
         System.out.println(odometry.getEstimatedPosition().getRotation().getDegrees());
         timer.reset();
@@ -109,6 +109,7 @@ public class SwerveDrive extends SubsystemBase {
     public static double[] getRobotHeading(double forward, double strafe, double rotation, double robotAngle) {
         // multiplies the 2D rotation matrix by the robot heading, there by rotating the coordinate system
         // see https://en.wikipedia.org/wiki/Rotation_matrix
+        SmartDashboard.putNumber("final angle", robotAngle);
         double[][] rotationMat = {{Math.cos(robotAngle), -Math.sin(robotAngle)},
                 {Math.sin(robotAngle), Math.cos(robotAngle)}};
         double[] speeds = Utils.matrixVectorMult(rotationMat, new double[]{forward, strafe});
@@ -148,7 +149,8 @@ public class SwerveDrive extends SubsystemBase {
      * @param rotation the rotation Z of the joystick
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
-        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(180 - Robot.navx.getYaw()));
+        // -Math.toRadians(180 - Robot.navx.getYaw())
+        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(180 - (Robot.navx.getYaw()-Robot.startAngle)));
 
         double[] velocities = calculateWheelVelocities(robotHeading);
         double[] polar;
