@@ -1,9 +1,7 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
@@ -16,7 +14,6 @@ import edu.wpi.first.wpiutil.math.VecBuilder;
 import edu.wpi.first.wpiutil.math.Vector;
 import edu.wpi.first.wpiutil.math.numbers.N1;
 import frc.robot.Constants;
-import frc.robot.Ports;
 import frc.robot.RobotContainer;
 import frc.robot.UnitModel;
 import frc.robot.subsystems.PTO.PTO;
@@ -41,41 +38,6 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
         this.stateSpacePredictor = constructLinearSystem(J.get());
-
-    }
-
-    /**
-     * @return the velocity of the shooter. [RPS]
-     * @see #setVelocity(double, double)
-     */
-    public double getVelocity() {
-        if (RobotContainer.pto.getState() == PTO.GearboxState.CLIMBER) {
-            return 0;
-        }
-
-        return unitModel.toVelocity(RobotContainer.pto.getMaster().getSelectedSensorVelocity());
-    }
-
-    /**
-     * Set the velocity to apply by the motor.
-     *
-     * @param velocity the desired velocity at which the motor will rotate. [RPS]
-     * @see #setVelocity(double, double)
-     */
-    public void setVelocity(double velocity) {
-        setVelocity(velocity, Constants.LOOP_PERIOD);
-    }
-
-
-    /**
-     * Get whether the flywheel has reached the desired velocity in order to reach the target.
-     *
-     * @param setpoint the desired velocity at the motor will rotate. [RPS]
-     * @return whether the flywheel reaches the desired velocity.
-     */
-    @SuppressWarnings("unused")
-    public boolean hasReachedSetpoint(double setpoint) {
-        return Math.abs(getVelocity() - setpoint) < Constants.Shooter.VELOCITY_TOLERANCE;
     }
 
     /**
@@ -102,9 +64,26 @@ public class Shooter extends SubsystemBase {
         return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
     }
 
+    /**
+     * @return the velocity of the shooter. [RPS]
+     * @see #setVelocity(double, double)
+     */
+    public double getVelocity() {
+        if (RobotContainer.pto.getState() == PTO.GearboxState.CLIMBER) {
+            return 0;
+        }
 
-    public double getCurrent() {
-        return RobotContainer.pto.getMaster().getSupplyCurrent();
+        return unitModel.toVelocity(RobotContainer.pto.getMaster().getSelectedSensorVelocity());
+    }
+
+    /**
+     * Set the velocity to apply by the motor.
+     *
+     * @param velocity the desired velocity at which the motor will rotate. [RPS]
+     * @see #setVelocity(double, double)
+     */
+    public void setVelocity(double velocity) {
+        setVelocity(velocity, Constants.LOOP_PERIOD);
     }
 
     /**
@@ -141,6 +120,16 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
+     * Get whether the flywheel has reached the desired velocity in order to reach the target.
+     *
+     * @param setpoint the desired velocity at the motor will rotate. [RPS]
+     * @return whether the flywheel reaches the desired velocity.
+     */
+    public boolean hasReachedSetpoint(double setpoint) {
+        return Math.abs(getVelocity() - setpoint) < Constants.Shooter.VELOCITY_TOLERANCE;
+    }
+
+    /**
      * Stop the shooter.
      */
     public void stop() {
@@ -149,13 +138,9 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        shootingTimer.start();
-
-        FireLog.log("velocity", getVelocity());
-        FireLog.log("voltage", 12);
-        FireLog.log("current", getCurrent());
-
         this.stateSpacePredictor = constructLinearSystem(J.get());
+        shootingTimer.start();
+        FireLog.log("velocity", getVelocity());
     }
 
 

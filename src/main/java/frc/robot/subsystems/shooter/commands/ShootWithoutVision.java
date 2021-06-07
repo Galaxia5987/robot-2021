@@ -5,9 +5,11 @@ import frc.robot.subsystems.shooter.Shooter;
 
 public class ShootWithoutVision extends CommandBase {
     private final Shooter shooter;
+    private double velocity;
 
-    public ShootWithoutVision(Shooter shooter) {
+    public ShootWithoutVision(Shooter shooter, double velocity) {
         this.shooter = shooter;
+        this.velocity = velocity;
         addRequirements(shooter);
     }
 
@@ -17,7 +19,7 @@ public class ShootWithoutVision extends CommandBase {
 
     @Override
     public void execute() {
-        shooter.setVelocity(35);
+        shooter.setVelocity(velocity);
     }
 
     @Override

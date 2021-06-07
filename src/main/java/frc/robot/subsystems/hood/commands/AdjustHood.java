@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.utils.VisionModule;
 import org.techfire225.webapp.FireLog;
 
 import java.util.function.DoubleSupplier;
@@ -14,8 +15,8 @@ public class AdjustHood extends CommandBase {
     private final Hood hood;
     private final Supplier<Hood.State> state;
 
-    public AdjustHood(Hood hood, DoubleSupplier distance) {
-        this(hood, () -> Hood.State.getOptimalState(distance.getAsDouble()));
+    public AdjustHood(Hood hood, VisionModule vision, DoubleSupplier distance) {
+        this(hood, () -> Hood.State.getOptimalState(vision, distance.getAsDouble()));
     }
 
     public AdjustHood(Hood hood, Hood.State state) {
