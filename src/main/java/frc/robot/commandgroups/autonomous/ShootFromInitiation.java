@@ -8,17 +8,14 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.commandgroups.ShootAndAdjust;
+import frc.robot.commandgroups.ConveyorShooter;
 import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.StartConveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.autonomous.FollowPath;
 import frc.robot.subsystems.drivetrain.commands.MoveToPosition;
 import frc.robot.subsystems.funnel.Funnel;
-import frc.robot.subsystems.funnel.commands.StartFunnel;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.ToggleVisionPiston;
 import frc.robot.utils.VisionModule;
 import org.photonvision.LEDMode;
 
@@ -38,15 +35,11 @@ public class ShootFromInitiation extends SequentialCommandGroup {
         addCommands(new FollowPath(swerveDrive, trajectory),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> vision.setLEDs(LEDMode.kOff)),
-                        new ToggleVisionPiston(vision)
+                        new InstantCommand(() -> vision.setPistonMode(true), vision)
                 ),
-                new WaitCommand(0.3),
-                new MoveToPosition(swerveDrive, vision).withTimeout(0.3),
-                new ParallelCommandGroup(
-                        new StartFunnel(funnel, true),
-                        new StartConveyor(conveyor),
-                        new ShootAndAdjust(shooter, vision, hood, false)
-                ).withTimeout(4)
+                new WaitCommand(0.5),
+                new MoveToPosition(swerveDrive, vision).withTimeout(2),
+                new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER)
         );
     }
 }
