@@ -58,7 +58,6 @@ public class VisionModule extends SubsystemBase {
     }
 
     public void togglePiston() {
-        // TODO: check whether the index is the tight index!!!!!!!.
         if (piston.get()) {
             piston.set(false);
             camera.setPipelineIndex(1);
@@ -66,6 +65,15 @@ public class VisionModule extends SubsystemBase {
             piston.set(true);
             camera.setPipelineIndex(0);
         }
+    }
+
+    public void setPistonMode(boolean up) {
+        if (up) {
+            camera.setPipelineIndex(1);
+        } else {
+            camera.setPipelineIndex(0);
+        }
+        piston.set(up);
     }
 
     public Optional<Pose2d> getPose() {

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Utils;
 import org.techfire225.webapp.FireLog;
 
@@ -32,29 +34,25 @@ public class SwerveDrive extends SubsystemBase {
     private static final double[] signX = {1, 1, -1, -1};
     private static final double[] signY = {-1, 1, -1, 1};
 
-//    private static final double[] signXTrajectory = {-1, 1, -1, 1};
+    //    private static final double[] signXTrajectory = {-1, 1, -1, 1};
     private static final double[] signXTrajectory = {1, 1, -1, -1};
-//    private static final double[] signYTrajectory = {-1, -1, 1, 1};
+    //    private static final double[] signYTrajectory = {-1, -1, 1, 1};
     private static final double[] signYTrajectory = {-1, 1, -1, 1};
 
     private static boolean isFieldOriented;
-
-    private final Timer timer = new Timer();
-
     public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             new Translation2d(signXTrajectory[0] * Rx, signYTrajectory[0] * Ry),
             new Translation2d(signXTrajectory[1] * Rx, signYTrajectory[1] * Ry),
             new Translation2d(signXTrajectory[2] * Rx, signYTrajectory[2] * Ry),
             new Translation2d(signXTrajectory[3] * Rx, signYTrajectory[3] * Ry)
     );
-
     public final SwerveDriveKinematics kinematicsOdometry = new SwerveDriveKinematics(
             new Translation2d(signX[0] * Rx, signY[0] * Ry),
             new Translation2d(signX[1] * Rx, signY[1] * Ry),
             new Translation2d(signX[2] * Rx, signY[2] * Ry),
             new Translation2d(signX[3] * Rx, signY[3] * Ry)
     );
-
+    private final Timer timer = new Timer();
     private final SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
             new Rotation2d(Math.toRadians(-Robot.navx.getYaw())),
             new Pose2d(new Translation2d(), new Rotation2d(0)),
@@ -63,13 +61,15 @@ public class SwerveDrive extends SubsystemBase {
             VecBuilder.fill(Units.degreesToRadians(1000)),
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))
     );
-
-    private TrajectoryConfig config = new TrajectoryConfig(Constants.Autonomous.MAX_VELOCITY,
+    private final SwerveModule[] swerveModules = new SwerveModule[4];
+    private final TrajectoryConfig config = new TrajectoryConfig(Constants.Autonomous.MAX_VELOCITY,
             Constants.Autonomous.MAX_ACCELERATION)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(kinematics);
 
-    private final SwerveModule[] swerveModules = new SwerveModule[4];
+    public SwerveDrive(boolean isFieldOriented) {
+        this(isFieldOriented, false);
+    }
 
     public SwerveDrive(boolean isFieldOriented, boolean testMode) {
         createInverseMatrix();
@@ -91,8 +91,6 @@ public class SwerveDrive extends SubsystemBase {
         SwerveDrive.isFieldOriented = isFieldOriented;
 
         odometry.resetPosition(convertTrajectoryToOdometry(new Pose2d(3.159, 5.86, new Rotation2d())), new Rotation2d(Math.toRadians(-Robot.navx.getYaw())));
-        System.out.println(-Robot.navx.getYaw());
-        System.out.println(odometry.getEstimatedPosition().getRotation().getDegrees());
         timer.reset();
         timer.start();
     }
@@ -150,7 +148,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
         // -Math.toRadians(180 - Robot.navx.getYaw())
-        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(180 - (Robot.navx.getYaw()-Robot.startAngle)));
+        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(180 - (Robot.navx.getYaw() - Robot.startAngle)));
 
         double[] velocities = calculateWheelVelocities(robotHeading);
         double[] polar;
@@ -335,6 +333,34 @@ public class SwerveDrive extends SubsystemBase {
 
     public TrajectoryConfig getConfig() {
         return config;
+    }
+
+    public double getOptimalAngle(double initAngle, double targetAngle) {
+        double option1 = targetAngle - initAngle;
+        double clockwise, counterClockwise;
+        if (option1 > 0) {
+            clockwise = option1;
+            counterClockwise = 360 - option1;
+        } else {
+            clockwise = 360 - Math.abs(option1);
+            counterClockwise = Math.abs(option1);
+        }
+        if (clockwise < counterClockwise) {
+            return clockwise;
+        }
+        return -counterClockwise;
+    }
+
+    public double getJoystickAngle() {
+        {
+            double x = RobotContainer.XboxDriver.getRawAxis(XboxController.Axis.kRightX.value);
+            double y = RobotContainer.XboxDriver.getRawAxis(XboxController.Axis.kRightY.value);
+            return Math.toDegrees(Math.atan2(y, x));
+        }
+    }
+
+    public void putThisSomewhereAdam(double initAngle) {
+        double rotateBy = getOptimalAngle(initAngle, getJoystickAngle());
     }
 
 

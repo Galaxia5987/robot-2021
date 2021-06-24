@@ -70,12 +70,12 @@ public final class Constants {
         public static final WebConstant KF = new WebConstant("HOOD_KF", 0.8);
         public static final double ACCELERATION = 2; // [m/sec^2]
         public static final double CRUISE_VELOCITY = 1; // [m/sec]
-        public static int MIN_POSITION = 125;
+        public static final int POSITION_TOLERANCE = 5;
+        public static final WebConstant ARBITRARY_KF = new WebConstant("ARBITRARY_KF", 4);
+        public static final int MIN_POSITION = 0;
         public static final WebConstant POSITION = new WebConstant("Hood_position", MIN_POSITION);
         public static final int MAX_POSITION = MIN_POSITION + (82 + 5552);
         public static final int STUCK_POSITION = MIN_POSITION + (5552 - 932);
-        public static final int POSITION_TOLERANCE = 5;
-        public static final WebConstant ARBITRARY_KF = new WebConstant("ARBITRARY_KF", 4);
     }
 
     public static final class Intake {
@@ -101,7 +101,7 @@ public final class Constants {
         public static final double SHOOTER_PROXIMITY_SENSE_VOLTAGE = 0; // [volts]
         public static final double FUNNEL_PROXIMITY_LOST_VOLTAGE = 0; // [volts]
         public static final double FUNNEL_PROXIMITY_SENSE_VOLTAGE = 0; // [volts]
-//        public static final double[] YELLOW_RGB = {0.317, 0.552, 0.127};
+        //        public static final double[] YELLOW_RGB = {0.317, 0.552, 0.127};
         public static final double[] YELLOW_RGB = {0.35, 0.55, 0.09};
         public static final double[] GREEN_RGB = {0.16, 0.571, 0.269};
         public static final double[] RED_RGB = {0.492, 0.348, 0.145};
@@ -109,7 +109,7 @@ public final class Constants {
         public static final double CONVEYOR_MOTOR_RETURN_POWER = 0; // [%]
         public static final double CONVEYOR_MOTOR_POWER = 0.9;
         public static final double CONVEYOR_MOTOR_POWER_SLOW = 0.3;
-        public static final double CONVEYOR_MOTOR_POWER_LOAD = 0.5;
+        public static final double CONVEYOR_MOTOR_POWER_LOAD = 0.6;
     }
 
     public static final class Vision {
@@ -132,7 +132,9 @@ public final class Constants {
         public static final double THIS_SHOULD_BE_1_ASK_AMIR = 1;
         public static final double TICKS_PER_METER = 2048 / (4 * 0.0254 * Math.PI) * 7.5 * THIS_SHOULD_BE_1_ASK_AMIR;
         public static final int TICKS_IN_ENCODER = 1024;
-        public static final double TICKS_PER_RAD = TICKS_IN_ENCODER / (2 * Math.PI);
+        public static final int ALLOWABLE_ANGLE_ERROR = 30; // [ticks]
+        private static final double ANGLE_GEAR_RATIO = 1;
+        public static final double TICKS_PER_RAD = TICKS_IN_ENCODER / (2 * Math.PI) * ANGLE_GEAR_RATIO;
 
         public static final int MAX_CURRENT = 35; // in ampere
 
@@ -188,7 +190,7 @@ public final class Constants {
         public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
         public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
 
-        public static final int[] ZERO_POSITION = {262, 687, 241, -735};
+        public static final int[] ZERO_POSITION = {0, 646, 249, 296};
 
         // sick man
         // the module that has more friction in the rotating mechanism

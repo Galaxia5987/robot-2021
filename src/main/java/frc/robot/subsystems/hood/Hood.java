@@ -69,7 +69,6 @@ public class Hood extends SubsystemBase {
 //                    Constants.Hood.HOOD_ARBITRARY_KF.get() / ((STUCK_POSITION - getHoodPosition())/ MAX_HOOD_POSITION + gain));
             motor.set(ControlMode.MotionMagic, newState.position.getAsInt());
             this.state = newState;
-            System.out.println(Constants.Hood.ARBITRARY_KF.get() / ((Constants.Hood.STUCK_POSITION - getPosition()) / Constants.Hood.MAX_POSITION + gain));
         }
     }
 
@@ -81,7 +80,6 @@ public class Hood extends SubsystemBase {
             }
             motor.set(ControlMode.MotionMagic, position);
 //            this.state = newState;
-            System.out.println(Constants.Hood.ARBITRARY_KF.get() / ((Constants.Hood.STUCK_POSITION - getPosition()) / Constants.Hood.MAX_POSITION + gain));
         }
     }
 
@@ -110,7 +108,7 @@ public class Hood extends SubsystemBase {
     }
 
     public void resetPosition() {
-        Constants.Hood.MIN_POSITION = motor.getSelectedSensorPosition();
+        motor.setSelectedSensorPosition(0);
     }
 
     @Override
@@ -125,7 +123,7 @@ public class Hood extends SubsystemBase {
         LOW(Constants.Hood.MIN_POSITION + 1500, new DoubleRange(1, 1.62), "/Low.csv"),
         MIDDLE_LOW(Constants.Hood.MIN_POSITION + 2500, new DoubleRange(1.48, 3.1), "/Middle_Low.csv"),
         MIDDLE(Constants.Hood.MIN_POSITION + 3000, new DoubleRange(3.1, 3.38), "/Middle.csv"),
-        HIGH(Constants.Hood.MIN_POSITION + 3450, new DoubleRange(3.84, 4.48), "/High.csv"),
+        HIGH(Constants.Hood.MIN_POSITION + 3450, new DoubleRange(3.36, 4.48), "/High.csv"),
         ABOVE_HIGH(() -> Constants.Hood.MIN_POSITION + 3750, new DoubleRange(4.5, 6), "/Above_High.csv"),
         OPEN(Constants.Hood.MAX_POSITION - 200, new DoubleRange(0, 0), "/High.csv");
 

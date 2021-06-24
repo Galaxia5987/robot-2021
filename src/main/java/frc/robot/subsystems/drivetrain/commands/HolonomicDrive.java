@@ -28,14 +28,19 @@ public class HolonomicDrive extends CommandBase {
         GenericHID.Hand right = GenericHID.Hand.kRight;
         GenericHID.Hand left = GenericHID.Hand.kLeft;
 
-        double forward = smoothInput(-Utils.joystickDeadband(RobotContainer.XboxDriver.getY(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
-        double strafe = smoothInput(Utils.joystickDeadband(RobotContainer.XboxDriver.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
-        double rotation = smoothInput(-Utils.joystickDeadband(RobotContainer.XboxDriver.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
+        double forward = smoothInput(Utils.joystickDeadband(RobotContainer.Xbox.getY(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
+        double strafe = smoothInput(-Utils.joystickDeadband(RobotContainer.Xbox.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
+        double rotation = smoothInput(-Utils.joystickDeadband(RobotContainer.Xbox.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
 
         // turns the joystick values into the heading of the robot
         forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;
         strafe *= Constants.SwerveDrive.SPEED_MULTIPLIER;
         rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
+
+        if (RobotContainer.Xbox.getRawButtonPressed(XboxController.Button.kStickLeft.value)) {
+            forward *= 2;
+            strafe *= 2;
+        }
 
         if (forward != 0 || strafe != 0 || rotation != 0) {
             swerveDrive.holonomicDrive(forward, strafe, rotation);
@@ -48,7 +53,7 @@ public class HolonomicDrive extends CommandBase {
     }
 
     private double smoothInput(double input) {
-        return Math.pow(input, 3) * 0.8;
+        return Math.pow(input, 3) * 0.7;
     }
 
 

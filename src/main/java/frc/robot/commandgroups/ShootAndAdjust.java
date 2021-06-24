@@ -10,11 +10,14 @@ import frc.robot.utils.VisionModule;
 public class ShootAndAdjust extends ParallelCommandGroup {
 
     public ShootAndAdjust(Shooter shooter, VisionModule vision, Hood hood, boolean manual) {
-        System.out.println("Distance" + vision.getTargetRawDistance().orElse(0));
-        addCommands(
-                new Shoot(shooter, vision, hood, manual),
-                new AdjustHood(hood,vision, () -> vision.getTargetRawDistance().orElse(0))
-        );
+        if (!manual) {
+            addCommands(
+                    new Shoot(shooter, vision, hood, false),
+                    new AdjustHood(hood, vision, () -> vision.getTargetRawDistance().orElse(0))
+            );
+        } else {
+            addCommands(new Shoot(shooter, vision, hood, true));
+        }
     }
 
 }

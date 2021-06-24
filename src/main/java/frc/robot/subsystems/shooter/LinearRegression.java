@@ -68,7 +68,6 @@ public class LinearRegression {
             Double value = distanceVelocityMap.get(distances[1]);
             return value != null ? value : 0;
         }
-        System.out.println(distanceVelocityMap);
 
         Double lowerVelocity = distanceVelocityMap.get(distances[0]);
         if (lowerVelocity == null)
@@ -105,7 +104,6 @@ public class LinearRegression {
             min = val;
             value = val;
         }
-        System.out.println(min + " " + value);
         return new double[]{min, value}; //Out of range, either way the robot can't shoot at this distance
     }
 }

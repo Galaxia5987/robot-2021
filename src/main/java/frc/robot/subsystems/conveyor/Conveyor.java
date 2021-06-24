@@ -131,7 +131,7 @@ public class Conveyor extends SubsystemBase {
 
         Color detectedColor = colorSensor.getColor();
 
-        Color filteredColor = new Color(detectedColor.red /1.1, detectedColor.green, detectedColor.blue);
+        Color filteredColor = new Color(detectedColor.red /1.3, detectedColor.green, detectedColor.blue);
         ColorMatchResult match = colorMatcher.matchClosestColor(filteredColor);
         colorString = colorToString(match);
         SmartDashboard.putString("color", colorString);
@@ -141,9 +141,6 @@ public class Conveyor extends SubsystemBase {
 
         SmartDashboard.putBoolean("limit-switch", readLimitSwitch());
 
-        System.out.println("sensor : " + Conveyor.hasFunnelSensedObject());
-
-//        System.out.println("limit-switch : " + limitSwitch.get());
 
     }
 }

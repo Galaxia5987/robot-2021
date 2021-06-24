@@ -21,9 +21,6 @@ public class SwerveModule extends SubsystemBase {
     private final TalonFX driveMotor;
     private final TalonSRX angleMotor;
 
-    private WebConstant[] anglePIDF;
-    private WebConstant[] drivePIDF;
-
     private final int wheel;
 
     private final UnitModel driveUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_METER);
@@ -33,6 +30,7 @@ public class SwerveModule extends SubsystemBase {
 
         driveMotor = new TalonFX(driveMotorPort);
         angleMotor = new TalonSRX(angleMotorPort);
+
 
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
@@ -75,8 +73,6 @@ public class SwerveModule extends SubsystemBase {
 
         this.wheel = wheel;
 
-        this.anglePIDF = anglePIDF;
-        this.drivePIDF = drivePIDF;
     }
 
 
@@ -93,7 +89,7 @@ public class SwerveModule extends SubsystemBase {
      * @return the angle of the wheel in radians
      */
     public double getAngle() {
-        return angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITION[wheel]);
+        return Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITION[wheel]), 2 * Math.PI);
     }
 
     /**
@@ -112,9 +108,14 @@ public class SwerveModule extends SubsystemBase {
      * @param angle the target angle in radians
      */
     public void setAngle(double angle) {
-        double targetAngle = getTargetAngle(angle, getAngle());
-//        System.out.println(wheel + " : " + targetAngle);
-        angleMotor.set(ControlMode.Position, angleUnitModel.toTicks(targetAngle) + Constants.SwerveModule.ZERO_POSITION[wheel]);
+//        double targetAngle = getTargetAngle(angle, getAngle());
+        double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
+        System.out.println(wheel + " : " + targetAngle);
+        int targetTicks = (angleUnitModel.toTicks(targetAngle) + Constants.SwerveModule.ZERO_POSITION[wheel]) % Constants.SwerveDrive.TICKS_IN_ENCODER;
+        if (wheel == 0)
+            System.out.println("target ticks" + targetTicks);
+
+        angleMotor.set(ControlMode.Position, targetTicks);
     }
 
     /**
@@ -137,7 +138,8 @@ public class SwerveModule extends SubsystemBase {
                 targetAngle = target;
             }
         }
-        SmartDashboard.putNumber("setpoing", targetAngle);
+//        targetAngle = Math.IEEEremainder(targetAngle, 2*Math.PI);
+        SmartDashboard.putNumber("setpoint", targetAngle);
         return targetAngle;
     }
 
@@ -152,7 +154,7 @@ public class SwerveModule extends SubsystemBase {
      * reset encoder value to 0
      */
     public void resetAngleEncoder() {
-        angleMotor.setSelectedSensorPosition(Constants.SwerveModule.ZERO_POSITION[wheel]);
+        angleMotor.setSelectedSensorPosition(0);
     }
 
     /**
@@ -176,7 +178,6 @@ public class SwerveModule extends SubsystemBase {
             driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE.get(), Constants.TALON_TIMEOUT);
             driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE.get(), Constants.TALON_TIMEOUT);
             driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE.get(), Constants.TALON_TIMEOUT);
-            System.out.println("P: " + Constants.SwerveModule.KP_DRIVE.get() + "\nI: " + Constants.SwerveModule.KI_DRIVE.get() + "\nD: " + Constants.SwerveModule.KD_DRIVE.get() + "\nF: " + Constants.SwerveModule.KF_DRIVE.get());
 
         }
         else {

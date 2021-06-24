@@ -18,7 +18,6 @@ public class PercentClimb extends CommandBase {
 
     @Override
     public void execute() {
-        System.out.println(power.getAsDouble());
         climber.setPower(power.getAsDouble());
     }
 

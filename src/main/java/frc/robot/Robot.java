@@ -9,14 +9,14 @@ package frc.robot;
 
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.utils.VisionModule;
 import org.ghrobotics.lib.debug.FalconDashboard;
-import org.photonvision.LEDMode;
 import org.techfire225.webapp.FireLog;
 
 /**
@@ -29,10 +29,10 @@ public class Robot extends TimedRobot {
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     public static boolean debug = true;
     public static double startAngle;
+    private final Compressor compressor = new Compressor(0);
     public PowerDistributionPanel pdp = new PowerDistributionPanel();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
-    private final Compressor compressor = new Compressor(0);
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -72,6 +72,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        for (int i = 0; i < 4; i++) {
+            RobotContainer.swerveDrive.getModule(i).setAngle(0);
+        }
     }
 
     @Override
@@ -111,8 +114,12 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        navx.reset();
+        RobotContainer.swerveDrive.resetAllEncoders();
+        m_robotContainer.hood.resetPosition();
         FalconDashboard.INSTANCE.setFollowingPath(false);
     }
+
 
     /**
      * This function is called periodically during operator control.

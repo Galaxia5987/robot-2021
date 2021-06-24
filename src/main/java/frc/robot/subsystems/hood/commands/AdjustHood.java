@@ -34,7 +34,6 @@ public class AdjustHood extends CommandBase {
     public void execute() {
         hood.updatePID();
         hood.changePosition(state.get());
-        System.out.println(state.get());
         FireLog.log("setpoint", state.get().position.getAsInt());
         SmartDashboard.putString("hood-state", state.get().toString());
     }

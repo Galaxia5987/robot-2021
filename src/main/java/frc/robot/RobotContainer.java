@@ -9,13 +9,13 @@ import frc.robot.commandgroups.ConveyorShooter;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickupBalls;
 import frc.robot.commandgroups.PickupBallsFeeder;
-import frc.robot.commandgroups.autonomous.FiveNineEightSeven;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
+import frc.robot.subsystems.drivetrain.autonomous.MoveForward;
 import frc.robot.subsystems.drivetrain.commands.MoveToPosition;
+import frc.robot.subsystems.drivetrain.commands.Rotate;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.commands.AdjustHood;
@@ -36,7 +36,7 @@ import org.techfire225.webapp.Webserver;
 public class RobotContainer {
     public static final PTO pto = new PTO();
     public static final VisionModule vision = new VisionModule();
-    public static final SwerveDrive swerveDrive = new SwerveDrive(true, false);
+    public static final SwerveDrive swerveDrive = new SwerveDrive(false);
     public static XboxController XboxDriver = new XboxController(3);
     public static XboxController Xbox = new XboxController(2);
     public final Funnel funnel = new Funnel();
@@ -77,7 +77,8 @@ public class RobotContainer {
 
 
     private void configureDefaultCommands() {
-        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
+//        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
+        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
     }
 
     /**
@@ -93,10 +94,11 @@ public class RobotContainer {
         y.whileHeld(new PickupBallsFeeder(intake, funnel, conveyor, Constants.Intake.POWER::get));
         RB.whileHeld(new Outtake(funnel, conveyor, shooter));
         LB.whenPressed(new ToggleIntake(intake));
-        R.whenPressed(new AdjustHood(hood, Hood.State.CLOSED));
+        R.whileHeld(new AdjustHood(hood, Hood.State.HIGH));
         back.whenPressed(new ToggleVisionPiston(vision));
         start.whenPressed(() -> vision.setLEDs(LEDMode.kOff));
-        L.whenPressed(() -> vision.setLEDs(LEDMode.kOn));
+//        L.whenPressed(() -> vision.setLEDs(LEDMode.kOn));
+        xDriver.whenPressed(swerveDrive::lock);
     }
 
 
@@ -108,7 +110,8 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
 //        return new ShootAndSafeTrench(swerveDrive, vision, shooter, hood, intake, funnel, conveyor);
 //        return new ShootFromInitiation(swerveDrive, vision, funnel, conveyor, shooter, hood);
-        return new FiveNineEightSeven(swerveDrive);
+//        return new FiveNineEightSeven(swerveDrive);
+        return new MoveForward(swerveDrive, 1).withTimeout(1);
     }
 
 

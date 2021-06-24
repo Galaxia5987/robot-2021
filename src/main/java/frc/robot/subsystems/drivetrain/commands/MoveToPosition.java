@@ -32,7 +32,6 @@ public class MoveToPosition extends CommandBase {
     public void initialize() {
 //        drivePID.setPID(0, 0, 0);
         var visionAngle = vision.getVisionYaw();
-        System.out.println(visionAngle);
         if (visionAngle.isPresent()) {
             angleTarget = -swerveDrive.getPose().getRotation().getDegrees() + visionAngle.getAsDouble();
             anglePID.setSetpoint(0);

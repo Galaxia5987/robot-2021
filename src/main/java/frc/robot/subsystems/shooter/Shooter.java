@@ -142,6 +142,6 @@ public class Shooter extends SubsystemBase {
         shootingTimer.start();
         FireLog.log("velocity", getVelocity());
     }
-
-
 }
+
+
