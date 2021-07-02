@@ -76,16 +76,16 @@ public class SwerveDrive extends SubsystemBase {
 
         if (!testMode) {
             swerveModules[0] = new SwerveModule(0, DRIVE_MOTOR_FRONT_RIGHT, ANGLE_MOTOR_FRONT_RIGHT, FRONT_RIGHT_INVERTED,
-                    Constants.SwerveModule.ANGLE_PIDF, Constants.SwerveModule.DRIVE_PIDF);
+                    Constants.SwerveModule.PIDF_ANGLE_FR, Constants.SwerveModule.DRIVE_PIDF);
 
             swerveModules[1] = new SwerveModule(1, DRIVE_MOTOR_FRONT_LEFT, ANGLE_MOTOR_FRONT_LEFT, FRONT_LEFT_INVERTED,
-                    Constants.SwerveModule.ANGLE_PIDF, Constants.SwerveModule.SLOW_DRIVE_PIDF);
+                    Constants.SwerveModule.PIDF_ANGLE_FL, Constants.SwerveModule.SLOW_DRIVE_PIDF);
 
             swerveModules[2] = new SwerveModule(2, DRIVE_MOTOR_BACK_RIGHT, ANGLE_MOTOR_BACK_RIGHT, BACK_RIGHT_INVERTED,
-                    Constants.SwerveModule.SICK_ANGLE_PIDF, Constants.SwerveModule.DRIVE_PIDF);
+                    Constants.SwerveModule.PIDF_ANGLE_RR, Constants.SwerveModule.DRIVE_PIDF);
 
             swerveModules[3] = new SwerveModule(3, DRIVE_MOTOR_BACK_LEFT, ANGLE_MOTOR_BACK_LEFT, BACK_LEFT_INVERTED,
-                    Constants.SwerveModule.ANGLE_PIDF, Constants.SwerveModule.DRIVE_PIDF);
+                    Constants.SwerveModule.PIDF_ANGLE_RL, Constants.SwerveModule.DRIVE_PIDF);
         }
 
         SwerveDrive.isFieldOriented = isFieldOriented;
@@ -366,6 +366,11 @@ public class SwerveDrive extends SubsystemBase {
 
     @Override
     public void periodic() {
+        FireLog.log("module FR", Math.toDegrees(getModule(0).getAngle()));
+        FireLog.log("module FL", Math.toDegrees(getModule(1).getAngle()));
+        FireLog.log("module RR", Math.toDegrees(getModule(2).getAngle()));
+        FireLog.log("module RL", Math.toDegrees(getModule(3).getAngle()));
+
         SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {
             swerveModuleState[i] = new SwerveModuleState(swerveModules[i].getSpeed(), new Rotation2d(Math.toRadians(90) - swerveModules[i].getAngle()));

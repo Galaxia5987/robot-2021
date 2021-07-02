@@ -33,14 +33,15 @@ public class Rotate extends CommandBase {
         rotation = Utils.joystickDeadband(rotation, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
 
         swerveDrive.getModule(0).setAngle(Math.toRadians(target0.get()));
-        swerveDrive.getModule(1).setAngle(Math.toRadians(target1.get()));
-        swerveDrive.getModule(2).setAngle(Math.toRadians(target2.get()));
-        swerveDrive.getModule(3).setAngle(Math.toRadians(target3.get()));
+        swerveDrive.getModule(1).setAngle(Math.toRadians(target0.get()));
+        swerveDrive.getModule(2).setAngle(Math.toRadians(target0.get()));
+        swerveDrive.getModule(3).setAngle(Math.toRadians(target0.get()));
 
         SmartDashboard.putNumber("module FR", Math.toDegrees(swerveDrive.getModule(0).getAngle()));
         SmartDashboard.putNumber("module FL", Math.toDegrees(swerveDrive.getModule(1).getAngle()));
         SmartDashboard.putNumber("module RR", Math.toDegrees(swerveDrive.getModule(2).getAngle()));
         SmartDashboard.putNumber("module RL", Math.toDegrees(swerveDrive.getModule(3).getAngle()));
+        FireLog.log("angle-setpoint", target0.get());
         FireLog.log("module FR", Math.toDegrees(swerveDrive.getModule(0).getAngle()));
         FireLog.log("module FL", Math.toDegrees(swerveDrive.getModule(1).getAngle()));
         FireLog.log("module RR", Math.toDegrees(swerveDrive.getModule(2).getAngle()));

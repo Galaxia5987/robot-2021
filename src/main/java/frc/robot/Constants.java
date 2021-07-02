@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.valuetuner.WebConstant;
+import frc.robot.valuetuner.WebConstantPIDTalon;
 
 /**
  * A class holding all of the constants of every mechanism on the robot.
@@ -147,7 +148,7 @@ public final class Constants {
         // the rotational speed of the robot, this constant multiplies the rotation output of the joystick
         public static final double ROTATION_MULTIPLIER = Math.PI;
 
-        public static final double JOYSTICK_THRESHOLD = 0.1;
+        public static final double JOYSTICK_THRESHOLD = 0.05;
 
         public static final double TURN_TOLERANCE = 2; // degrees
 
@@ -176,6 +177,30 @@ public final class Constants {
         public static final WebConstant KF_DRIVE = new WebConstant("KF_Drive", 0.05);
         public static final WebConstant[] DRIVE_PIDF = new WebConstant[]{KP_DRIVE, KI_DRIVE, KD_DRIVE, KF_DRIVE};
 
+        public static final WebConstant KP_ANGLE_FR = new WebConstant("KP_FR", 0.193);
+        public static final WebConstant KI_ANGLE_FR = new WebConstant("KI_FR", 0.0);
+        public static final WebConstant KD_ANGLE_FR = new WebConstant("KD_FR", 0.0);
+        public static final WebConstant KF_ANGLE_FR = new WebConstant("KF_FR", 0);
+        public static final WebConstant[] PIDF_ANGLE_FR = new WebConstant[]{KP_ANGLE_FR, KI_ANGLE_FR, KD_ANGLE_FR, KF_ANGLE_FR};
+
+        public static final WebConstant KP_ANGLE_FL = new WebConstant("KP_FL", 0.21);
+        public static final WebConstant KI_ANGLE_FL = new WebConstant("KI_FL", 0.0);
+        public static final WebConstant KD_ANGLE_FL = new WebConstant("KD_FL", 0.0);
+        public static final WebConstant KF_ANGLE_FL = new WebConstant("KF_FL", 0);
+        public static final WebConstant[] PIDF_ANGLE_FL = new WebConstant[]{KP_ANGLE_FL, KI_ANGLE_FL, KD_ANGLE_FL, KF_ANGLE_FL};
+
+        public static final WebConstant KP_ANGLE_RR = new WebConstant("KP_RR", 0.237);
+        public static final WebConstant KI_ANGLE_RR = new WebConstant("KI_RR", 0);
+        public static final WebConstant KD_ANGLE_RR = new WebConstant("KD_RR", 0);
+        public static final WebConstant KF_ANGLE_RR = new WebConstant("KF_RR", 0);
+        public static final WebConstant[] PIDF_ANGLE_RR = new WebConstant[]{KP_ANGLE_RR, KI_ANGLE_RR, KD_ANGLE_RR, KF_ANGLE_RR};
+
+        public static final WebConstant KP_ANGLE_RL = new WebConstant("KP_RL", 0.237);
+        public static final WebConstant KI_ANGLE_RL = new WebConstant("KI_RL", 0);
+        public static final WebConstant KD_ANGLE_RL = new WebConstant("KD_RL", 0);
+        public static final WebConstant KF_ANGLE_RL = new WebConstant("KF_RL", 0);
+        public static final WebConstant[] PIDF_ANGLE_RL = new WebConstant[]{KP_ANGLE_RL, KI_ANGLE_RL, KD_ANGLE_RL, KF_ANGLE_RL};
+
         // slow man
         // the module that is slower than the rest
         public static final WebConstant KP_DRIVE_SLOW = new WebConstant("KP_Drive_Slow", 0.046);
@@ -190,7 +215,7 @@ public final class Constants {
         public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
         public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
 
-        public static final int[] ZERO_POSITION = {0, 646, 249, 296};
+        public static final int[] ZERO_POSITION = {996, 618, 237, 270};
 
         // sick man
         // the module that has more friction in the rotating mechanism

@@ -75,7 +75,7 @@ public class Utils {
     public static double joystickDeadband(double val, double threshold) {
         if (Math.abs(val) < threshold)
             return 0;
-        return Math.pow(val, 3);
+        return val;
     }
 
 

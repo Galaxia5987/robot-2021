@@ -13,6 +13,7 @@ import org.techfire225.webapp.FireLog;
 public class HolonomicDrive extends CommandBase {
 
     private final SwerveDrive swerveDrive;
+    private boolean bool;
 
     public HolonomicDrive(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
@@ -27,10 +28,16 @@ public class HolonomicDrive extends CommandBase {
     public void execute() {
         GenericHID.Hand right = GenericHID.Hand.kRight;
         GenericHID.Hand left = GenericHID.Hand.kLeft;
-
-        double forward = smoothInput(Utils.joystickDeadband(RobotContainer.Xbox.getY(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
-        double strafe = smoothInput(-Utils.joystickDeadband(RobotContainer.Xbox.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
+//        double forward = smoothInput(Utils.joystickDeadband(RobotContainer.Xbox.getY(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
+//        double strafe = smoothInput(-Utils.joystickDeadband(RobotContainer.Xbox.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
+        double forward = smoothInput((RobotContainer.Xbox.getY(left)));
+        double strafe = smoothInput(-(RobotContainer.Xbox.getX(left)));
         double rotation = smoothInput(-Utils.joystickDeadband(RobotContainer.Xbox.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
+        if (Math.sqrt(Math.pow(RobotContainer.Xbox.getY(left), 2) + Math.pow(RobotContainer.Xbox.getX(left), 2)) < Constants.SwerveDrive.JOYSTICK_THRESHOLD) {
+            forward = 0;
+            strafe = 0;
+        }
+
 
         // turns the joystick values into the heading of the robot
         forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;
@@ -38,8 +45,19 @@ public class HolonomicDrive extends CommandBase {
         rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
 
         if (RobotContainer.Xbox.getRawButtonPressed(XboxController.Button.kStickLeft.value)) {
-            forward *= 2;
-            strafe *= 2;
+            bool = true;
+        }
+        if (RobotContainer.Xbox.getRawButtonReleased(XboxController.Button.kStickLeft.value)) {
+            bool = false;
+        }
+
+        if (bool) {
+            System.out.println("true");
+//            forward *= 2 / 0.7;
+            forward *= 8;
+            strafe *= 8;
+//            strafe *= 2 / 0.7;
+
         }
 
         if (forward != 0 || strafe != 0 || rotation != 0) {
@@ -53,7 +71,7 @@ public class HolonomicDrive extends CommandBase {
     }
 
     private double smoothInput(double input) {
-        return Math.pow(input, 3) * 0.7;
+        return Math.pow(input, 3) * 0.5;
     }
 
 

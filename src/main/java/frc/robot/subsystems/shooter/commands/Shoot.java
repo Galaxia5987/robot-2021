@@ -19,7 +19,7 @@ public class Shoot extends CommandBase {
     private final Hood hood;
     private final Timer shootingTimer = new Timer();
     private final boolean manual;
-    public WebConstant vel = new WebConstant("velocity", 0);
+    public WebConstant vel = new WebConstant("velocity", false ? 0 : 20);
     private double lastTime = 0;
 
     public Shoot(Shooter shooter, VisionModule vision, Hood hood, boolean manual) {
@@ -48,7 +48,7 @@ public class Shoot extends CommandBase {
                     velocity = vel.get();
                 }
                 SmartDashboard.putNumber("hood-velocity", velocity);
-                shooter.setVelocity(velocity, currentTime - lastTime);
+                shooter.setVelocity(velocity + 5, currentTime - lastTime);
             }
         }
         lastTime = currentTime;

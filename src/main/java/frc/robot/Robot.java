@@ -72,9 +72,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        for (int i = 0; i < 4; i++) {
-            RobotContainer.swerveDrive.getModule(i).setAngle(0);
-        }
     }
 
     @Override
@@ -115,7 +112,6 @@ public class Robot extends TimedRobot {
             m_autonomousCommand.cancel();
         }
         navx.reset();
-        RobotContainer.swerveDrive.resetAllEncoders();
         m_robotContainer.hood.resetPosition();
         FalconDashboard.INSTANCE.setFollowingPath(false);
     }
