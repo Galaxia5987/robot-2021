@@ -8,21 +8,20 @@ import frc.robot.subsystems.conveyor.commands.FeedShooter;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.commands.StartFunnel;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.commands.AdjustHood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.VisionModule;
 
 public class ConveyorShooter extends ParallelCommandGroup {
-    public ConveyorShooter(Shooter shooter, Hood hood, Conveyor conveyor, Funnel funnel, VisionModule vision, double power) {
+    public ConveyorShooter(Shooter shooter, Hood hood, Conveyor conveyor, Funnel funnel, VisionModule vision, double power, boolean manual) {
         addCommands(
                 new SequentialCommandGroup(
-                        new WaitUntilCommand(() ->
-                                shooter.hasReachedSetpoint(
-                                        hood.estimateVelocityFromDistance(vision.getTargetRawDistance().orElse(0)))),
-                        new FeedShooter(conveyor, power)
+                        new WaitUntilCommand(() -> shooter.hasReachedSetpoint(hood.estimateVelocityFromDistance(vision.getTargetRawDistance().orElse(0)))),
+                        new ParallelCommandGroup(
+                                new FeedShooter(conveyor, power),
+                                new StartFunnel(funnel, true)
+                        )
                 ),
-                new ShootAndAdjust(shooter, vision, hood, false),
-                new StartFunnel(funnel, true) // TODO: check whether the balls can move.
+                new ShootAndAdjust(shooter, vision, hood, manual)
         );
     }
 }
