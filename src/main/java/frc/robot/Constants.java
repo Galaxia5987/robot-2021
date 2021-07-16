@@ -134,7 +134,7 @@ public final class Constants {
         public static final double TICKS_PER_METER = 2048 / (4 * 0.0254 * Math.PI) * 7.5 * THIS_SHOULD_BE_1_ASK_AMIR;
         public static final int TICKS_IN_ENCODER = 1024;
         public static final int ALLOWABLE_ANGLE_ERROR = 30; // [ticks]
-        private static final double ANGLE_GEAR_RATIO = 1;
+        public static final double ANGLE_GEAR_RATIO = 1;
         public static final double TICKS_PER_RAD = TICKS_IN_ENCODER / (2 * Math.PI) * ANGLE_GEAR_RATIO;
 
         public static final int MAX_CURRENT = 35; // in ampere
@@ -143,10 +143,10 @@ public final class Constants {
         public static final double ROBOT_WIDTH = 0.58; // in meters
 
         // the speed of the robot, this constant multiplies the speed outputs from the joysticks
-        public static final double SPEED_MULTIPLIER = 4 / Math.sqrt(2);
+        public static final double SPEED_MULTIPLIER = 2 / Math.sqrt(2);
 
         // the rotational speed of the robot, this constant multiplies the rotation output of the joystick
-        public static final double ROTATION_MULTIPLIER = Math.PI;
+        public static final double ROTATION_MULTIPLIER = 2* Math.PI;
 
         public static final double JOYSTICK_THRESHOLD = 0.05;
 
@@ -229,6 +229,19 @@ public final class Constants {
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // seconds
         public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
         public static final int VOLTAGE_SATURATION = 12; // volts
+
+        public static final WebConstant J = new WebConstant("J_Swerve", 0.105);
+
+        public static final double STALL_CURRENT = 134; // [amps]
+        public static final double STALL_TORQUE = 0.71; // [N*meters]
+
+        public static final double FREE_CURRENT = 0.7; // [amps]
+        public static final double FREE_SPEED = Units.rotationsPerMinuteToRadiansPerSecond(18730); // [rad/sec]
+
+        public static final double kT = STALL_TORQUE / STALL_CURRENT;// took from FRC examples.
+        public static final double OMEGA = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
+        public static final double kV = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA * FREE_CURRENT);// took from FRC examples.
+        public static final WebConstant CONSTANT = new WebConstant("CONSTANT", 1);
 
     }
 

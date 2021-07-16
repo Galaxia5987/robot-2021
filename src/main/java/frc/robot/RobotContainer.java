@@ -3,23 +3,22 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandgroups.ConveyorShooter;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickupBalls;
+import frc.robot.commandgroups.ShootAndAdjust;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.StartConveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.autonomous.MoveForward;
+import frc.robot.subsystems.drivetrain.commands.DriveForward;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.drivetrain.commands.MoveToPosition;
+import frc.robot.subsystems.drivetrain.commands.Rotate;
 import frc.robot.subsystems.funnel.Funnel;
-import frc.robot.subsystems.funnel.commands.StartFunnel;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.commands.AdjustHood;
 import frc.robot.subsystems.intake.Intake;
@@ -80,7 +79,7 @@ public class RobotContainer {
 
 
     private void configureDefaultCommands() {
-//        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
+        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
 //        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
     }
 
@@ -91,27 +90,17 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        b.whileHeld(new MoveToPosition(swerveDrive, vision));
-//        RT.whileActiveOnce(new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
-        RB.whileHeld(new Outtake(funnel, conveyor, shooter));
-        LT.whileActiveOnce(new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true));
-        start.whenPressed(() -> vision.setLEDs(LEDMode.kOff));
-        back.whenPressed(() -> vision.setLEDs(LEDMode.kOn));
-        LB.whenPressed(new ToggleVisionPiston(vision));
-        R.whileHeld(new AdjustHood(hood, Hood.State.CLOSED));
-        x.whileHeld(swerveDrive::lock);
-
-        RT.whileActiveOnce(
-                new SequentialCommandGroup(
-                        new AdjustHood(hood, Hood.State.MIDDLE),
-                        new ParallelCommandGroup(
-                                new StartConveyor(conveyor),
-                                new StartFunnel(funnel, true),
-
-                                new Shoot(shooter, vision, hood, true)
-                        )
-                )
-        );
+//        b.whileHeld(new MoveToPosition(swerveDrive, vision));
+//        RT.whileActiveOnce(new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, false));
+//        RB.whileHeld(new Outtake(funnel, conveyor, shooter));
+//        LT.whileActiveOnce(new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true));
+//        start.whenPressed(() -> vision.setLEDs(LEDMode.kOff));
+//        back.whenPressed(() -> vision.setLEDs(LEDMode.kOn));
+//        LB.whenPressed(new ToggleVisionPiston(vision));
+//        R.whileHeld(new AdjustHood(hood, Hood.State.CLOSED));
+//        x.whileHeld(swerveDrive::lock);
+//        a.whileHeld(new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, true));
+//        y.whileHeld(new AdjustHood(hood, Hood.State.HIGH));
     }
 
 
