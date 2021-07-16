@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drivetrain.commands;
 
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -25,8 +27,7 @@ public class DriveForward extends CommandBase {
 
 //        swerveDrive.stayAtAngle();
         for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setAngle(0);
-            swerveDrive.getModule(i).setSpeed(forward);
+            swerveDrive.getModule(i).setState(new SwerveModuleState(forward, new Rotation2d(0)));
             FireLog.log("speed " + i, Math.abs(swerveDrive.getModule(i).getSpeed()));
             swerveDrive.getModule(i).configPIDF();
         }

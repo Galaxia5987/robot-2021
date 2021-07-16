@@ -111,13 +111,11 @@ public class SwerveDrive extends SubsystemBase {
         double[][] rotationMat = {{Math.cos(robotAngle), -Math.sin(robotAngle)},
                 {Math.sin(robotAngle), Math.cos(robotAngle)}};
         double[] speeds = Utils.matrixVectorMult(rotationMat, new double[]{forward, strafe});
-
         // if the drive style is field oriented, changes the forward and strafe to be according to the field coordinate system
         if (isFieldOriented) {
             forward = speeds[0];
             strafe = speeds[1];
         }
-
         return new double[]{forward, strafe, rotation};
     }
 
@@ -138,6 +136,7 @@ public class SwerveDrive extends SubsystemBase {
     public SwerveDriveKinematics getKinematics() {
         return kinematics;
     }
+
 
     /**
      * Sets the wheels of the robot to the calculated angle and speed.
@@ -163,8 +162,7 @@ public class SwerveDrive extends SubsystemBase {
 
         // feeds the corresponding control to each wheel
         for (int k = 0; k < 4; k++) {
-            swerveModules[k].setSpeed(controls[k][0]);
-            swerveModules[k].setAngle(controls[k][1]);
+            swerveModules[k].setState(new SwerveModuleState(controls[k][0], new Rotation2d(controls[k][1])));
         }
 
         double sumx = 0;
@@ -220,6 +218,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void stop() {
         for (SwerveModule swerveModule : swerveModules) {
+
             swerveModule.setSpeed(0);
             swerveModule.stopAngleMotor();
         }

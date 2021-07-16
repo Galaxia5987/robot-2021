@@ -11,7 +11,6 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class FollowPath extends SwerveControllerCommand {
 
-    private final Trajectory trajectory;
     /**
      * For clamped cubic splines, this method accepts two Pose2d objects, one for
      * the starting waypoint and one for the ending waypoint. The method takes in a
@@ -33,11 +32,9 @@ public class FollowPath extends SwerveControllerCommand {
                     enableContinuousInput(-Math.PI, Math.PI);
                 }}, (SwerveModuleState[] states) -> {
                     for (int i = 0; i < states.length; i++) {
-                        swerveDrive.getModule(i).setAngle(-states[i].angle.getRadians());
-                        swerveDrive.getModule(i).setSpeed(states[i].speedMetersPerSecond);
+                        swerveDrive.getModule(i).setState(new SwerveModuleState(states[i].speedMetersPerSecond, new Rotation2d(-states[i].angle.getRadians())));
                     }
                 }, swerveDrive);
-        this.trajectory = trajectory;
         this.swerveDrive = swerveDrive;
     }
 

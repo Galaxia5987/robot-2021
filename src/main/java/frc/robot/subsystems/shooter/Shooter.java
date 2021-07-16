@@ -32,8 +32,6 @@ import static frc.robot.Constants.Shooter.*;
  */
 public class Shooter extends SubsystemBase {
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
-
-    private final Timer shootingTimer = new Timer();
     private LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
 
     public Shooter() {
@@ -139,7 +137,6 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         this.stateSpacePredictor = constructLinearSystem(J.get());
-        shootingTimer.start();
         FireLog.log("velocity", getVelocity());
     }
 }

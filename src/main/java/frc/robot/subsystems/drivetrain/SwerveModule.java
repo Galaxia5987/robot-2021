@@ -7,7 +7,10 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -81,7 +84,7 @@ public class SwerveModule extends SubsystemBase {
 
     }
 
-    public static double getTargetError(double angle, double currentAngle) {
+    private static double getTargetError(double angle, double currentAngle) {
         double cwDistance = angle - currentAngle;
         double ccwDistance = 2 * Math.PI - (Math.abs(cwDistance));
         if (Math.abs(cwDistance) < ccwDistance) {
@@ -112,11 +115,22 @@ public class SwerveModule extends SubsystemBase {
                 targetAngle = target;
             }
         }
-//        targetAngle = Math.IEEEremainder(targetAngle, 2*Math.PI);
         SmartDashboard.putNumber("setpoint", targetAngle);
         return targetAngle;
     }
 
+    public void setState(SwerveModuleState state) {
+        double targetAngle = Math.IEEEremainder(state.angle.getRadians(), 2 * Math.PI);
+        double currentAngle = getAngle();
+        double error = getTargetError(targetAngle, currentAngle);
+        double power = anglePID.calculate(error, 0);
+        angleMotor.set(ControlMode.PercentOutput, power);
+        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(state.speedMetersPerSecond));
+    }
+
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(getSpeed(), new Rotation2d(getAngle()));
+    }
     /**
      * @return the speed of the wheel in [m/s]
      */
@@ -132,7 +146,6 @@ public class SwerveModule extends SubsystemBase {
      * @param speed the speed of the wheel in [m/s]
      */
     public void setSpeed(double speed) {
-        //System.out.println("fff" + speed) ;
         driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(speed));
     }
 
