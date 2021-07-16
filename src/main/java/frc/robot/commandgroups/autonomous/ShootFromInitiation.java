@@ -39,7 +39,7 @@ public class ShootFromInitiation extends SequentialCommandGroup {
                 ),
                 new WaitCommand(0.5),
                 new MoveToPosition(swerveDrive, vision).withTimeout(2),
-                new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER)
+                new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, false)
         );
     }
 }

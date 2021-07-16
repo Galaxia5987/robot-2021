@@ -54,7 +54,7 @@ public class ShootAndSafeTrench extends SequentialCommandGroup {
                 ),
 //                        new WaitUntilCommand(() -> shooter.hasReachedSetpoint(hood.estimateVelocityFromDistance(vision.getTargetRawDistance().orElse(0)))),
 //                new FunnelAndShoot(hood, shooter, funnel, conveyor, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, false).withTimeout(4),
-                new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER).withTimeout(4),
+                new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, false).withTimeout(4),
                 new FollowPath(swerveDrive, trajectory),
 //                new WaitCommand(.5),
                 new PickupBallsWhileDriving(intake, funnel, conveyor, swerveDrive).withTimeout(4),
