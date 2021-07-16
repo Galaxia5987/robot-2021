@@ -30,10 +30,17 @@ public class HolonomicDrive extends CommandBase {
         GenericHID.Hand left = GenericHID.Hand.kLeft;
 //        double forward = smoothInput(Utils.joystickDeadband(RobotContainer.Xbox.getY(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
 //        double strafe = smoothInput(-Utils.joystickDeadband(RobotContainer.Xbox.getX(left), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
-        double forward = smoothInput((RobotContainer.Xbox.getY(left)));
-        double strafe = smoothInput(-(RobotContainer.Xbox.getX(left)));
+
+        double forward = ((RobotContainer.Xbox.getY(left)));
+        double strafe = (-(RobotContainer.Xbox.getX(left)));
+        double alpha = Math.atan2(forward, strafe);
+        double vector = Math.sqrt(Math.pow(forward, 2) + Math.pow(strafe, 2));
+        vector = smoothInput(vector);
+        forward = Math.sin(alpha) * vector;
+        strafe = Math.cos(alpha) * vector;
+
         double rotation = smoothInput(-Utils.joystickDeadband(RobotContainer.Xbox.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
-        if (Math.sqrt(Math.pow(RobotContainer.Xbox.getY(left), 2) + Math.pow(RobotContainer.Xbox.getX(left), 2)) < Constants.SwerveDrive.JOYSTICK_THRESHOLD) {
+        if (vector < Constants.SwerveDrive.JOYSTICK_THRESHOLD) {
             forward = 0;
             strafe = 0;
         }
