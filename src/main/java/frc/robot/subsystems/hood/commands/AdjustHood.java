@@ -2,7 +2,6 @@ package frc.robot.subsystems.hood.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.utils.VisionModule;
 import org.techfire225.webapp.FireLog;
@@ -40,7 +39,8 @@ public class AdjustHood extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(hood.getPosition() - state.get().position.getAsInt()) < Constants.Hood.POSITION_TOLERANCE;
+//        return Math.abs(hood.getPosition() - state.get().position.getAsInt()) < Constants.Hood.POSITION_TOLERANCE;
+        return false;
     }
 
     @Override
