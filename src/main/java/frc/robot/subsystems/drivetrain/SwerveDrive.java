@@ -316,7 +316,6 @@ public class SwerveDrive extends SubsystemBase {
         return new Pose2d(-pose.getY(), pose.getX(), pose.getRotation());
     }
 
-
     public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(pose, new Rotation2d(Robot.navx.getYaw()));
     }
@@ -342,17 +341,11 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public double getJoystickAngle() {
-        {
-            double x = RobotContainer.XboxDriver.getRawAxis(XboxController.Axis.kRightX.value);
-            double y = RobotContainer.XboxDriver.getRawAxis(XboxController.Axis.kRightY.value);
-            return Math.toDegrees(Math.atan2(y, x));
-        }
-    }
+        double x = RobotContainer.XboxDriver.getRawAxis(XboxController.Axis.kRightX.value);
+        double y = RobotContainer.XboxDriver.getRawAxis(XboxController.Axis.kRightY.value);
+        return Math.toDegrees(Math.atan2(y, x));
 
-    public void putThisSomewhereAdam(double initAngle) {
-        double rotateBy = getOptimalAngle(initAngle, getJoystickAngle());
     }
-
 
     @Override
     public void periodic() {
