@@ -45,10 +45,13 @@ public class SwerveModule extends SubsystemBase {
     private final UnitModel angleUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_RAD);
     private final Timer timer = new Timer();
     private final LinearSystemLoop<N1, N1, N1> stateSpace;
+    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(Units.feetToMeters(3.0), Units
+            .feetToMeters(6.0)); // Max angle motor speed and acceleration.
+    private LinearSystemLoop<N2, N1, N1> angleStateSpace;
     private PIDController anglePID;
     private WebConstant[] anglePIDF;
     private double currentTime, lastTime;
-    private TrapezoidProfile.State m_lastProfiledReference = new TrapezoidProfile.State();
+    private TrapezoidProfile.State lastProfiledReference = new TrapezoidProfile.State();
 
     public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted, WebConstant[] anglePIDF, WebConstant[] drivePIDF) {
         anglePID = new PIDController(anglePIDF[0].get(), anglePIDF[1].get(), anglePIDF[2].get());
@@ -99,7 +102,7 @@ public class SwerveModule extends SubsystemBase {
 
         this.wheel = wheel;
         this.stateSpace = constructLinearSystem(Constants.SwerveModule.J.get());
-
+        this.angleStateSpace = constructAngleStateSpace();
     }
 
     private static double getTargetError(double angle, double currentAngle) {
@@ -137,13 +140,36 @@ public class SwerveModule extends SubsystemBase {
         return targetAngle;
     }
 
-    public void setState(SwerveModuleState state) {
-        double targetAngle = Math.IEEEremainder(state.angle.getRadians(), 2 * Math.PI);
-        double currentAngle = getAngle();
-        double error = getTargetError(targetAngle, currentAngle);
-        double power = anglePID.calculate(error, 0);
-        angleMotor.set(ControlMode.PercentOutput, power);
-        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(state.speedMetersPerSecond));
+    private LinearSystemLoop<N2, N1, N1> constructAngleStateSpace() {
+        double A = -Math.pow(Constants.SwerveDrive.ANGLE_GEAR_RATIO, 2) * Constants.SwerveDrive.kT_775PRO
+                / (Constants.SwerveDrive.OMEGA * Math.pow(Constants.SwerveDrive.RADIUS, 2)
+                * Constants.SwerveDrive.MASS.get() * Constants.SwerveDrive.kV_775PRO);
+        var stateSpace = new LinearSystem<>(Matrix.mat(Nat.N2(), Nat.N2())
+                .fill(0, 1,
+                        0, A),
+                VecBuilder.fill(0, Constants.SwerveDrive.ANGLE_GEAR_RATIO * Constants.SwerveDrive.kT_775PRO
+                        / (Constants.SwerveDrive.OMEGA * Constants.SwerveDrive.RADIUS * Constants.SwerveDrive.MASS.get())),
+                Matrix.mat(Nat.N1(), Nat.N2()).fill(1, 0),
+                new Matrix<>(Nat.N1(), Nat.N1()));
+
+        var kalman = new KalmanFilter<>(Nat.N2(), Nat.N1(),
+                stateSpace,
+                VecBuilder.fill(Units.inchesToMeters(2), Units.inchesToMeters(40)), // How accurate we
+                // think our model is, in meters and meters/second.
+                VecBuilder.fill(0.001), // How accurate we think our encoder position
+                // data is. In this case we very highly trust our encoder position reading.
+                Constants.LOOP_PERIOD);
+        var lqr = new LinearQuadraticRegulator<>(stateSpace,
+                VecBuilder.fill(Units.inchesToMeters(1.0), Units.inchesToMeters(10.0)), // qelms. Position
+                // and velocity error tolerances, in meters and meters per second. Decrease this to more
+                // heavily penalize state excursion, or make the controller behave more aggressively. In
+                // this example we weight position much more highly than velocity, but this can be
+                // tuned to balance the two.
+                VecBuilder.fill(Constants.NOMINAL_VOLTAGE), // relms. Control effort (voltage) tolerance. Decrease this to more
+                // heavily penalize control effort, or make the controller less aggressive. 12 is a good
+                // starting point because that is the (approximate) maximum voltage of a battery.
+                Constants.LOOP_PERIOD); // Nominal time between loops. 0.020 for TimedRobot, but can be
+        return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
     }
 
     /**
@@ -228,15 +254,23 @@ public class SwerveModule extends SubsystemBase {
      * @param angle the target angle in radians
      */
     public void setAngle(double angle) {
-//        double targetAngle = getTargetAngle(angle, getAngle());
         double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
-        System.out.println(wheel + " : " + targetAngle);
+        double currentAngle = getAngle();
+        double error = getTargetError(targetAngle, currentAngle);
+        if (Math.abs(angleUnitModel.toTicks(error)) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR) return;
+
+        TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
+        lastProfiledReference = new TrapezoidProfile(constraints, goal, lastProfiledReference).calculate(0.020);
+        angleStateSpace.setNextR(lastProfiledReference.position, lastProfiledReference.velocity);
+        angleStateSpace.correct(VecBuilder.fill(error)); // TODO: maybe need to be in ticks
+        angleStateSpace.predict(currentTime - lastTime);
+        double nextVoltage = angleStateSpace.getU(0);
+        angleMotor.set(ControlMode.PercentOutput, Constants.SwerveDrive.kPERCENT.get() * nextVoltage / Constants.NOMINAL_VOLTAGE);
+        /*double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
         double currentAngle = getAngle();
         double error = getTargetError(targetAngle, currentAngle);
         double power = anglePID.calculate(error, 0);
-        System.out.println("error " + wheel + " : " + error);
-        System.out.println("power " + wheel + " : " + power);
-        angleMotor.set(ControlMode.PercentOutput, power);
+        angleMotor.set(ControlMode.PercentOutput, power);*/
     }
 
     /**
@@ -292,5 +326,6 @@ public class SwerveModule extends SubsystemBase {
         anglePID.setD(anglePIDF[2].get());
         lastTime = currentTime;
         currentTime = timer.get();
+        this.angleStateSpace = constructAngleStateSpace();
     }
 }

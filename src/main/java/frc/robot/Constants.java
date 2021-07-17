@@ -146,7 +146,7 @@ public final class Constants {
         public static final double SPEED_MULTIPLIER = 2 / Math.sqrt(2);
 
         // the rotational speed of the robot, this constant multiplies the rotation output of the joystick
-        public static final double ROTATION_MULTIPLIER = 2* Math.PI;
+        public static final double ROTATION_MULTIPLIER = 2 * Math.PI;
 
         public static final double JOYSTICK_THRESHOLD = 0.05;
 
@@ -162,6 +162,21 @@ public final class Constants {
 
         public static final double DRIVE_SETPOINT = 0.965; // [m]
         public static final double DRIVE_TOLERANCE = 0.05; // [m]
+
+        public static final double STALL_CURRENT = 134; // [amps]
+        public static final double STALL_TORQUE = 0.71; // [N*meters]
+
+        public static final double FREE_CURRENT = 0.7; // [amps]
+        public static final double FREE_SPEED = Units.rotationsPerMinuteToRadiansPerSecond(18730); // [rad/sec]
+
+        public static final double kT_775PRO = STALL_TORQUE / STALL_CURRENT;// took from FRC examples.
+        public static final double OMEGA = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
+        public static final double kV_775PRO = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA * FREE_CURRENT);// took from FRC examples.
+        public static final double RADIUS = 0.05; // [m]
+        // TODO: choose real values.
+        public static final WebConstant MASS = new WebConstant("mass", 1); // [kg]
+        public static final WebConstant kPERCENT = new WebConstant("kPercentAngle", 1); // [kg]
+
     }
 
     public static class SwerveModule {
