@@ -34,19 +34,8 @@ public class SwerveDrive extends SubsystemBase {
     private static final double[] signX = {1, 1, -1, -1};
     private static final double[] signY = {-1, 1, -1, 1};
 
-    //    private static final double[] signXTrajectory = {-1, 1, -1, 1};
-    private static final double[] signXTrajectory = {1, 1, -1, -1};
-    //    private static final double[] signYTrajectory = {-1, -1, 1, 1};
-    private static final double[] signYTrajectory = {-1, 1, -1, 1};
-
     private static boolean isFieldOriented;
     public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-            new Translation2d(signXTrajectory[0] * Rx, signYTrajectory[0] * Ry),
-            new Translation2d(signXTrajectory[1] * Rx, signYTrajectory[1] * Ry),
-            new Translation2d(signXTrajectory[2] * Rx, signYTrajectory[2] * Ry),
-            new Translation2d(signXTrajectory[3] * Rx, signYTrajectory[3] * Ry)
-    );
-    public final SwerveDriveKinematics kinematicsOdometry = new SwerveDriveKinematics(
             new Translation2d(signX[0] * Rx, signY[0] * Ry),
             new Translation2d(signX[1] * Rx, signY[1] * Ry),
             new Translation2d(signX[2] * Rx, signY[2] * Ry),
@@ -56,11 +45,13 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
             new Rotation2d(Math.toRadians(-Robot.navx.getYaw())),
             new Pose2d(new Translation2d(), new Rotation2d(0)),
-            kinematicsOdometry,
+            kinematics,
             VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
             VecBuilder.fill(Units.degreesToRadians(1000)),
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))
     );
+
+    //    private final SwerveDriveOdometry swerveOdometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(-Robot.startAngle), new Pose2d());
     private final SwerveModule[] swerveModules = new SwerveModule[4];
     private final TrajectoryConfig config = new TrajectoryConfig(Constants.Autonomous.MAX_VELOCITY,
             Constants.Autonomous.MAX_ACCELERATION)
