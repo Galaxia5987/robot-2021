@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -137,34 +138,19 @@ public class SwerveDrive extends SubsystemBase {
      * @param rotation the rotation Z of the joystick
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
-        // -Math.toRadians(180 - Robot.navx.getYaw())
-        double[] robotHeading = getRobotHeading(strafe, forward, rotation, -Math.toRadians(180 - (Robot.navx.getYaw() - Robot.startAngle)));
-
-        double[] velocities = calculateWheelVelocities(robotHeading);
-        double[] polar;
-        double[][] controls = new double[4][2];
-
-        // converts the cartesian velocities to polar and transfers them to a control matrix
-        for (int i = 0; i < 4; i++) {
-            polar = Utils.cartesianToPolar(velocities[2 * i + 1], velocities[2 * i]);
-            controls[i][0] = polar[0];
-            controls[i][1] = polar[1];
+        ChassisSpeeds speeds;
+        if (isFieldOriented) {
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Rotation2d.fromDegrees(-Robot.navx.getYaw()));
+        } else {
+            speeds = new ChassisSpeeds(forward, strafe, rotation);
         }
 
-        // feeds the corresponding control to each wheel
-        for (int k = 0; k < 4; k++) {
-            swerveModules[k].setState(new SwerveModuleState(controls[k][0], new Rotation2d(controls[k][1])));
-        }
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
 
-        double sumx = 0;
-        double sumy = 0;
-        for (int j = 0; j < 4; j++) {
-            sumx += velocities[j * 2];
-            sumy += velocities[j * 2 + 1];
+        for (int i = 0; i < states.length; i++) {
+            states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(swerveModules[i].getAngle())); // TODO: check whether we need to use ticks or radians
+            swerveModules[i].setState(states[i]);
         }
-        double[] target = Utils.cartesianToPolar(sumx, sumy);
-        FireLog.log("target velocity", target[0]);
-        FireLog.log("target angle", target[1]);
     }
 
     /**
