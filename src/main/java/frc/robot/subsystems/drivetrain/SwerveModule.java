@@ -48,12 +48,12 @@ public class SwerveModule extends SubsystemBase {
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(Units.feetToMeters(3.0), Units
             .feetToMeters(6.0)); // Max angle motor speed and acceleration.
     private LinearSystemLoop<N2, N1, N1> angleStateSpace;
-    private PIDController anglePID;
-    private WebConstant[] anglePIDF;
+    private final PIDController anglePID;
+    private final WebConstant[] anglePIDF;
     private double currentTime, lastTime;
     private TrapezoidProfile.State lastProfiledReference = new TrapezoidProfile.State();
 
-    public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted, WebConstant[] anglePIDF, WebConstant[] drivePIDF) {
+    public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted, WebConstant[] anglePIDF) {
         anglePID = new PIDController(anglePIDF[0].get(), anglePIDF[1].get(), anglePIDF[2].get());
         this.anglePIDF = anglePIDF;
         anglePID.setTolerance(Math.toRadians(2));
@@ -196,14 +196,13 @@ public class SwerveModule extends SubsystemBase {
         return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
     }
 
-
     public SwerveModuleState getState() {
         return new SwerveModuleState(getSpeed(), new Rotation2d(getAngle()));
     }
 
     public void setState(SwerveModuleState state) {
         setAngle(state.angle.getRadians());
-        setVelocity(state.speedMetersPerSecond);
+        setSpeed(state.speedMetersPerSecond);
     }
 
     /**
@@ -221,17 +220,8 @@ public class SwerveModule extends SubsystemBase {
      * @param speed the speed of the wheel in [m/s]
      */
     public void setSpeed(double speed) {
-        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(speed));
-    }
-
-    /**
-     * Set the velocity to apply by the motor.
-     *
-     * @param velocity the desired velocity at which the motor will rotate. [m/s]
-     */
-    public void setVelocity(double velocity) {
         double timeInterval = Math.max(20, currentTime - lastTime);
-        stateSpace.setNextR(VecBuilder.fill(velocity)); //r = reference (setpoint)
+        stateSpace.setNextR(VecBuilder.fill(speed)); //r = reference (setpoint)
         stateSpace.correct(VecBuilder.fill(getSpeed()));
         stateSpace.predict(timeInterval);
 
@@ -296,26 +286,6 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.config_kI(0, anglePIDF[1].get(), Constants.TALON_TIMEOUT);
         angleMotor.config_kD(0, anglePIDF[2].get(), Constants.TALON_TIMEOUT);
         angleMotor.config_kF(0, anglePIDF[3].get(), Constants.TALON_TIMEOUT);
-
-        // set PIDF - drive motor
-        if (wheel == 0) {
-            driveMotor.config_kP(1, Constants.SwerveModule.KP_BROKEN.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kI(1, Constants.SwerveModule.KI_BROKEN.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kD(1, Constants.SwerveModule.KD_BROKEN.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kF(1, Constants.SwerveModule.KF_BROKEN.get(), Constants.TALON_TIMEOUT);
-        } else if (wheel != 1) {
-            driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE.get(), Constants.TALON_TIMEOUT);
-
-        } else {
-            driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-//            System.out.println("P" + Constants.SwerveModule.KP_DRIVE_SLOW.get() + "\nI: " + Constants.SwerveModule.KI_DRIVE_SLOW.get() + "\nD: " + Constants.SwerveModule.KD_DRIVE_SLOW.get() + "\nF: " + Constants.SwerveModule.KF_DRIVE_SLOW.get());
-        }
     }
 
     @Override
