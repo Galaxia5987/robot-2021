@@ -174,12 +174,47 @@ public final class Constants {
         public static final double kV_775PRO = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA * FREE_CURRENT);// took from FRC examples.
         public static final double RADIUS = 0.05; // [m]
         // TODO: choose real values.
-        public static final WebConstant MASS = new WebConstant("mass", 1); // [kg]
+        public static final WebConstant MASS = new WebConstant("mass", 4.5); // [kg]
         public static final WebConstant kPERCENT = new WebConstant("kPercentAngle", 1); // [kg]
 
     }
 
     public static class SwerveModule {
+        public static final WebConstant KP = new WebConstant("KP", 6);
+        public static final WebConstant KI = new WebConstant("KI", 0);
+        public static final WebConstant KD = new WebConstant("KD", 10);
+        public static final WebConstant KF = new WebConstant("KF", 0);
+        public static final WebConstant[] ANGLE_PIDF = new WebConstant[]{KP, KI, KD, KF};
+
+        public static final WebConstant KP_DRIVE = new WebConstant("KP_Drive", 0.15);
+        public static final WebConstant KI_DRIVE = new WebConstant("KI_Drive", 0);
+        public static final WebConstant KD_DRIVE = new WebConstant("KD_Drive", 2);
+        public static final WebConstant KF_DRIVE = new WebConstant("KF_Drive", 0.05);
+        public static final WebConstant[] DRIVE_PIDF = new WebConstant[]{KP_DRIVE, KI_DRIVE, KD_DRIVE, KF_DRIVE};
+
+        // slow man
+        // the module that is slower than the rest
+        public static final WebConstant KP_DRIVE_SLOW = new WebConstant("KP_Drive_Slow", 0.046);
+        public static final WebConstant KI_DRIVE_SLOW = new WebConstant("KI_Drive_Slow", 0);
+        public static final WebConstant KD_DRIVE_SLOW = new WebConstant("KD_Drive_Slow", 2);
+        public static final WebConstant KF_DRIVE_SLOW = new WebConstant("KF_Drive_Slow", 0);
+        public static final WebConstant[] SLOW_DRIVE_PIDF = new WebConstant[]{KP_DRIVE_SLOW, KI_DRIVE_SLOW, KD_DRIVE_SLOW, KF_DRIVE_SLOW};
+
+
+        public static final WebConstant KP_BROKEN = new WebConstant("KP_BROKEN", 0.065);
+        public static final WebConstant KI_BROKEN = new WebConstant("KI_BROKEN", 0);
+        public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
+        public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
+
+        // sick man
+        // the module that has more friction in the rotating mechanism
+        public static final WebConstant KP_SICK = new WebConstant("KP_SICK", 6);
+        public static final WebConstant KI_SICK = new WebConstant("KI_SICK", 0);
+        public static final WebConstant KD_SICK = new WebConstant("KD_SICK", 8);
+        public static final WebConstant KF_SICK = new WebConstant("KF_SICK", 0);
+        public static final WebConstant[] SICK_ANGLE_PIDF = new WebConstant[]{KP_SICK, KI_SICK, KD_SICK, KF_SICK};
+
+
         public static final WebConstant KP_ANGLE_FR = new WebConstant("KP_FR", 0.193);
         public static final WebConstant KI_ANGLE_FR = new WebConstant("KI_FR", 0.0);
         public static final WebConstant KD_ANGLE_FR = new WebConstant("KD_FR", 0.0);
@@ -212,6 +247,7 @@ public final class Constants {
         public static final int VOLTAGE_SATURATION = 12; // volts
 
         public static final WebConstant J = new WebConstant("J_Swerve", 0.105);
+//        public static final WebConstant J = new WebConstant("J_Swerve", 0.000429);
 
         public static final double STALL_CURRENT = 134; // [amps]
         public static final double STALL_TORQUE = 0.71; // [N*meters]

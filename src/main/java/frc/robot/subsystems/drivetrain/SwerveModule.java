@@ -29,6 +29,7 @@ import frc.robot.Ports;
 import frc.robot.UnitModel;
 import frc.robot.Utils;
 import frc.robot.valuetuner.WebConstant;
+import org.techfire225.webapp.FireLog;
 
 import static frc.robot.Constants.Shooter.*;
 
@@ -44,12 +45,12 @@ public class SwerveModule extends SubsystemBase {
     private final UnitModel driveUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_METER);
     private final UnitModel angleUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_RAD);
     private final Timer timer = new Timer();
-    private final LinearSystemLoop<N1, N1, N1> stateSpace;
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(Units.feetToMeters(3.0), Units
             .feetToMeters(6.0)); // Max angle motor speed and acceleration.
-    private LinearSystemLoop<N2, N1, N1> angleStateSpace;
     private final PIDController anglePID;
     private final WebConstant[] anglePIDF;
+    private LinearSystemLoop<N1, N1, N1> stateSpace;
+    private LinearSystemLoop<N2, N1, N1> angleStateSpace;
     private double currentTime, lastTime;
     private TrapezoidProfile.State lastProfiledReference = new TrapezoidProfile.State();
 
@@ -228,7 +229,9 @@ public class SwerveModule extends SubsystemBase {
         double voltageToApply = stateSpace.getU(0); // u = input, calculated by the input.
         // returns the voltage to apply (between -12 and 12)
 
+        FireLog.log("speed", speed);
         driveMotor.set(ControlMode.PercentOutput, voltageToApply / Constants.NOMINAL_VOLTAGE);
+//        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(speed));
     }
 
     /**
@@ -244,7 +247,7 @@ public class SwerveModule extends SubsystemBase {
      * @param angle the target angle in radians
      */
     public void setAngle(double angle) {
-        double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
+       /* double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
         double currentAngle = getAngle();
         double error = getTargetError(targetAngle, currentAngle);
         if (Math.abs(angleUnitModel.toTicks(error)) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR) return;
@@ -255,12 +258,12 @@ public class SwerveModule extends SubsystemBase {
         angleStateSpace.correct(VecBuilder.fill(error)); // TODO: maybe need to be in ticks
         angleStateSpace.predict(currentTime - lastTime);
         double nextVoltage = angleStateSpace.getU(0);
-        angleMotor.set(ControlMode.PercentOutput, Constants.SwerveDrive.kPERCENT.get() * nextVoltage / Constants.NOMINAL_VOLTAGE);
-        /*double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
+        angleMotor.set(ControlMode.PercentOutput, Constants.SwerveDrive.kPERCENT.get() * nextVoltage / Constants.NOMINAL_VOLTAGE);*/
+        double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
         double currentAngle = getAngle();
         double error = getTargetError(targetAngle, currentAngle);
         double power = anglePID.calculate(error, 0);
-        angleMotor.set(ControlMode.PercentOutput, power);*/
+        angleMotor.set(ControlMode.PercentOutput, power);
     }
 
     /**
@@ -286,6 +289,27 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.config_kI(0, anglePIDF[1].get(), Constants.TALON_TIMEOUT);
         angleMotor.config_kD(0, anglePIDF[2].get(), Constants.TALON_TIMEOUT);
         angleMotor.config_kF(0, anglePIDF[3].get(), Constants.TALON_TIMEOUT);
+
+
+        // set PIDF - drive motor
+        if (wheel == 0) {
+            driveMotor.config_kP(1, Constants.SwerveModule.KP_BROKEN.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kI(1, Constants.SwerveModule.KI_BROKEN.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kD(1, Constants.SwerveModule.KD_BROKEN.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kF(1, Constants.SwerveModule.KF_BROKEN.get(), Constants.TALON_TIMEOUT);
+        } else if (wheel != 1) {
+            driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE.get(), Constants.TALON_TIMEOUT);
+
+        } else {
+            driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
+//            System.out.println("P" + Constants.SwerveModule.KP_DRIVE_SLOW.get() + "\nI: " + Constants.SwerveModule.KI_DRIVE_SLOW.get() + "\nD: " + Constants.SwerveModule.KD_DRIVE_SLOW.get() + "\nF: " + Constants.SwerveModule.KF_DRIVE_SLOW.get());
+        }
     }
 
     @Override
@@ -296,7 +320,7 @@ public class SwerveModule extends SubsystemBase {
         anglePID.setD(anglePIDF[2].get());
         lastTime = currentTime;
         currentTime = timer.get();
-        this.angleStateSpace = constructAngleStateSpace();
+//        this.angleStateSpace = constructAngleStateSpace();
         this.stateSpace = constructLinearSystem(Constants.SwerveModule.J.get());
 
         FireLog.log("speed" + wheel, getSpeed());
