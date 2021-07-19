@@ -134,6 +134,41 @@ public class Shooter extends SubsystemBase {
         setPower(0);
     }
 
+    // Trajectory based shooter.
+
+    public double calculateAngleDeg(double distance) {
+        double TARGET_HEIGHT = 2;
+        double SHOOTER_HEIGHT = 0.75;
+        return Math.toDegrees(Math.atan(2 * (TARGET_HEIGHT - SHOOTER_HEIGHT) / distance));
+    }
+
+    public int angleToTicks(double angle) {
+        return (int) ((angle - 90) * (Constants.Hood.MAX_POSITION - Constants.Hood.MIN_POSITION) / -90 + Constants.Hood.MIN_POSITION);
+    }
+
+    public double calculateVelocityMS(double distance) {
+        double G = 9.8;
+        double TARGET_HEIGHT = 2;
+        double SHOOTER_HEIGHT = 0.75;
+        return Math.sqrt(G * Math.pow(distance, 2) / (2 * Math.pow(Math.cos(Math.toRadians(calculateAngleDeg(distance))), 2)
+                * (distance * Math.tan(Math.toRadians(calculateAngleDeg(distance))) - (TARGET_HEIGHT - SHOOTER_HEIGHT))));
+    }
+
+    public double velocityToRPS(double velocity) {
+        double WHEEL_RADIUS = 0.1;
+        return velocity / (2 * Math.PI * WHEEL_RADIUS);
+    }
+
+    public int calculateAngle(double distance) {
+        return angleToTicks(calculateAngleDeg(distance));
+    }
+
+    public double calculateVelocity(double distance) {
+        return velocityToRPS(calculateVelocityMS(distance)) * 6;
+    }
+
+
+
     @Override
     public void periodic() {
         this.stateSpacePredictor = constructLinearSystem(J.get());
