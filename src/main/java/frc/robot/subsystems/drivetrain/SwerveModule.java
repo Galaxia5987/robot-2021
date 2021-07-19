@@ -297,5 +297,8 @@ public class SwerveModule extends SubsystemBase {
         lastTime = currentTime;
         currentTime = timer.get();
         this.angleStateSpace = constructAngleStateSpace();
+        this.stateSpace = constructLinearSystem(Constants.SwerveModule.J.get());
+
+        FireLog.log("speed" + wheel, getSpeed());
     }
 }
