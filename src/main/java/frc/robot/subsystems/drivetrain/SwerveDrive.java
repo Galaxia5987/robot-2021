@@ -33,7 +33,7 @@ public class SwerveDrive extends SubsystemBase {
     private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
     // the sign vectors of Rx and Ry
     private static final double[] signX = {1, 1, -1, -1};
-    private static final double[] signY = {-1, 1, -1, 1};
+    private static final double[] signY = {1, -1, 1, -1};
 
     private static boolean isFieldOriented;
     public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
@@ -140,7 +140,7 @@ public class SwerveDrive extends SubsystemBase {
     public void holonomicDrive(double forward, double strafe, double rotation) {
         ChassisSpeeds speeds;
         if (isFieldOriented) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Rotation2d.fromDegrees(-Robot.navx.getYaw()));
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, new Rotation2d(-Math.toRadians(180 - (Robot.navx.getYaw() - Robot.startAngle))));
         } else {
             speeds = new ChassisSpeeds(forward, strafe, rotation);
         }
