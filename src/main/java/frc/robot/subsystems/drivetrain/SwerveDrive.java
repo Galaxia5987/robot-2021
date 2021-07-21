@@ -146,10 +146,23 @@ public class SwerveDrive extends SubsystemBase {
         }
 
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        setStates(states);
+    }
 
+    public void setStates(SwerveModuleState[] states) {
         for (int i = 0; i < states.length; i++) {
             states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(swerveModules[i].getAngle())); // TODO: check whether we need to use ticks or radians
             swerveModules[i].setState(states[i]);
+        }
+    }
+
+    public void setStates(SwerveModuleState state) {
+        for (int i = 0; i < swerveModules.length; i++) {
+            SwerveModuleState copy = new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(state.angle.getRadians()));
+            copy = SwerveModuleState.optimize(copy, new Rotation2d(swerveModules[i].getAngle()));
+            swerveModules[i].setState(copy);
+            FireLog.log("speed " + i, Math.abs(swerveModules[i].getSpeed()));
+
         }
     }
 
@@ -340,18 +353,18 @@ public class SwerveDrive extends SubsystemBase {
         FireLog.log("module RR", Math.toDegrees(getModule(2).getAngle()));
         FireLog.log("module RL", Math.toDegrees(getModule(3).getAngle()));
 
-        SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
+        SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {
-            swerveModuleState[i] = new SwerveModuleState(swerveModules[i].getSpeed(), new Rotation2d(Math.toRadians(90) - swerveModules[i].getAngle()));
-            SmartDashboard.putNumber("angle " + i, swerveModuleState[i].angle.getDegrees());
-            SmartDashboard.putNumber("vel" + i, swerveModuleState[i].speedMetersPerSecond);
+            swerveModuleStates[i] = new SwerveModuleState(swerveModules[i].getSpeed(), new Rotation2d(Math.toRadians(90) - swerveModules[i].getAngle()));
+            SmartDashboard.putNumber("angle " + i, swerveModuleStates[i].angle.getDegrees());
+            SmartDashboard.putNumber("vel" + i, swerveModuleStates[i].speedMetersPerSecond);
             SmartDashboard.putNumber("correct angle " + i, swerveModules[i].getAngle());
 
         }
 
         odometry.updateWithTime(timer.get(),
                 new Rotation2d(Math.toRadians(-Robot.navx.getYaw())),
-                swerveModuleState
+                swerveModuleStates
         );
 
         Pose2d pose = getPose();
@@ -360,6 +373,4 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("theta-pose", pose.getRotation().getDegrees());
         SmartDashboard.putNumber("navx angle", Robot.navx.getYaw());
     }
-
-
 }

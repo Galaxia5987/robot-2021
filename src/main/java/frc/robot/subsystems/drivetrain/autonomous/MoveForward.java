@@ -17,9 +17,7 @@ public class MoveForward extends CommandBase {
 
     @Override
     public void initialize() {
-        for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setState(new SwerveModuleState(velocity, new Rotation2d(0)));
-        }
+        swerveDrive.setStates(new SwerveModuleState(velocity, new Rotation2d(0)));
     }
 
     @Override

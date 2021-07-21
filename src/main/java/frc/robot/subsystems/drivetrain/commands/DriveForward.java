@@ -26,9 +26,8 @@ public class DriveForward extends CommandBase {
         double forward = Utils.joystickDeadband(-RobotContainer.Xbox.getY(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
 
 //        swerveDrive.stayAtAngle();
+        swerveDrive.setStates(new SwerveModuleState(target.get(), new Rotation2d(0)));
         for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setState(new SwerveModuleState(target.get(), new Rotation2d(0)));
-            FireLog.log("speed " + i, Math.abs(swerveDrive.getModule(i).getSpeed()));
             swerveDrive.getModule(i).configPIDF();
         }
 //        swerveDrive.holonomicDrive(0, 0, forward);
