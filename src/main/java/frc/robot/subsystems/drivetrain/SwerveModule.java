@@ -102,8 +102,9 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.setSelectedSensorPosition(0);
 
         this.wheel = wheel;
-        this.stateSpace = constructLinearSystem(Constants.SwerveModule.J.get());
         this.angleStateSpace = constructAngleStateSpace();
+        this.stateSpace = constructLinearSystem(Constants.SwerveModule.J.get());
+        Constants.SwerveModule.J.setChangeListener(this::constructLinearSystem);
     }
 
     private static double getTargetError(double angle, double currentAngle) {
