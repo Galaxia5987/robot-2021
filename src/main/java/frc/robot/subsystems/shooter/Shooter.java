@@ -137,8 +137,8 @@ public class Shooter extends SubsystemBase {
     // Trajectory based shooter.
 
     public double calculateAngleDeg(double distance) {
-        double TARGET_HEIGHT = 2;
-        double SHOOTER_HEIGHT = 0.75;
+        double TARGET_HEIGHT = 2.5;
+        double SHOOTER_HEIGHT = 0.66;
         return Math.toDegrees(Math.atan(2 * (TARGET_HEIGHT - SHOOTER_HEIGHT) / distance));
     }
 
@@ -147,15 +147,15 @@ public class Shooter extends SubsystemBase {
     }
 
     public double calculateVelocityMS(double distance) {
-        double G = 9.8;
-        double TARGET_HEIGHT = 2;
-        double SHOOTER_HEIGHT = 0.75;
+        double G = 9.80665;
+        double TARGET_HEIGHT = 2.5;
+        double SHOOTER_HEIGHT = 0.66;
         return Math.sqrt(G * Math.pow(distance, 2) / (2 * Math.pow(Math.cos(Math.toRadians(calculateAngleDeg(distance))), 2)
                 * (distance * Math.tan(Math.toRadians(calculateAngleDeg(distance))) - (TARGET_HEIGHT - SHOOTER_HEIGHT))));
     }
 
     public double velocityToRPS(double velocity) {
-        double WHEEL_RADIUS = 0.1;
+        double WHEEL_RADIUS = 0.05;
         return velocity / (2 * Math.PI * WHEEL_RADIUS);
     }
 
@@ -164,9 +164,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public double calculateVelocity(double distance) {
-        return velocityToRPS(calculateVelocityMS(distance)) * 6;
+        return velocityToRPS(calculateVelocityMS(distance)) * 3;
     }
-
 
 
     @Override
