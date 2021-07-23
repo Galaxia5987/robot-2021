@@ -170,8 +170,8 @@ public final class Constants {
         public static final double FREE_SPEED = Units.rotationsPerMinuteToRadiansPerSecond(18730); // [rad/sec]
 
         public static final double kT_775PRO = STALL_TORQUE / STALL_CURRENT;// took from FRC examples.
-        public static final double OMEGA = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
-        public static final double kV_775PRO = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA * FREE_CURRENT);// took from FRC examples.
+        public static final double OMEGA_775PRO = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
+        public static final double kV_775PRO = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA_775PRO * FREE_CURRENT);// took from FRC examples.
         public static final double RADIUS = 0.05; // [m]
         // TODO: choose real values.
         public static final WebConstant MASS = new WebConstant("mass", 4.5); // [kg]
@@ -180,6 +180,10 @@ public final class Constants {
     }
 
     public static class SwerveModule {
+
+        public static final double STD_DEVS_STATES = Math.sqrt(10e-6);
+        public static final double STD_DEVS_OUTPUTS = Math.sqrt(10e-6);
+
         public static final WebConstant KP = new WebConstant("KP", 6);
         public static final WebConstant KI = new WebConstant("KI", 0);
         public static final WebConstant KD = new WebConstant("KD", 10);
@@ -247,7 +251,7 @@ public final class Constants {
         public static final int VOLTAGE_SATURATION = 12; // volts
 
         public static final WebConstant J = new WebConstant("J_Swerve", 0.105);
-//        public static final WebConstant J = new WebConstant("J_Swerve", 0.000429);
+        public static final WebConstant J_ANGLE = new WebConstant("J_Swerve", 0.0005255999);
 
         public static final double STALL_CURRENT = 134; // [amps]
         public static final double STALL_TORQUE = 0.71; // [N*meters]

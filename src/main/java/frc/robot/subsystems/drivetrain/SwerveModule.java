@@ -18,10 +18,7 @@ import edu.wpi.first.wpilibj.system.LinearSystemLoop;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.Matrix;
-import edu.wpi.first.wpiutil.math.Nat;
-import edu.wpi.first.wpiutil.math.VecBuilder;
-import edu.wpi.first.wpiutil.math.Vector;
+import edu.wpi.first.wpiutil.math.*;
 import edu.wpi.first.wpiutil.math.numbers.N1;
 import edu.wpi.first.wpiutil.math.numbers.N2;
 import frc.robot.Constants;
@@ -29,9 +26,15 @@ import frc.robot.Ports;
 import frc.robot.UnitModel;
 import frc.robot.Utils;
 import frc.robot.valuetuner.WebConstant;
+import org.opencv.core.Mat;
 import org.techfire225.webapp.FireLog;
 
 import static frc.robot.Constants.Shooter.*;
+import static frc.robot.Constants.Shooter.OMEGA;
+import static frc.robot.Constants.SwerveDrive.OMEGA_775PRO;
+import static frc.robot.Constants.SwerveModule.*;
+import static frc.robot.Constants.SwerveModule.kT;
+import static frc.robot.Constants.SwerveModule.kV;
 
 /**
  * The Swerve Module Subsystem controls the individual wheel with the controls from the Swerve Drive Subsystem.
@@ -50,7 +53,7 @@ public class SwerveModule extends SubsystemBase {
     private final PIDController anglePID;
     private final WebConstant[] anglePIDF;
     private LinearSystemLoop<N1, N1, N1> stateSpace;
-    private LinearSystemLoop<N2, N1, N1> angleStateSpace;
+    private LinearSystemLoop<N2, N1, N2> angleStateSpace;
     private double currentTime, lastTime;
     private TrapezoidProfile.State lastProfiledReference = new TrapezoidProfile.State();
 
@@ -142,35 +145,29 @@ public class SwerveModule extends SubsystemBase {
         return targetAngle;
     }
 
-    private LinearSystemLoop<N2, N1, N1> constructAngleStateSpace() {
-        double A = -Math.pow(Constants.SwerveDrive.ANGLE_GEAR_RATIO, 2) * Constants.SwerveDrive.kT_775PRO
-                / (Constants.SwerveDrive.OMEGA * Math.pow(Constants.SwerveDrive.RADIUS, 2)
-                * Constants.SwerveDrive.MASS.get() * Constants.SwerveDrive.kV_775PRO);
-        var stateSpace = new LinearSystem<>(Matrix.mat(Nat.N2(), Nat.N2())
-                .fill(0, 1,
-                        0, A),
-                VecBuilder.fill(0, Constants.SwerveDrive.ANGLE_GEAR_RATIO * Constants.SwerveDrive.kT_775PRO
-                        / (Constants.SwerveDrive.OMEGA * Constants.SwerveDrive.RADIUS * Constants.SwerveDrive.MASS.get())),
-                Matrix.mat(Nat.N1(), Nat.N2()).fill(1, 0),
-                new Matrix<>(Nat.N1(), Nat.N1()));
+    private LinearSystemLoop<N2, N1, N2> constructAngleStateSpace() {
+        Matrix<N2, N2> A = Matrix.mat(Nat.N2(), Nat.N2()).fill(
+                kT / (kV * OMEGA_775PRO * J_ANGLE.get()),
+                0,
+                1,
+                0
+        );
 
-        var kalman = new KalmanFilter<>(Nat.N2(), Nat.N1(),
-                stateSpace,
-                VecBuilder.fill(Units.inchesToMeters(2), Units.inchesToMeters(40)), // How accurate we
-                // think our model is, in meters and meters/second.
-                VecBuilder.fill(0.001), // How accurate we think our encoder position
-                // data is. In this case we very highly trust our encoder position reading.
-                Constants.LOOP_PERIOD);
-        var lqr = new LinearQuadraticRegulator<>(stateSpace,
-                VecBuilder.fill(Units.inchesToMeters(1.0), Units.inchesToMeters(10.0)), // qelms. Position
-                // and velocity error tolerances, in meters and meters per second. Decrease this to more
-                // heavily penalize state excursion, or make the controller behave more aggressively. In
-                // this example we weight position much more highly than velocity, but this can be
-                // tuned to balance the two.
-                VecBuilder.fill(Constants.NOMINAL_VOLTAGE), // relms. Control effort (voltage) tolerance. Decrease this to more
-                // heavily penalize control effort, or make the controller less aggressive. 12 is a good
-                // starting point because that is the (approximate) maximum voltage of a battery.
-                Constants.LOOP_PERIOD); // Nominal time between loops. 0.020 for TimedRobot, but can be
+        Vector<N2> B = VecBuilder.fill(
+                kT / (OMEGA_775PRO * J_ANGLE.get()),
+                0
+        );
+
+        var stateSpace = new LinearSystem<>(A, B,
+                Matrix.eye(Nat.N2()), new Matrix<>(Nat.N2(), Nat.N1()));
+
+        KalmanFilter<N2, N1, N2> kalman = new KalmanFilter<>(Nat.N2(), Nat.N2(), stateSpace, VecBuilder.fill(STD_DEVS_STATES, STD_DEVS_STATES), VecBuilder.fill(STD_DEVS_OUTPUTS, 0), Constants.LOOP_PERIOD);
+        LinearQuadraticRegulator<N2, N1, N2> lqr = new LinearQuadraticRegulator<>(A, B,
+                Matrix.mat(Nat.N2(), Nat.N2()).fill(1,0,
+                                                    0, 1),
+                Matrix.mat(Nat.N1(), Nat.N1()).fill(0),
+                Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
+        );
         return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
     }
 
@@ -248,7 +245,7 @@ public class SwerveModule extends SubsystemBase {
      * @param angle the target angle in radians
      */
     public void setAngle(double angle) {
-       /* double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
+        double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
         double currentAngle = getAngle();
         double error = getTargetError(targetAngle, currentAngle);
         if (Math.abs(angleUnitModel.toTicks(error)) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR) return;
@@ -256,15 +253,18 @@ public class SwerveModule extends SubsystemBase {
         TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
         lastProfiledReference = new TrapezoidProfile(constraints, goal, lastProfiledReference).calculate(0.020);
         angleStateSpace.setNextR(lastProfiledReference.position, lastProfiledReference.velocity);
-        angleStateSpace.correct(VecBuilder.fill(error)); // TODO: maybe need to be in ticks
+
+        double w = angleUnitModel.toTicks100ms(angleMotor.getSelectedSensorVelocity()) / (Constants.SwerveDrive.RADIUS * 2 * Math.PI);
+
+        angleStateSpace.correct(Matrix.mat(Nat.N2(), Nat.N1()).fill(w, error)); // TODO: maybe need to be in ticks
         angleStateSpace.predict(currentTime - lastTime);
         double nextVoltage = angleStateSpace.getU(0);
-        angleMotor.set(ControlMode.PercentOutput, Constants.SwerveDrive.kPERCENT.get() * nextVoltage / Constants.NOMINAL_VOLTAGE);*/
-        double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
+        angleMotor.set(ControlMode.PercentOutput, Constants.SwerveDrive.kPERCENT.get() * nextVoltage / Constants.NOMINAL_VOLTAGE);
+      /*  double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
         double currentAngle = getAngle();
         double error = getTargetError(targetAngle, currentAngle);
         double power = anglePID.calculate(error, 0);
-        angleMotor.set(ControlMode.PercentOutput, power);
+        angleMotor.set(ControlMode.PercentOutput, power);*/
     }
 
     /**
