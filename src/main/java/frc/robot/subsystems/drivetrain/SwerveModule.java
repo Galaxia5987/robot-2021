@@ -149,7 +149,7 @@ public class SwerveModule extends SubsystemBase {
         Matrix<N2, N2> A = Matrix.mat(Nat.N2(), Nat.N2()).fill(
                 kT / (kV * OMEGA_775PRO * J_ANGLE.get()),
                 0,
-                1,
+                2 * Math.PI,
                 0
         );
 
