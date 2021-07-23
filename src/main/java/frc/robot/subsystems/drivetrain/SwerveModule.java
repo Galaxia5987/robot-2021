@@ -161,11 +161,11 @@ public class SwerveModule extends SubsystemBase {
         var stateSpace = new LinearSystem<>(A, B,
                 Matrix.eye(Nat.N2()), new Matrix<>(Nat.N2(), Nat.N1()));
 
-        KalmanFilter<N2, N1, N2> kalman = new KalmanFilter<>(Nat.N2(), Nat.N2(), stateSpace, VecBuilder.fill(STD_DEVS_STATES, STD_DEVS_STATES), VecBuilder.fill(STD_DEVS_OUTPUTS, 0), Constants.LOOP_PERIOD);
+        KalmanFilter<N2, N1, N2> kalman = new KalmanFilter<>(Nat.N2(), Nat.N2(), stateSpace, VecBuilder.fill(STD_DEVS_STATES, STD_DEVS_STATES), VecBuilder.fill(STD_DEVS_OUTPUTS, STD_DEVS_OUTPUTS), Constants.LOOP_PERIOD);
         LinearQuadraticRegulator<N2, N1, N2> lqr = new LinearQuadraticRegulator<>(A, B,
                 Matrix.mat(Nat.N2(), Nat.N2()).fill(1,0,
                                                     0, 1),
-                Matrix.mat(Nat.N1(), Nat.N1()).fill(0),
+                Matrix.mat(Nat.N1(), Nat.N1()).fill(STD_DEVS_OUTPUTS),
                 Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
         );
         return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
@@ -256,9 +256,10 @@ public class SwerveModule extends SubsystemBase {
 
         double w = angleUnitModel.toTicks100ms(angleMotor.getSelectedSensorVelocity()) / (Constants.SwerveDrive.RADIUS * 2 * Math.PI);
 
-        angleStateSpace.correct(Matrix.mat(Nat.N2(), Nat.N1()).fill(w, error)); // TODO: maybe need to be in ticks
+        angleStateSpace.correct(Matrix.mat(Nat.N2(), Nat.N1()).fill(0, error)); // TODO: maybe need to be in ticks
         angleStateSpace.predict(currentTime - lastTime);
         double nextVoltage = angleStateSpace.getU(0);
+//        double angle = angleStateSpace.getU(1);
         angleMotor.set(ControlMode.PercentOutput, Constants.SwerveDrive.kPERCENT.get() * nextVoltage / Constants.NOMINAL_VOLTAGE);
       /*  double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
         double currentAngle = getAngle();

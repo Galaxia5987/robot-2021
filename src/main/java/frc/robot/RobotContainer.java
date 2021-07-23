@@ -79,8 +79,8 @@ public class RobotContainer {
 
 
     private void configureDefaultCommands() {
-        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
-//        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
+//        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
+        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
     }
 
     /**
