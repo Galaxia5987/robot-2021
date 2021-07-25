@@ -251,7 +251,9 @@ public final class Constants {
         public static final int VOLTAGE_SATURATION = 12; // volts
 
         public static final WebConstant J = new WebConstant("J_Swerve", 0.105);
-        public static final WebConstant J_ANGLE = new WebConstant("J_Angle", 0.0005255999);
+        public static final WebConstant J_ANGLE = new WebConstant("J_Angle", 0.0005255999 * 4);
+
+        public static final double GEAR_RATIO_MOTOR = 1 / 43.17;
 
         public static final double STALL_CURRENT = 134; // [amps]
         public static final double STALL_TORQUE = 0.71; // [N*meters]
