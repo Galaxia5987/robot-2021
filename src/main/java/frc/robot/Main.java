@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.subsystems.drivetrain.SwerveModule;
 
 import static spark.Spark.port;
 
@@ -30,7 +31,6 @@ public final class Main {
      * @param args arguments.
      */
     public static void main(String... args) {
-
         port(5802);
 
         RobotBase.startRobot(Robot::new);

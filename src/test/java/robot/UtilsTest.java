@@ -1,12 +1,17 @@
 package robot;
 
 import frc.robot.Utils;
+import frc.robot.subsystems.drivetrain.SwerveModule;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class UtilsTest {
 
     private double delta = 0.01;
+
+    public static void main(String[] args) {
+
+    }
 
     @Test
     public void floorMod() {
@@ -25,18 +30,26 @@ public class UtilsTest {
 
     @Test
     public void matrixVectorMult() {
-        double[][] mat = { {0, 1, 0.5}, {1, 0, -0.5}, {0, 1, 0.5}, {1, 0, .5}, {0, 1, -0.5}, {1, 0, .5}, {0, 1, -0.5}, {1, 0, -0.5} };
+        double[][] mat = {{0, 1, 0.5}, {1, 0, -0.5}, {0, 1, 0.5}, {1, 0, .5}, {0, 1, -0.5}, {1, 0, .5}, {0, 1, -0.5}, {1, 0, -0.5}};
         double[] v = {.7, 0, 0};
         double[] vec = Utils.matrixVectorMult(mat, v);
         double[] expected = {0, .7, 0, .7, 0, .7, 0, .7};
 
         Assert.assertArrayEquals(expected, vec, delta);
 
-        double[][] m = { {3, 2, .5}, {1, 4, .25}, {6, 7, 2}, {2, 4.5, 5} };
+        double[][] m = {{3, 2, .5}, {1, 4, .25}, {6, 7, 2}, {2, 4.5, 5}};
         double[] V = {.5, 2, 3};
         double[] vector = Utils.matrixVectorMult(m, V);
         double[] exp = {7.0, 9.25, 23.0, 25.0};
 
         Assert.assertArrayEquals(exp, vector, delta);
+    }
+
+    @Test
+    public void getTargetError() {
+
+        Assert.assertEquals(-Math.PI, SwerveModule.getTargetAngle(0, -Math.PI), delta);
+        Assert.assertEquals(-2 * Math.PI, SwerveModule.getTargetAngle(Math.PI, -Math.PI), delta);
+        Assert.assertEquals(Math.PI, SwerveModule.getTargetAngle(-Math.PI / 2, Math.PI / 2), delta);
     }
 }

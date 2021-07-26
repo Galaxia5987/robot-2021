@@ -16,7 +16,7 @@ public class Rotate extends CommandBase {
     //    private WebConstant target = new WebConstant("targetAngle", 0);
 
     // the target angles for each wheel by numbered index
-    private WebConstant target0 = new WebConstant("target0", 0);
+    private WebConstant target0 = new WebConstant("target0", 90);
     private WebConstant target1 = new WebConstant("target1", 0);
     private WebConstant target2 = new WebConstant("target2", 0);
     private WebConstant target3 = new WebConstant("target3", 0);
@@ -32,10 +32,10 @@ public class Rotate extends CommandBase {
         double rotation = -RobotContainer.Xbox.getY();
         rotation = Utils.joystickDeadband(rotation, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
 
-        swerveDrive.getModule(0).setAngle(Math.toRadians(target0.get()));
-        swerveDrive.getModule(1).setAngle(Math.toRadians(target0.get()));
-        swerveDrive.getModule(2).setAngle(Math.toRadians(target0.get()));
-        swerveDrive.getModule(3).setAngle(Math.toRadians(target0.get()));
+        swerveDrive.getModule(0).setAngle(Math.toRadians(target0.get() - 90));
+        swerveDrive.getModule(1).setAngle(Math.toRadians(target0.get() - 90));
+        swerveDrive.getModule(2).setAngle(Math.toRadians(target0.get() - 90));
+        swerveDrive.getModule(3).setAngle(Math.toRadians(target0.get() - 90));
 
         SmartDashboard.putNumber("module FR", Math.toDegrees(swerveDrive.getModule(0).getAngle()));
         SmartDashboard.putNumber("module FL", Math.toDegrees(swerveDrive.getModule(1).getAngle()));
@@ -52,7 +52,6 @@ public class Rotate extends CommandBase {
         FireLog.log("swerve angle by vectors", swerveDrive.getVelocity()[1]);
         FireLog.log("swerve direction", Robot.navx.getYaw());
 
-        System.out.println("Target 0: "+ target0.get());
     }
 
     @Override

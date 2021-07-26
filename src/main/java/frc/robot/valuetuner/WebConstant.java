@@ -17,13 +17,13 @@ public class WebConstant {
         constantMap.put(key, this.constant);
     }
 
-    public WebConstant(String key, double value, DoubleConsumer changeListener) {
-        this.constant = new ConstantObject(key, value, changeListener);
-    }
+//    public WebConstant(String key, double value, DoubleConsumer changeListener) {
+//        this.constant = new ConstantObject(key, value, changeListener);
+//    }
 
-    public void setChangeListener(DoubleConsumer changeListener) {
-        constant.setChangeListener(changeListener);
-    }
+//    public void setChangeListener(DoubleConsumer changeListener) {
+//        constant.setChangeListener(changeListener);
+//    }
 
     public static Map<String, ConstantObject> getConstantMap() {
         return constantMap;

@@ -133,7 +133,7 @@ public final class Constants {
         public static final double THIS_SHOULD_BE_1_ASK_AMIR = 1;
         public static final double TICKS_PER_METER = 2048 / (4 * 0.0254 * Math.PI) * 7.5 * THIS_SHOULD_BE_1_ASK_AMIR;
         public static final int TICKS_IN_ENCODER = 1024;
-        public static final int ALLOWABLE_ANGLE_ERROR = 30; // [ticks]
+        public static final int ALLOWABLE_ANGLE_ERROR = 2; // [ticks]
         public static final double ANGLE_GEAR_RATIO = 1;
         public static final double TICKS_PER_RAD = TICKS_IN_ENCODER / (2 * Math.PI) * ANGLE_GEAR_RATIO;
 
@@ -243,7 +243,7 @@ public final class Constants {
         public static final WebConstant KF_ANGLE_RL = new WebConstant("KF_RL", 0);
         public static final WebConstant[] PIDF_ANGLE_RL = new WebConstant[]{KP_ANGLE_RL, KI_ANGLE_RL, KD_ANGLE_RL, KF_ANGLE_RL};
 
-        public static final int[] ZERO_POSITION = {1000, 816, 268, 270};
+        public static final int[] ZERO_POSITION = {999, 815, 212, 279};
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 5; // ampere
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // seconds
@@ -251,7 +251,7 @@ public final class Constants {
         public static final int VOLTAGE_SATURATION = 12; // volts
 
         public static final WebConstant J = new WebConstant("J_Swerve", 0.105);
-        public static final WebConstant J_ANGLE = new WebConstant("J_Angle", 0.0005255999 * 4);
+        public static final WebConstant J_ANGLE = new WebConstant("J_Angle", 0.0005255999 *4);
 
         public static final double GEAR_RATIO_MOTOR = 1 / 43.17;
 
