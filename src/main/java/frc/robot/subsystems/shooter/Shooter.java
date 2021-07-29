@@ -17,6 +17,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.UnitModel;
 import frc.robot.subsystems.PTO.PTO;
+import frc.robot.valuetuner.WebConstant;
 import org.techfire225.webapp.FireLog;
 
 import static frc.robot.Constants.Shooter.*;
@@ -164,7 +165,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public double calculateVelocity(double distance) {
-        return velocityToRPS(calculateVelocityMS(distance)) * 3;
+        return velocityToRPS(calculateVelocityMS(distance)) * flywheelSpeedMultiplier.get();
     }
 
 
@@ -173,6 +174,11 @@ public class Shooter extends SubsystemBase {
         this.stateSpacePredictor = constructLinearSystem(J.get());
         FireLog.log("velocity", getVelocity());
     }
+
+    public static WebConstant flywheelSpeedMultiplier = new WebConstant("flyWheelSpeedMultiplier", 3);
+    public static WebConstant flyWheelDistanceAddition = new WebConstant("flyWheelDistanceAddition", 0);
+    public static WebConstant hoodDistanceAddition = new WebConstant("hoodDistanceAddition", 0);
+
 }
 
 

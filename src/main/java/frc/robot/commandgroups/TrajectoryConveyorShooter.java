@@ -16,9 +16,8 @@ public class TrajectoryConveyorShooter extends ParallelCommandGroup {
     public TrajectoryConveyorShooter(Shooter shooter, Hood hood, Conveyor conveyor, Funnel funnel, VisionModule vision, double power, boolean manual) {
         addCommands(
                 new SequentialCommandGroup(
-                        new WaitUntilCommand(() -> shooter.hasReachedSetpoint(hood.estimateVelocityFromDistance(vision.getTargetRawDistance().orElse(0)))),
                         new ParallelCommandGroup(
-                                new FeedShooter(conveyor, power),
+                                new FeedShooter(conveyor, 1),
                                 new StartFunnel(funnel, true)
                         )
                 ),

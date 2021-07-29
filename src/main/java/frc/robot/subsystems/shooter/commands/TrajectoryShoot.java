@@ -41,7 +41,7 @@ public class TrajectoryShoot extends CommandBase {
         if (optionalDistance.isPresent()) {
             double distance = optionalDistance.getAsDouble();
             if (distance > 0) {
-                double velocity = shooter.calculateVelocity(distance);
+                double velocity = shooter.calculateVelocity(distance + Shooter.flyWheelDistanceAddition.get());
                 shooter.setVelocity(velocity, currentTime - lastTime);
             }
         }
