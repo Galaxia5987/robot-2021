@@ -26,7 +26,7 @@ public class TrajectoryAdjustHood extends CommandBase {
     @Override
     public void execute() {
         hood.updatePID();
-        hood.changePosition(shooter.calculateAngle(distance.getAsDouble()));
+        hood.changePosition(shooter.calculateAngle(distance.getAsDouble() + Shooter.hoodDistanceAddition.get()));
     }
 
     @Override

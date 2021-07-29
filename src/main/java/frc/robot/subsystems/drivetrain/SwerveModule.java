@@ -105,15 +105,15 @@ public class SwerveModule extends SubsystemBase {
         this.angleStateSpace = constructAngleStateSpace();
     }
 
-    private static double getTargetError(double angle, double currentAngle) {
-        double cwDistance = angle - currentAngle;
-        double ccwDistance = 2 * Math.PI - (Math.abs(cwDistance));
-        if (Math.abs(cwDistance) < ccwDistance) {
-            return -cwDistance;
-        } else if (cwDistance < 0) {
-            return -ccwDistance;
+    private static double getTargetError(double targetAngle, double currentAngle) {
+        double option1 = targetAngle - currentAngle;
+        double option2 = 2 * Math.PI - (Math.abs(option1));
+        if (Math.abs(option1) < option2) {
+            return option1;
+        } else if (option1 < 0) {
+            return option2;
         }
-        return ccwDistance;
+        return -option2;
     }
 
     /**
@@ -203,7 +203,7 @@ public class SwerveModule extends SubsystemBase {
 
     public void setState(SwerveModuleState state) {
         setAngle(state.angle.getRadians());
-        setVelocity(state.speedMetersPerSecond);
+        setSpeed(state.speedMetersPerSecond);
     }
 
     /**
@@ -254,9 +254,10 @@ public class SwerveModule extends SubsystemBase {
      * @param angle the target angle in radians
      */
     public void setAngle(double angle) {
+        /*
         double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
         double currentAngle = getAngle();
-        double error = getTargetError(targetAngle, currentAngle);
+        double error = -getTargetError(targetAngle, currentAngle);
         if (Math.abs(angleUnitModel.toTicks(error)) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR) return;
 
         TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
@@ -265,12 +266,12 @@ public class SwerveModule extends SubsystemBase {
         angleStateSpace.correct(VecBuilder.fill(error)); // TODO: maybe need to be in ticks
         angleStateSpace.predict(currentTime - lastTime);
         double nextVoltage = angleStateSpace.getU(0);
-        angleMotor.set(ControlMode.PercentOutput, Constants.SwerveDrive.kPERCENT.get() * nextVoltage / Constants.NOMINAL_VOLTAGE);
-        /*double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
+        angleMotor.set(ControlMode.PercentOutput, Constants.SwerveDrive.kPERCENT.get() * nextVoltage / Constants.NOMINAL_VOLTAGE);*/
+        double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
         double currentAngle = getAngle();
         double error = getTargetError(targetAngle, currentAngle);
-        double power = anglePID.calculate(error, 0);
-        angleMotor.set(ControlMode.PercentOutput, power);*/
+        double power = anglePID.calculate(-error, 0);
+        angleMotor.set(ControlMode.PercentOutput, power);
     }
 
     /**
