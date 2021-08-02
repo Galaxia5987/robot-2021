@@ -32,10 +32,10 @@ public class Rotate extends CommandBase {
         double rotation = -RobotContainer.Xbox.getY();
         rotation = Utils.joystickDeadband(rotation, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
 
-        swerveDrive.getModule(0).setAngle(Math.toRadians(target0.get() - 90));
-        swerveDrive.getModule(1).setAngle(Math.toRadians(target0.get() - 90));
-        swerveDrive.getModule(2).setAngle(Math.toRadians(target0.get() - 90));
-        swerveDrive.getModule(3).setAngle(Math.toRadians(target0.get() - 90));
+        swerveDrive.getModule(0).setAngle(Math.toRadians(target0.get()));
+        swerveDrive.getModule(1).setAngle(Math.toRadians(target0.get()));
+        swerveDrive.getModule(2).setAngle(Math.toRadians(target0.get()));
+        swerveDrive.getModule(3).setAngle(Math.toRadians(target0.get()));
 
         SmartDashboard.putNumber("module FR", Math.toDegrees(swerveDrive.getModule(0).getAngle()));
         SmartDashboard.putNumber("module FL", Math.toDegrees(swerveDrive.getModule(1).getAngle()));

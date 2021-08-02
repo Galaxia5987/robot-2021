@@ -34,7 +34,7 @@ public class HolonomicDrive extends CommandBase {
         double forward = ((RobotContainer.Xbox.getY(left)));
         double strafe = (-(RobotContainer.Xbox.getX(left)));
         double alpha = Math.atan2(forward, strafe);
-        double vector = Math.sqrt(Math.pow(forward, 2) + Math.pow(strafe, 2));
+        double vector = Math.hypot(forward, strafe);
         vector = smoothInput(vector);
         forward = Math.sin(alpha) * vector;
         strafe = Math.cos(alpha) * vector;

@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
         m_robotContainer = new RobotContainer();
         m_robotContainer.hood.resetPosition();
         for (int i = 0; i < 4; i++) {
-            RobotContainer.swerveDrive.getModule(i).resetAngleAtStart();
+            RobotContainer.swerveDrive.getModule(i).initialize();
         }
         startAngle = navx.getYaw();
         compressor.start();
