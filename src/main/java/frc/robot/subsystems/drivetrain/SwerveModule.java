@@ -116,11 +116,11 @@ public class SwerveModule extends SubsystemBase {
         double option1 = targetAngle - currentAngle;
         double option2 = 2 * Math.PI - (Math.abs(option1));
         if (Math.abs(option1) < option2) {
-            return -option1;
+            return option1;
         } else if (option1 < 0) {
-            return -option2;
+            return option2;
         }
-        return option2;
+        return -option2;
     }
 
     /**
