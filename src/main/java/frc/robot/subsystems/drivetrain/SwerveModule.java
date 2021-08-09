@@ -109,16 +109,15 @@ public class SwerveModule extends SubsystemBase {
 //        Constants.SwerveModule.J.setChangeListener(this::constructLinearSystem);
     }
 
-    public static double getTargetError(double angle, double currentAngle) {
-
-        double cwDistance = angle - currentAngle;
-        double ccwDistance = 2 * Math.PI - (Math.abs(cwDistance));
-        if (Math.abs(cwDistance) < ccwDistance) {
-            return cwDistance;
-        } else if (cwDistance < 0) {
-            return -ccwDistance;
+    private static double getTargetError(double targetAngle, double currentAngle) {
+        double option1 = targetAngle - currentAngle;
+        double option2 = 2 * Math.PI - (Math.abs(option1));
+        if (Math.abs(option1) < option2) {
+            return option1;
+        } else if (option1 < 0) {
+            return option2;
         }
-        return ccwDistance;
+        return -option2;
     }
 
     /**
