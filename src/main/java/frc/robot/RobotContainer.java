@@ -79,8 +79,6 @@ public class RobotContainer {
 
 
     private void configureDefaultCommands() {
-        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
-//        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
     }
 
     /**
@@ -90,17 +88,7 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-//        b.whileHeld(new MoveToPosition(swerveDrive, vision));
-//        RT.whileActiveOnce(new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, false));
-//        RB.whileHeld(new Outtake(funnel, conveyor, shooter));
-//        LT.whileActiveOnce(new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true));
-//        start.whenPressed(() -> vision.setLEDs(LEDMode.kOff));
-//        back.whenPressed(() -> vision.setLEDs(LEDMode.kOn));
-//        LB.whenPressed(new ToggleVisionPiston(vision));
-//        R.whileHeld(new AdjustHood(hood, Hood.State.CLOSED));
-//        x.whileHeld(swerveDrive::lock);
-//        a.whileHeld(new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER, true));
-//        y.whileHeld(new AdjustHood(hood, Hood.State.HIGH));
+        x.whileHeld(new Shoot(shooter, vision, hood, true));
     }
 
 

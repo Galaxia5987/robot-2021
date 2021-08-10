@@ -7,6 +7,7 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.VisionModule;
 import frc.robot.valuetuner.WebConstant;
+import webapp.FireLog;
 
 /**
  * This command keeps the shooter in the specified velocity.
@@ -32,27 +33,13 @@ public class Shoot extends CommandBase {
 
     @Override
     public void initialize() {
-        shootingTimer.start();
     }
 
     @Override
     public void execute() {
-        final double currentTime = shootingTimer.get();
-        var optionalDistance = vision.getTargetRawDistance();
-        if (optionalDistance.isPresent()) {
-            double distance = optionalDistance.getAsDouble();
-            if (distance > 0) {
-                SmartDashboard.putNumber("vision-distance", distance);
-                double velocity = hood.estimateVelocityFromDistance(distance);
-                if (manual) {
-                    velocity = vel.get();
-                }
-                SmartDashboard.putNumber("hood-velocity", velocity);
-                shooter.setVelocity(velocity + 5, currentTime - lastTime);
-            }
-        }
-        lastTime = currentTime;
-
+        shooter.setVelocity(vel.get());
+        FireLog.log("vel setpoint", vel.get());
+        FireLog.log("current velocity", shooter.getVelocity());
     }
 
     @Override
@@ -63,7 +50,5 @@ public class Shoot extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         shooter.stop();
-        shootingTimer.stop();
-        shootingTimer.reset();
     }
 }
