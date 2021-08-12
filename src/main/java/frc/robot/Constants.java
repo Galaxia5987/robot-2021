@@ -250,7 +250,7 @@ public final class Constants {
         public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
         public static final int VOLTAGE_SATURATION = 12; // volts
 
-        public static final WebConstant J = new WebConstant("J_Swerve", 0.105);
+        public static final WebConstant J = new WebConstant("J_Swerve", 0.007);
         public static final WebConstant J_ANGLE = new WebConstant("J_Angle", 0.0001313989675);//0.00052559987 / 4);
 
         public static final double GEAR_RATIO_MOTOR = 63.0 / 2720;

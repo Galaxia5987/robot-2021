@@ -225,17 +225,20 @@ public class SwerveModule extends SubsystemBase {
      * @param speed the speed of the wheel in [m/s]
      */
     public void setSpeed(double speed) {
-      /*  double timeInterval = Math.max(20, currentTime - lastTime);
-        stateSpace.setNextR(VecBuilder.fill(speed)); //r = reference (setpoint)
-        stateSpace.correct(VecBuilder.fill(getSpeed()));
+        double timeInterval = Math.max(20, currentTime - lastTime);
+        double currentSpeed = getSpeed() / (2 * Math.PI * RADIUS); // [rps]
+        double targetSpeed = speed / (2 * Math.PI * RADIUS); // [rps]
+
+        stateSpace.setNextR(VecBuilder.fill(targetSpeed)); //r = reference (setpoint)
+        stateSpace.correct(VecBuilder.fill(currentSpeed));
         stateSpace.predict(timeInterval);
 
         double voltageToApply = stateSpace.getU(0); // u = input, calculated by the input.
         // returns the voltage to apply (between -12 and 12)
 
         FireLog.log("speed", speed);
-        driveMotor.set(ControlMode.PercentOutput, voltageToApply / Constants.NOMINAL_VOLTAGE);*/
-        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(speed));
+        driveMotor.set(ControlMode.PercentOutput, voltageToApply / Constants.NOMINAL_VOLTAGE);
+//        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(speed));
     }
 
     /**
@@ -341,6 +344,5 @@ public class SwerveModule extends SubsystemBase {
         this.angleStateSpace = constructAngleStateSpace();
         this.stateSpace = constructLinearSystem(Constants.SwerveModule.J.get());
 
-        FireLog.log("speed" + wheel, getSpeed());
     }
 }
