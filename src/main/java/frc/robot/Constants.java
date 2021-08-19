@@ -250,7 +250,7 @@ public final class Constants {
         public static final WebConstant J = new WebConstant("J_Swerve", 0.007);
         public static final WebConstant J_ANGLE = new WebConstant("J_Angle", 0.0001213989675);
 
-        public static final double GEAR_RATIO_MOTOR = 63.0 / 2720;
+        public static final double ANGLE_GEAR_RATIO_MOTOR = 63.0 / 2720;
 
         public static final double STALL_CURRENT = 134; // [amps]
         public static final double STALL_TORQUE = 0.71; // [N*meters]

@@ -151,10 +151,10 @@ public class SwerveModule extends SubsystemBase {
                                         0,
                                         1,
                                         0,
-                                        -Math.pow(63.0 / 2720, 2)
+                                        -Math.pow(ANGLE_GEAR_RATIO_MOTOR, 2)
                                                 * kT_775PRO
                                                 / (kV_775PRO * OMEGA_775PRO * J_ANGLE.get())),
-                        VecBuilder.fill(0, (63.0 / 2720) * kT_775PRO / (OMEGA_775PRO * J_ANGLE.get())),
+                        VecBuilder.fill(0, (ANGLE_GEAR_RATIO_MOTOR) * kT_775PRO / (OMEGA_775PRO * J_ANGLE.get())),
                         Matrix.mat(Nat.N1(), Nat.N2()).fill(1, 0),
                         new Matrix<>(Nat.N1(), Nat.N1()));
 
@@ -171,7 +171,7 @@ public class SwerveModule extends SubsystemBase {
                 new LinearQuadraticRegulator<>(
                         stateSpace,
                         VecBuilder.fill(Units.degreesToRadians(1.0), Units.degreesToRadians(1.0)),
-                        VecBuilder.fill(12.0),
+                        VecBuilder.fill(Constants.NOMINAL_VOLTAGE),
                         0.020);
         return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
     }
