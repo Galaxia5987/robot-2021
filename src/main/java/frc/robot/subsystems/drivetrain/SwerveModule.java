@@ -46,8 +46,7 @@ public class SwerveModule extends SubsystemBase {
     private final UnitModel driveUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_METER);
     private final UnitModel angleUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_RAD);
     private final Timer timer = new Timer();
-    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(Units.feetToMeters(1.0), Units
-            .feetToMeters(2.0)); // Max angle motor speed and acceleration.
+    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(Units.degreesToRadians(45), Units.degreesToRadians(90)); // Max angle motor speed and acceleration.
     private final PIDController anglePID;
     private final WebConstant[] anglePIDF;
     private LinearSystemLoop<N1, N1, N1> stateSpace;
@@ -258,12 +257,13 @@ public class SwerveModule extends SubsystemBase {
         double currentAngle = getAngle();
         double error = getTargetError(targetAngle, currentAngle);
 
-        if (targetAngle != lastAngle) {
-            angleStateSpace.reset(Matrix.mat(Nat.N2(), Nat.N1()).fill(-error, getAngleMotorVelocity()));
-        }
+//        if (targetAngle != lastAngle) {
+//            angleStateSpace.reset(Matrix.mat(Nat.N2(), Nat.N1()).fill(-error, getAngleMotorVelocity()));
+//        }
         lastAngle = targetAngle;
 
-        stateSpace.setNextR(0);
+        lastProfiledReference = new TrapezoidProfile(constraints, new TrapezoidProfile.State(currentAngle + error, 0), lastProfiledReference).calculate(currentTime - lastTime);
+        stateSpace.setNextR(lastProfiledReference.position);
 //        angleStateSpace.setNextR(0, 0);
         angleStateSpace.correct(VecBuilder.fill(-error)); // TODO: maybe need to be in ticks
         angleStateSpace.predict(currentTime - lastTime);
@@ -330,6 +330,7 @@ public class SwerveModule extends SubsystemBase {
 
     public void initialize() {
         lastAngle = getAngle();
+        angleStateSpace.reset(Matrix.mat(Nat.N2(), Nat.N1()).fill(lastAngle, getAngleMotorVelocity()));
         lastProfiledReference = new TrapezoidProfile.State(lastAngle, 0);
     }
 

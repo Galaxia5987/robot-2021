@@ -173,9 +173,6 @@ public final class Constants {
         public static final double OMEGA_775PRO = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
         public static final double kV_775PRO = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA_775PRO * FREE_CURRENT);// took from FRC examples.
         public static final double RADIUS = 0.04688; // [m]
-        // TODO: choose real values.
-        public static final WebConstant MASS = new WebConstant("mass", 4.5); // [kg]
-        public static final WebConstant kPERCENT = new WebConstant("kPercentAngle", 1); // [kg]
 
     }
 
@@ -251,7 +248,7 @@ public final class Constants {
         public static final int VOLTAGE_SATURATION = 12; // volts
 
         public static final WebConstant J = new WebConstant("J_Swerve", 0.007);
-        public static final WebConstant J_ANGLE = new WebConstant("J_Angle", 0.0001313989675);//0.00052559987 / 4);
+        public static final WebConstant J_ANGLE = new WebConstant("J_Angle", 0.0001213989675);
 
         public static final double GEAR_RATIO_MOTOR = 63.0 / 2720;
 
