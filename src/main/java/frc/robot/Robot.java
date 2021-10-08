@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     public static boolean debug = true;
     public static double startAngle;
-    private final Compressor compressor = new Compressor(0);
+//    private final Compressor compressor = new Compressor(0);
     public PowerDistributionPanel pdp = new PowerDistributionPanel();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
@@ -44,9 +44,9 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         navx.reset();
         m_robotContainer = new RobotContainer();
-        m_robotContainer.hood.resetPosition();
+//        m_robotContainer.hood.resetPosition();
         startAngle = navx.getYaw();
-        compressor.start();
+//        compressor.start();
 
     }
 
@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
             m_autonomousCommand.cancel();
         }
         navx.reset();
-        m_robotContainer.hood.resetPosition();
+//        m_robotContainer.hood.resetPosition();
         FalconDashboard.INSTANCE.setFollowingPath(false);
     }
 
@@ -122,8 +122,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        FireLog.log("hood_velocity", m_robotContainer.hood.getVelocity());
-        FireLog.log("hood_position", m_robotContainer.hood.getPosition());
+//        FireLog.log("hood_velocity", m_robotContainer.hood.getVelocity());
+//        FireLog.log("hood_position", m_robotContainer.hood.getPosition());
     }
 
     @Override

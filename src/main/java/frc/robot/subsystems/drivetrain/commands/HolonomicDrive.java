@@ -35,11 +35,11 @@ public class HolonomicDrive extends CommandBase {
         double strafe = (-(RobotContainer.Xbox.getX(left)));
         double alpha = Math.atan2(forward, strafe);
         double vector = Math.sqrt(Math.pow(forward, 2) + Math.pow(strafe, 2));
-        vector = smoothInput(vector);
+//        vector = smoothInput(vector);
         forward = Math.sin(alpha) * vector;
         strafe = Math.cos(alpha) * vector;
 
-        double rotation = smoothInput(-Utils.joystickDeadband(RobotContainer.Xbox.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD));
+        double rotation = -Utils.joystickDeadband(RobotContainer.Xbox.getX(right), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         if (vector < Constants.SwerveDrive.JOYSTICK_THRESHOLD) {
             forward = 0;
             strafe = 0;
@@ -51,29 +51,11 @@ public class HolonomicDrive extends CommandBase {
         strafe *= Constants.SwerveDrive.SPEED_MULTIPLIER;
         rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
 
-        if (RobotContainer.Xbox.getRawButtonPressed(XboxController.Button.kStickLeft.value)) {
-            bool = true;
-        }
-        if (RobotContainer.Xbox.getRawButtonReleased(XboxController.Button.kStickLeft.value)) {
-            bool = false;
-        }
-
-        if (bool) {
-            System.out.println("true");
-//            forward *= 2 / 0.7;
-            forward *= 8;
-            strafe *= 8;
-//            strafe *= 2 / 0.7;
-
-        }
-
         if (forward != 0 || strafe != 0 || rotation != 0) {
             swerveDrive.holonomicDrive(forward, strafe, rotation);
         } else {
-            swerveDrive.lockModulePositions();
         }
 
-        FireLog.log("swerve angle by vectors", swerveDrive.getVelocity()[1]);
         FireLog.log("swerve direction", Robot.navx.getYaw());
     }
 

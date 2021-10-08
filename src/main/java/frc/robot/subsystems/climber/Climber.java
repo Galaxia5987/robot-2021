@@ -18,6 +18,12 @@ public class Climber extends SubsystemBase {
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_METER);
     private final Solenoid stopper = new Solenoid(Ports.Climber.STOPPER_FORWARD_CHANNEL);
     private final Solenoid drum = new Solenoid(Ports.Climber.DRUM);
+    private PTO pto;
+
+    public Climber(PTO pto) {
+
+        this.pto = pto;
+    }
 
     /**
      * Get the climber's elevation relative to the ground.
@@ -25,11 +31,11 @@ public class Climber extends SubsystemBase {
      * @return the climber's height [m].
      */
     public double getHeight() {
-        if (RobotContainer.pto.getState() == PTO.GearboxState.SHOOTER) {
+        if (pto.getState() == PTO.GearboxState.SHOOTER) {
             return 0;
         }
 
-        return unitModel.toUnits(RobotContainer.pto.getMaster().getSelectedSensorPosition());
+        return unitModel.toUnits(pto.getMaster().getSelectedSensorPosition());
     }
 
     /**
@@ -38,15 +44,15 @@ public class Climber extends SubsystemBase {
      * @param height requested height to climb [m].
      */
     public void setHeight(double height) {
-        if (RobotContainer.pto.getState() == PTO.GearboxState.SHOOTER) {
+        if (pto.getState() == PTO.GearboxState.SHOOTER) {
             return;
         }
 
-        RobotContainer.pto.getMaster().set(ControlMode.MotionMagic, unitModel.toTicks(height));
+        pto.getMaster().set(ControlMode.MotionMagic, unitModel.toTicks(height));
     }
 
     public double getVelocity() {
-        return unitModel.toVelocity(RobotContainer.pto.getMaster().getSelectedSensorVelocity());
+        return unitModel.toVelocity(pto.getMaster().getSelectedSensorVelocity());
     }
 
     /**
@@ -78,19 +84,19 @@ public class Climber extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (RobotContainer.pto.getState() == PTO.GearboxState.SHOOTER)
+        if (pto.getState() == PTO.GearboxState.SHOOTER)
             return;
-        RobotContainer.pto.getMaster().config_kP(0, Constants.Climber.KP.get(), Constants.TALON_TIMEOUT);
-        RobotContainer.pto.getMaster().config_kI(0, Constants.Climber.KI.get(), Constants.TALON_TIMEOUT);
-        RobotContainer.pto.getMaster().config_kD(0, Constants.Climber.KD.get(), Constants.TALON_TIMEOUT);
-        RobotContainer.pto.getMaster().config_kF(0, Constants.Climber.KF.get(), Constants.TALON_TIMEOUT);
+        pto.getMaster().config_kP(0, Constants.Climber.KP.get(), Constants.TALON_TIMEOUT);
+        pto.getMaster().config_kI(0, Constants.Climber.KI.get(), Constants.TALON_TIMEOUT);
+        pto.getMaster().config_kD(0, Constants.Climber.KD.get(), Constants.TALON_TIMEOUT);
+        pto.getMaster().config_kF(0, Constants.Climber.KF.get(), Constants.TALON_TIMEOUT);
 //        FireLog.log("Height", getHeight());
 //        FireLog.log("Velocity", getVelocity());
 //        FireLog.log("Target Velocity", 0);
     }
 
     public void setPower(double v) {
-        RobotContainer.pto.getMaster().set(ControlMode.PercentOutput, v);
+        pto.getMaster().set(ControlMode.PercentOutput, v);
     }
 
     /**

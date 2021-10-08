@@ -27,15 +27,13 @@ public class DriveForward extends CommandBase {
 
 //        swerveDrive.stayAtAngle();
         for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setState(new SwerveModuleState(forward, new Rotation2d(0)));
+            swerveDrive.getModule(i).setState(new SwerveModuleState(target.get(), new Rotation2d(0)));
             FireLog.log("speed " + i, Math.abs(swerveDrive.getModule(i).getSpeed()));
             swerveDrive.getModule(i).configPIDF();
         }
 //        swerveDrive.holonomicDrive(0, 0, forward);
 
         FireLog.log("target speed", target.get());
-        FireLog.log("swerve velocity", swerveDrive.getVelocity()[0]);
-        FireLog.log("swerve angle by vectors", swerveDrive.getVelocity()[1]);
         FireLog.log("swerve direction", Robot.navx.getYaw());
     }
 

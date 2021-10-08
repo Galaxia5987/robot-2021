@@ -33,8 +33,10 @@ import static frc.robot.Constants.Shooter.*;
 public class Shooter extends SubsystemBase {
     private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
     private LinearSystemLoop<N1, N1, N1> stateSpacePredictor;
+    private PTO pto;
 
-    public Shooter() {
+    public Shooter(PTO pto) {
+        this.pto = pto;
         this.stateSpacePredictor = constructLinearSystem(J.get());
     }
 
@@ -67,11 +69,11 @@ public class Shooter extends SubsystemBase {
      * @see #setVelocity(double, double)
      */
     public double getVelocity() {
-        if (RobotContainer.pto.getState() == PTO.GearboxState.CLIMBER) {
+        if (pto.getState() == PTO.GearboxState.CLIMBER) {
             return 0;
         }
 
-        return unitModel.toVelocity(RobotContainer.pto.getMaster().getSelectedSensorVelocity());
+        return unitModel.toVelocity(pto.getMaster().getSelectedSensorVelocity());
     }
 
     /**
@@ -109,11 +111,11 @@ public class Shooter extends SubsystemBase {
      * @see #stop()
      */
     public void setPower(double power) {
-        if (RobotContainer.pto.getState() == PTO.GearboxState.CLIMBER) return;
+        if (pto.getState() == PTO.GearboxState.CLIMBER) return;
 
-        RobotContainer.pto.getMaster().set(TalonFXControlMode.PercentOutput, power,
+        pto.getMaster().set(TalonFXControlMode.PercentOutput, power,
                 DemandType.ArbitraryFeedForward, Constants.Shooter.ARBITRARY_FEED_FORWARD);
-        RobotContainer.pto.getSlave().set(TalonFXControlMode.PercentOutput, power,
+        pto.getSlave().set(TalonFXControlMode.PercentOutput, power,
                 DemandType.ArbitraryFeedForward, Constants.Shooter.ARBITRARY_FEED_FORWARD);
     }
 

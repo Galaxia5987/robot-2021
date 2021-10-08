@@ -46,7 +46,6 @@ public class RotateToAngle extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        swerveDrive.lock();
     }
 
     @Override

@@ -95,37 +95,15 @@ public class SwerveModule extends SubsystemBase {
         return ccwDistance;
     }
 
-    /**
-     * finds the target angle of the wheel based on the shortest distance from the current position
-     *
-     * @param angle        the current target angle
-     * @param currentAngle the current angle of the wheel
-     * @return the target angle
-     */
-    public static double getTargetAngle(double angle, double currentAngle) {
-        // makes sure the value is between -pi and pi
-        angle = Utils.floorMod(angle, 2 * Math.PI);
-        double[] angles = {angle - 2 * Math.PI, angle, angle + 2 * Math.PI}; // An array of all possible target angles
-        double targetAngle = currentAngle;
-        double shortestDistance = Double.MAX_VALUE;
-        for (double target : angles) { // for each possible angle
-            if (Math.abs(target - currentAngle) < shortestDistance) // if the calculated distance is less than the current shortest distance
-            {
-                shortestDistance = Math.abs(target - currentAngle);
-                targetAngle = target;
-            }
-        }
-        SmartDashboard.putNumber("setpoint", targetAngle);
-        return targetAngle;
-    }
+
 
     public void setState(SwerveModuleState state) {
-        double targetAngle = Math.IEEEremainder(state.angle.getRadians(), 2 * Math.PI);
+       /* double targetAngle = Math.IEEEremainder(state.angle.getRadians(), 2 * Math.PI);
         double currentAngle = getAngle();
         double error = getTargetError(targetAngle, currentAngle);
         double power = anglePID.calculate(error, 0);
         angleMotor.set(ControlMode.PercentOutput, power);
-        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(state.speedMetersPerSecond));
+       */ driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(state.speedMetersPerSecond));
     }
 
     public SwerveModuleState getState() {
@@ -135,7 +113,7 @@ public class SwerveModule extends SubsystemBase {
      * @return the speed of the wheel in [m/s]
      */
     public double getSpeed() {
-        if (wheel == 1)
+        if (wheel != 1)
             return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(1));
         return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(0));
     }
@@ -198,12 +176,12 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.config_kF(0, anglePIDF[3].get(), Constants.TALON_TIMEOUT);
 
         // set PIDF - drive motor
-        if (wheel == 0) {
+        if (wheel == 1) {
             driveMotor.config_kP(1, Constants.SwerveModule.KP_BROKEN.get(), Constants.TALON_TIMEOUT);
             driveMotor.config_kI(1, Constants.SwerveModule.KI_BROKEN.get(), Constants.TALON_TIMEOUT);
             driveMotor.config_kD(1, Constants.SwerveModule.KD_BROKEN.get(), Constants.TALON_TIMEOUT);
             driveMotor.config_kF(1, Constants.SwerveModule.KF_BROKEN.get(), Constants.TALON_TIMEOUT);
-        } else if (wheel != 1) {
+        } else if (wheel != 0) {
             driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE.get(), Constants.TALON_TIMEOUT);
             driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE.get(), Constants.TALON_TIMEOUT);
             driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE.get(), Constants.TALON_TIMEOUT);
@@ -220,6 +198,7 @@ public class SwerveModule extends SubsystemBase {
 
     @Override
     public void periodic() {
+        configPIDF();
         anglePID.setP(anglePIDF[0].get());
         anglePID.setI(anglePIDF[1].get());
         anglePID.setD(anglePIDF[2].get());

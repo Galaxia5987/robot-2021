@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.valuetuner.WebConstant;
-import frc.robot.valuetuner.WebConstantPIDTalon;
 
 /**
  * A class holding all of the constants of every mechanism on the robot.
@@ -171,10 +170,10 @@ public final class Constants {
         public static final WebConstant KF = new WebConstant("KF", 0);
         public static final WebConstant[] ANGLE_PIDF = new WebConstant[]{KP, KI, KD, KF};
 
-        public static final WebConstant KP_DRIVE = new WebConstant("KP_Drive", 0.15);
+        public static final WebConstant KP_DRIVE = new WebConstant("KP_Drive", 0.045);
         public static final WebConstant KI_DRIVE = new WebConstant("KI_Drive", 0);
         public static final WebConstant KD_DRIVE = new WebConstant("KD_Drive", 2);
-        public static final WebConstant KF_DRIVE = new WebConstant("KF_Drive", 0.05);
+        public static final WebConstant KF_DRIVE = new WebConstant("KF_Drive", 0);
         public static final WebConstant[] DRIVE_PIDF = new WebConstant[]{KP_DRIVE, KI_DRIVE, KD_DRIVE, KF_DRIVE};
 
         public static final WebConstant KP_ANGLE_FR = new WebConstant("KP_FR", 0.193);

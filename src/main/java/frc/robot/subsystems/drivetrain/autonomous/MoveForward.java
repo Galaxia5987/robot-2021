@@ -13,6 +13,7 @@ public class MoveForward extends CommandBase {
     public MoveForward(SwerveDrive swerveDrive, double velocity) {
         this.swerveDrive = swerveDrive;
         this.velocity = velocity;
+        addRequirements(swerveDrive);
     }
 
     @Override
