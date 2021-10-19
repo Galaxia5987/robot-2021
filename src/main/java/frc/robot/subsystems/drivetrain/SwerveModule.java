@@ -25,8 +25,9 @@ public class SwerveModule extends SubsystemBase {
 
     private final UnitModel driveUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_METER);
     private final UnitModel angleUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_RAD);
-    private PIDController anglePID;
-    private WebConstant[] anglePIDF;
+    private final PIDController anglePID;
+    private final WebConstant[] anglePIDF;
+    private final double startAngle;
 
     public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted, WebConstant[] anglePIDF) {
         anglePID = new PIDController(anglePIDF[0].get(), anglePIDF[1].get(), anglePIDF[2].get());
@@ -38,7 +39,11 @@ public class SwerveModule extends SubsystemBase {
 
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
-        angleMotor.configFeedbackNotContinuous(Ports.SwerveDrive.IS_NOT_CONTINUOUS_FEEDBACK, Constants.TALON_TIMEOUT);
+
+        setEncoderMode(true);
+        startAngle = getAngle();
+        setEncoderMode(false);
+
         angleMotor.setNeutralMode(NeutralMode.Brake);
 
         // set inversions
@@ -124,7 +129,7 @@ public class SwerveModule extends SubsystemBase {
      * @return the angle of the wheel in radians
      */
     public double getAngle() {
-        return Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITION[wheel]), 2 * Math.PI);
+        return Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITION[wheel]) + startAngle, 2 * Math.PI);
     }
 
     /**
@@ -134,13 +139,13 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setAngle(double angle) {
         double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
-        System.out.println(wheel + " : " + targetAngle);
+        if (Math.abs(angleUnitModel.toTicks(targetAngle - getAngle())) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
+            return;
+
+
         double currentAngle = getAngle();
         double error = getTargetError(targetAngle, currentAngle);
-        double power = anglePID.calculate(error, 0);
-        System.out.println("error " + wheel + " : " + error);
-        System.out.println("power " + wheel + " : " + power);
-        angleMotor.set(ControlMode.PercentOutput, power);
+        angleMotor.set(ControlMode.Position, angleMotor.getSelectedSensorPosition() - angleUnitModel.toTicks(error));
     }
 
     /**
@@ -194,5 +199,9 @@ public class SwerveModule extends SubsystemBase {
         anglePID.setP(anglePIDF[0].get());
         anglePID.setI(anglePIDF[1].get());
         anglePID.setD(anglePIDF[2].get());
+    }
+
+    public void setEncoderMode(boolean absolute) {
+        angleMotor.configFeedbackNotContinuous(absolute, Constants.TALON_TIMEOUT);
     }
 }
