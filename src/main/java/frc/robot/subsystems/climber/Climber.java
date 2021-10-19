@@ -5,10 +5,8 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
-import frc.robot.RobotContainer;
 import frc.robot.UnitModel;
 import frc.robot.subsystems.PTO.PTO;
-import webapp.FireLog;
 
 /**
  * Climber's configurations and commands.
@@ -86,10 +84,10 @@ public class Climber extends SubsystemBase {
     public void periodic() {
         if (pto.getState() == PTO.GearboxState.SHOOTER)
             return;
-        pto.getMaster().config_kP(0, Constants.Climber.KP.get(), Constants.TALON_TIMEOUT);
-        pto.getMaster().config_kI(0, Constants.Climber.KI.get(), Constants.TALON_TIMEOUT);
-        pto.getMaster().config_kD(0, Constants.Climber.KD.get(), Constants.TALON_TIMEOUT);
-        pto.getMaster().config_kF(0, Constants.Climber.KF.get(), Constants.TALON_TIMEOUT);
+        pto.getMaster().config_kP(0, Constants.Climber.KP, Constants.TALON_TIMEOUT);
+        pto.getMaster().config_kI(0, Constants.Climber.KI, Constants.TALON_TIMEOUT);
+        pto.getMaster().config_kD(0, Constants.Climber.KD, Constants.TALON_TIMEOUT);
+        pto.getMaster().config_kF(0, Constants.Climber.KF, Constants.TALON_TIMEOUT);
 //        FireLog.log("Height", getHeight());
 //        FireLog.log("Velocity", getVelocity());
 //        FireLog.log("Target Velocity", 0);

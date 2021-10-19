@@ -58,7 +58,7 @@ public class ShootAndSafeTrench extends SequentialCommandGroup {
                 new FollowPath(swerveDrive, trajectory),
 //                new WaitCommand(.5),
                 new PickupBallsWhileDriving(intake, funnel, conveyor, swerveDrive).withTimeout(4),
-                new ParallelCommandGroup(new FollowPath(swerveDrive, pickupToInitiation), new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true))
+                new ParallelCommandGroup(new FollowPath(swerveDrive, pickupToInitiation), new PickupBalls(intake, funnel, conveyor, () -> Constants.Intake.POWER, true))
         );
 
     }

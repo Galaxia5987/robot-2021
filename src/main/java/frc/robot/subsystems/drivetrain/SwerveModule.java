@@ -9,15 +9,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Ports;
 import frc.robot.UnitModel;
-import frc.robot.Utils;
 import frc.robot.valuetuner.WebConstant;
-import org.techfire225.webapp.FireLog;
 
 /**
  * The Swerve Module Subsystem controls the individual wheel with the controls from the Swerve Drive Subsystem.
@@ -33,10 +28,10 @@ public class SwerveModule extends SubsystemBase {
     private PIDController anglePID;
     private WebConstant[] anglePIDF;
 
-    public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted, WebConstant[] anglePIDF, WebConstant[] drivePIDF) {
+    public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted, WebConstant[] anglePIDF) {
         anglePID = new PIDController(anglePIDF[0].get(), anglePIDF[1].get(), anglePIDF[2].get());
         this.anglePIDF = anglePIDF;
-        anglePID.setTolerance(Math.toRadians(2));
+        anglePID.setTolerance(Math.toRadians(0.5));
         driveMotor = new TalonFX(driveMotorPort);
         angleMotor = new TalonSRX(angleMotorPort);
 
@@ -77,11 +72,9 @@ public class SwerveModule extends SubsystemBase {
 
         angleMotor.selectProfileSlot(0, 0);
         driveMotor.selectProfileSlot(1, 0);
-
         driveMotor.setSelectedSensorPosition(0);
 
         this.wheel = wheel;
-
     }
 
     private static double getTargetError(double angle, double currentAngle) {
@@ -95,7 +88,9 @@ public class SwerveModule extends SubsystemBase {
         return ccwDistance;
     }
 
-
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(getSpeed(), new Rotation2d(getAngle()));
+    }
 
     public void setState(SwerveModuleState state) {
        /* double targetAngle = Math.IEEEremainder(state.angle.getRadians(), 2 * Math.PI);
@@ -103,12 +98,10 @@ public class SwerveModule extends SubsystemBase {
         double error = getTargetError(targetAngle, currentAngle);
         double power = anglePID.calculate(error, 0);
         angleMotor.set(ControlMode.PercentOutput, power);
-       */ driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(state.speedMetersPerSecond));
+       */
+        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(state.speedMetersPerSecond));
     }
 
-    public SwerveModuleState getState() {
-        return new SwerveModuleState(getSpeed(), new Rotation2d(getAngle()));
-    }
     /**
      * @return the speed of the wheel in [m/s]
      */
@@ -140,7 +133,6 @@ public class SwerveModule extends SubsystemBase {
      * @param angle the target angle in radians
      */
     public void setAngle(double angle) {
-//        double targetAngle = getTargetAngle(angle, getAngle());
         double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
         System.out.println(wheel + " : " + targetAngle);
         double currentAngle = getAngle();
@@ -177,21 +169,21 @@ public class SwerveModule extends SubsystemBase {
 
         // set PIDF - drive motor
         if (wheel == 1) {
-            driveMotor.config_kP(1, Constants.SwerveModule.KP_BROKEN.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kI(1, Constants.SwerveModule.KI_BROKEN.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kD(1, Constants.SwerveModule.KD_BROKEN.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kF(1, Constants.SwerveModule.KF_BROKEN.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kP(1, Constants.SwerveModule.KP_BROKEN, Constants.TALON_TIMEOUT);
+            driveMotor.config_kI(1, Constants.SwerveModule.KI_BROKEN, Constants.TALON_TIMEOUT);
+            driveMotor.config_kD(1, Constants.SwerveModule.KD_BROKEN, Constants.TALON_TIMEOUT);
+            driveMotor.config_kF(1, Constants.SwerveModule.KF_BROKEN, Constants.TALON_TIMEOUT);
         } else if (wheel != 0) {
-            driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE, Constants.TALON_TIMEOUT);
+            driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE, Constants.TALON_TIMEOUT);
+            driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE, Constants.TALON_TIMEOUT);
+            driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE, Constants.TALON_TIMEOUT);
 
         } else {
-            driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
-            driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE_SLOW.get(), Constants.TALON_TIMEOUT);
+            driveMotor.config_kP(1, Constants.SwerveModule.KP_DRIVE_SLOW, Constants.TALON_TIMEOUT);
+            driveMotor.config_kI(1, Constants.SwerveModule.KI_DRIVE_SLOW, Constants.TALON_TIMEOUT);
+            driveMotor.config_kD(1, Constants.SwerveModule.KD_DRIVE_SLOW, Constants.TALON_TIMEOUT);
+            driveMotor.config_kF(1, Constants.SwerveModule.KF_DRIVE_SLOW, Constants.TALON_TIMEOUT);
 //            System.out.println("P" + Constants.SwerveModule.KP_DRIVE_SLOW.get() + "\nI: " + Constants.SwerveModule.KI_DRIVE_SLOW.get() + "\nD: " + Constants.SwerveModule.KD_DRIVE_SLOW.get() + "\nF: " + Constants.SwerveModule.KF_DRIVE_SLOW.get());
         }
     }

@@ -26,7 +26,7 @@ public class PickupBallsWhileDriving extends ParallelCommandGroup {
             ex.printStackTrace();
         }
         addCommands(
-                new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true),
+                new PickupBalls(intake, funnel, conveyor, () -> Constants.Intake.POWER, true),
                 new FollowPath(swerveDrive, pickupBalls)
         );
     }

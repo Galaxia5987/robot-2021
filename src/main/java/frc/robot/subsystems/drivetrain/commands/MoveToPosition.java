@@ -3,20 +3,16 @@ package frc.robot.subsystems.drivetrain.commands;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.VisionModule;
-import frc.robot.valuetuner.WebConstant;
 import org.techfire225.webapp.FireLog;
 
 public class MoveToPosition extends CommandBase {
 
     private final SwerveDrive swerveDrive;
     private final VisionModule vision;
-    private final PIDController drivePID = new PIDController(Constants.SwerveDrive.KP_MOVE.get(),
-            Constants.SwerveDrive.KI_MOVE.get(), Constants.SwerveDrive.KD_MOVE.get());
     private final PIDController anglePID = new PIDController(Constants.SwerveDrive.KP_TURN,
-            Constants.SwerveDrive.KI_TURN.get(), Constants.SwerveDrive.KD_TURN);
+            Constants.SwerveDrive.KI_TURN, Constants.SwerveDrive.KD_TURN);
     private double startAngle;
     private double angleTarget;
     private double horizontalTarget;

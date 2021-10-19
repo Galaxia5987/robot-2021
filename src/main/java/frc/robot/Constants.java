@@ -22,10 +22,10 @@ public final class Constants {
     public static class Climber {
         public static final double TICKS_PER_METER = 2048 * 0.03 * Math.PI * 100;
 
-        public static final WebConstant KP = new WebConstant("kP", 0);
-        public static final WebConstant KI = new WebConstant("kI", 0);
-        public static final WebConstant KD = new WebConstant("kD", 0);
-        public static final WebConstant KF = new WebConstant("kF", 0);
+        public static final double KP = 0;
+        public static final double KI = 0;
+        public static final double KD = 0;
+        public static final double KF = 0;
 
         public static final int CRUISE_VELOCITY = 0; //sensor units per 100ms.
         public static final int ACCELERATION = 0; //sensor units per 100ms^2.
@@ -42,7 +42,7 @@ public final class Constants {
         public static final double VELOCITY_TOLERANCE = 10; // [RPS]
         public static final double MODEL_TOLERANCE = 2;
         public static final double ENCODER_TOLERANCE = 1; // [ticks]
-        public static final WebConstant J = new WebConstant("J", 0.000429); // moment of inertia [kg * m^2]
+        public static final double J = 0.000429; // moment of inertia [kg * m^2]
         public static final double ARBITRARY_FEED_FORWARD = 0; // [%] https://docs.ctre-phoenix.com/en/latest/ch16_ClosedLoop.html#do-i-need-to-use-arbitrary-feed-forward
 
 
@@ -64,22 +64,22 @@ public final class Constants {
     }
 
     public static final class Hood {
-        public static final WebConstant KP = new WebConstant("HOOD_KP", 4.5);
-        public static final WebConstant KI = new WebConstant("HOOD_KI", 0.01);
-        public static final WebConstant KD = new WebConstant("HOOD_KD", 0);
-        public static final WebConstant KF = new WebConstant("HOOD_KF", 0.8);
+        public static final double KP = 4.5;
+        public static final double KI = 0.01;
+        public static final double KD = 0;
+        public static final double KF = 0.8;
         public static final double ACCELERATION = 2; // [m/sec^2]
         public static final double CRUISE_VELOCITY = 1; // [m/sec]
         public static final int POSITION_TOLERANCE = 5;
-        public static final WebConstant ARBITRARY_KF = new WebConstant("ARBITRARY_KF", 4);
+        public static final double ARBITRARY_KF = 4;
         public static final int MIN_POSITION = 0;
-        public static final WebConstant POSITION = new WebConstant("Hood_position", MIN_POSITION);
+        public static final double POSITION = MIN_POSITION;
         public static final int MAX_POSITION = MIN_POSITION + (82 + 5552);
         public static final int STUCK_POSITION = MIN_POSITION + (5552 - 932);
     }
 
     public static final class Intake {
-        public static final WebConstant POWER = new WebConstant("INTAKE_POWER", 1); // the target power of intake's motor(%)
+        public static final double POWER = 1; // the target power of intake's motor(%)
     }
 
     public static final class Funnel {
@@ -152,29 +152,29 @@ public final class Constants {
         public static final double TURN_TOLERANCE = 2; // degrees
 
         public static final double KP_TURN = 0.05;
-        public static final WebConstant KI_TURN = new WebConstant("KI_TURN", 0.02);
+        public static final double KI_TURN = 0.02;
         public static final double KD_TURN = 0;
 
-        public static final WebConstant KP_MOVE = new WebConstant("KP_MOVE", 0);
-        public static final WebConstant KI_MOVE = new WebConstant("KI_MOVE", 0);
-        public static final WebConstant KD_MOVE = new WebConstant("KD_MOVE", 0);
+        public static final double KP_MOVE = 0;
+        public static final double KI_MOVE = 0;
+        public static final double KD_MOVE = 0;
 
         public static final double DRIVE_SETPOINT = 0.965; // [m]
         public static final double DRIVE_TOLERANCE = 0.05; // [m]
     }
 
     public static class SwerveModule {
-        public static final WebConstant KP = new WebConstant("KP", 6);
-        public static final WebConstant KI = new WebConstant("KI", 0);
-        public static final WebConstant KD = new WebConstant("KD", 10);
-        public static final WebConstant KF = new WebConstant("KF", 0);
-        public static final WebConstant[] ANGLE_PIDF = new WebConstant[]{KP, KI, KD, KF};
+        public static final double KP =  6;
+        public static final double KI =  0;
+        public static final double KD = 10;
+        public static final double KF =  0;
+        public static final double[] ANGLE_PIDF = new double[]{KP, KI, KD, KF};
 
-        public static final WebConstant KP_DRIVE = new WebConstant("KP_Drive", 0.045);
-        public static final WebConstant KI_DRIVE = new WebConstant("KI_Drive", 0);
-        public static final WebConstant KD_DRIVE = new WebConstant("KD_Drive", 2);
-        public static final WebConstant KF_DRIVE = new WebConstant("KF_Drive", 0);
-        public static final WebConstant[] DRIVE_PIDF = new WebConstant[]{KP_DRIVE, KI_DRIVE, KD_DRIVE, KF_DRIVE};
+        public static final double KP_DRIVE = 0.045;
+        public static final double KI_DRIVE = 0;
+        public static final double KD_DRIVE = 2;
+        public static final double KF_DRIVE = 0;
+        public static final double[] DRIVE_PIDF = new double[]{KP_DRIVE, KI_DRIVE, KD_DRIVE, KF_DRIVE};
 
         public static final WebConstant KP_ANGLE_FR = new WebConstant("KP_FR", 0.193);
         public static final WebConstant KI_ANGLE_FR = new WebConstant("KI_FR", 0.0);
@@ -202,27 +202,27 @@ public final class Constants {
 
         // slow man
         // the module that is slower than the rest
-        public static final WebConstant KP_DRIVE_SLOW = new WebConstant("KP_Drive_Slow", 0.046);
-        public static final WebConstant KI_DRIVE_SLOW = new WebConstant("KI_Drive_Slow", 0);
-        public static final WebConstant KD_DRIVE_SLOW = new WebConstant("KD_Drive_Slow", 2);
-        public static final WebConstant KF_DRIVE_SLOW = new WebConstant("KF_Drive_Slow", 0);
-        public static final WebConstant[] SLOW_DRIVE_PIDF = new WebConstant[]{KP_DRIVE_SLOW, KI_DRIVE_SLOW, KD_DRIVE_SLOW, KF_DRIVE_SLOW};
+        public static final double KP_DRIVE_SLOW = 0.046;
+        public static final double KI_DRIVE_SLOW = 0;
+        public static final double KD_DRIVE_SLOW = 2;
+        public static final double KF_DRIVE_SLOW = 0;
+        public static final double[] SLOW_DRIVE_PIDF = new double[]{KP_DRIVE_SLOW, KI_DRIVE_SLOW, KD_DRIVE_SLOW, KF_DRIVE_SLOW};
 
 
-        public static final WebConstant KP_BROKEN = new WebConstant("KP_BROKEN", 0.065);
-        public static final WebConstant KI_BROKEN = new WebConstant("KI_BROKEN", 0);
-        public static final WebConstant KD_BROKEN = new WebConstant("KD_BROKEN", 2);
-        public static final WebConstant KF_BROKEN = new WebConstant("KF_BROKEN", 0.046);
+        public static final double KP_BROKEN = 0.065;
+        public static final double KI_BROKEN = 0;
+        public static final double KD_BROKEN = 2;
+        public static final double KF_BROKEN = 0.046;
 
         public static final int[] ZERO_POSITION = {1000, 816, 268, 270};
 
         // sick man
         // the module that has more friction in the rotating mechanism
-        public static final WebConstant KP_SICK = new WebConstant("KP_SICK", 6);
-        public static final WebConstant KI_SICK = new WebConstant("KI_SICK", 0);
-        public static final WebConstant KD_SICK = new WebConstant("KD_SICK", 8);
-        public static final WebConstant KF_SICK = new WebConstant("KF_SICK", 0);
-        public static final WebConstant[] SICK_ANGLE_PIDF = new WebConstant[]{KP_SICK, KI_SICK, KD_SICK, KF_SICK};
+        public static final double KP_SICK = 6;
+        public static final double KI_SICK = 0;
+        public static final double KD_SICK = 8;
+        public static final double KF_SICK = 0;
+        public static final double[] SICK_ANGLE_PIDF = new double[]{KP_SICK, KI_SICK, KD_SICK, KF_SICK};
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 5; // ampere
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // seconds

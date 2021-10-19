@@ -31,7 +31,7 @@ public class SafeTrenchShot extends SequentialCommandGroup {
             System.out.println("Couldn't find the autonomous file...");
             ex.printStackTrace();
         }
-        addCommands(new FollowPath(swerve, initiationToSafeTrench), new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true).withTimeout(2), new ToggleIntake(intake));
+        addCommands(new FollowPath(swerve, initiationToSafeTrench), new PickupBalls(intake, funnel, conveyor, () -> Constants.Intake.POWER, true).withTimeout(2), new ToggleIntake(intake));
 //                new FollowPath(swerve, safeTrenchToShoot), new FeedAndShoot(pto, conveyor, shooter, hood, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER).withTimeout(4));
     }
 }

@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase {
 
     public Shooter(PTO pto) {
         this.pto = pto;
-        this.stateSpacePredictor = constructLinearSystem(J.get());
+        this.stateSpacePredictor = constructLinearSystem(J);
     }
 
     /**
@@ -138,7 +138,7 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        this.stateSpacePredictor = constructLinearSystem(J.get());
+        this.stateSpacePredictor = constructLinearSystem(J);
         FireLog.log("velocity", getVelocity());
     }
 }

@@ -31,10 +31,10 @@ public class Hood extends SubsystemBase {
 
         motor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, Constants.TALON_TIMEOUT);
         motor.setSensorPhase(Ports.Hood.IS_SENSOR_INVERTED);
-        motor.config_kP(0, Constants.Hood.KP.get(), Constants.TALON_TIMEOUT);
-        motor.config_kI(0, Constants.Hood.KI.get(), Constants.TALON_TIMEOUT);
-        motor.config_kD(0, Constants.Hood.KD.get(), Constants.TALON_TIMEOUT);
-        motor.config_kF(0, Constants.Hood.KF.get(), Constants.TALON_TIMEOUT);
+        motor.config_kP(0, Constants.Hood.KP, Constants.TALON_TIMEOUT);
+        motor.config_kI(0, Constants.Hood.KI, Constants.TALON_TIMEOUT);
+        motor.config_kD(0, Constants.Hood.KD, Constants.TALON_TIMEOUT);
+        motor.config_kF(0, Constants.Hood.KF, Constants.TALON_TIMEOUT);
 
         motor.configMotionCruiseVelocity(unitModel.toTicks100ms(Constants.Hood.CRUISE_VELOCITY), Constants.TALON_TIMEOUT);
         motor.configMotionAcceleration(unitModel.toTicks100ms(Constants.Hood.ACCELERATION), Constants.TALON_TIMEOUT);
@@ -88,10 +88,10 @@ public class Hood extends SubsystemBase {
     }
 
     public void updatePID() {
-        motor.config_kP(0, Constants.Hood.KP.get(), Constants.TALON_TIMEOUT);
-        motor.config_kI(0, Constants.Hood.KI.get(), Constants.TALON_TIMEOUT);
-        motor.config_kD(0, Constants.Hood.KD.get(), Constants.TALON_TIMEOUT);
-        motor.config_kF(0, Constants.Hood.KF.get(), Constants.TALON_TIMEOUT);
+        motor.config_kP(0, Constants.Hood.KP, Constants.TALON_TIMEOUT);
+        motor.config_kI(0, Constants.Hood.KI, Constants.TALON_TIMEOUT);
+        motor.config_kD(0, Constants.Hood.KD, Constants.TALON_TIMEOUT);
+        motor.config_kF(0, Constants.Hood.KF, Constants.TALON_TIMEOUT);
     }
 
 

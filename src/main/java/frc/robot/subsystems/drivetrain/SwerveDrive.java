@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.Utils;
 import org.techfire225.webapp.FireLog;
 
 import static frc.robot.Ports.SwerveDrive.*;
@@ -61,16 +60,16 @@ public class SwerveDrive extends SubsystemBase {
 
         if (!testMode) {
             swerveModules[0] = new SwerveModule(0, DRIVE_MOTOR_FRONT_RIGHT, ANGLE_MOTOR_FRONT_RIGHT, FRONT_RIGHT_INVERTED,
-                    Constants.SwerveModule.PIDF_ANGLE_FR, Constants.SwerveModule.DRIVE_PIDF);
+                    Constants.SwerveModule.PIDF_ANGLE_FR);
 
             swerveModules[1] = new SwerveModule(1, DRIVE_MOTOR_FRONT_LEFT, ANGLE_MOTOR_FRONT_LEFT, FRONT_LEFT_INVERTED,
-                    Constants.SwerveModule.PIDF_ANGLE_FL, Constants.SwerveModule.SLOW_DRIVE_PIDF);
+                    Constants.SwerveModule.PIDF_ANGLE_FL);
 
             swerveModules[2] = new SwerveModule(2, DRIVE_MOTOR_BACK_RIGHT, ANGLE_MOTOR_BACK_RIGHT, BACK_RIGHT_INVERTED,
-                    Constants.SwerveModule.PIDF_ANGLE_RR, Constants.SwerveModule.DRIVE_PIDF);
+                    Constants.SwerveModule.PIDF_ANGLE_RR);
 
             swerveModules[3] = new SwerveModule(3, DRIVE_MOTOR_BACK_LEFT, ANGLE_MOTOR_BACK_LEFT, BACK_LEFT_INVERTED,
-                    Constants.SwerveModule.PIDF_ANGLE_RL, Constants.SwerveModule.DRIVE_PIDF);
+                    Constants.SwerveModule.PIDF_ANGLE_RL);
         }
 
         SwerveDrive.isFieldOriented = isFieldOriented;

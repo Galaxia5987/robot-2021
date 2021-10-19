@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.commandgroups.FeedAndShoot;
 import frc.robot.commandgroups.PickupBalls;
 import frc.robot.subsystems.PTO.PTO;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -34,8 +33,8 @@ public class TrenchShot extends SequentialCommandGroup {
             System.out.println("Couldn't find the autonomous file... You are an idiot! you stupid boy");
             ex.printStackTrace();
         }
-        addCommands(new FollowPath(swerve, initiationToTrench), new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true).withTimeout(2), new ToggleIntake(intake),
+        addCommands(new FollowPath(swerve, initiationToTrench), new PickupBalls(intake, funnel, conveyor, () -> Constants.Intake.POWER, true).withTimeout(2), new ToggleIntake(intake),
 //                new FollowPath(swerve, trenchToShoot), new FeedAndShoot(pto, conveyor, shooter, hood, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER).withTimeout(4),
-                new FollowPath(swerve, shootToSafeTrench), new PickupBalls(intake, funnel, conveyor, Constants.Intake.POWER::get, true), new ToggleIntake(intake));
+                new FollowPath(swerve, shootToSafeTrench), new PickupBalls(intake, funnel, conveyor, () -> Constants.Intake.POWER, true), new ToggleIntake(intake));
     }
 }
