@@ -75,9 +75,6 @@ public class Ports {
         public static final int DRIVE_MOTOR_BACK_LEFT = 25;
         public static final int ANGLE_MOTOR_BACK_LEFT = 26;
         public static final boolean[] BACK_LEFT_INVERTED = {false, false, false, false};
-
-        // encoder not continuous feedback
-        public static final boolean IS_NOT_CONTINUOUS_FEEDBACK = true;
     }
 
 }
