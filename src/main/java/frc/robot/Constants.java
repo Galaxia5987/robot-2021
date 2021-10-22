@@ -136,7 +136,7 @@ public final class Constants {
         private static final double ANGLE_GEAR_RATIO = 1;
         public static final double TICKS_PER_RAD = TICKS_IN_ENCODER / (2 * Math.PI) * ANGLE_GEAR_RATIO;
 
-        public static final int MAX_CURRENT = 20; // in ampere
+        public static final int MAX_CURRENT = 15; // in ampere
 
         public static final double ROBOT_LENGTH = 0.58; // in meters
         public static final double ROBOT_WIDTH = 0.58; // in meters
@@ -214,7 +214,7 @@ public final class Constants {
         public static final double KD_BROKEN = 2;
         public static final double KF_BROKEN = 0.046;
 
-        public static final int[] ZERO_POSITION = {-9497, -3345, 2678, -438};
+        public static final int[] ZERO_POSITIONS = {735, 743, 596, 583};
 
         // sick man
         // the module that has more friction in the rotating mechanism
@@ -228,6 +228,22 @@ public final class Constants {
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // seconds
         public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
         public static final int VOLTAGE_SATURATION = 12; // volts
+
+        public static final double VELOCITY_TOLERANCE = 20; // [RPS]
+        public static final double MODEL_TOLERANCE = 4;
+        public static final double ENCODER_TOLERANCE = 4; // [ticks]
+
+        public static final double STALL_CURRENT = 134; // [amps]
+        public static final double STALL_TORQUE = 0.71; // [N*meters]
+
+        public static final double FREE_CURRENT = 0.7; // [amps]
+        public static final double FREE_SPEED = Units.rotationsPerMinuteToRadiansPerSecond(18730); // [rad/sec]
+
+        public static final double kT = STALL_TORQUE / STALL_CURRENT;// took from FRC examples.
+        public static final double OMEGA = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
+        public static final double kV = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA * FREE_CURRENT);// took from FRC examples.
+        public static final double RADIUS = 0.04688; // [m]
+
 
     }
 
