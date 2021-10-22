@@ -175,7 +175,7 @@ public class SwerveModule extends SubsystemBase {
      * @return the angle of the wheel in radians
      */
     public double getAngle() {
-        return Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITION[wheel]) + startAngle, 2 * Math.PI);
+        return Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition()) + startAngle, 2 * Math.PI);
     }
 
     /**
@@ -185,9 +185,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setAngle(double angle) {
         double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
-        if (Math.abs(angleUnitModel.toTicks(targetAngle - getAngle())) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
-            return;
-
+        if (Math.abs(angleUnitModel.toTicks(targetAngle - getAngle())) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR) return;
 
         double currentAngle = getAngle();
         double error = getTargetError(targetAngle, currentAngle);
@@ -249,7 +247,18 @@ public class SwerveModule extends SubsystemBase {
         currentTime = timer.get();
     }
 
-    public void setEncoderMode(boolean absolute) {
-        angleMotor.configFeedbackNotContinuous(absolute, Constants.TALON_TIMEOUT);
+    public void setEncoderAbsolute() {
+        angleMotor.configFeedbackNotContinuous(true, Constants.TALON_TIMEOUT);
+    }
+
+    public int getWheel() {
+        return wheel;
+    }
+
+    public void setEncoderRelative() {
+        startAngle = Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITIONS[wheel]), 2 * Math.PI);
+        angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
+        angleMotor.setSelectedSensorPosition(0);
+
     }
 }
