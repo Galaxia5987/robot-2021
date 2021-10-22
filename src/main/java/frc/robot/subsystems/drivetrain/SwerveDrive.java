@@ -87,7 +87,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param rotation the rotation Z of the joystick
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
-        ChassisSpeeds speeds = isFieldOriented ? ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, new Rotation2d(-Robot.navx.getYaw())) : new ChassisSpeeds(forward, strafe, rotation);
+        ChassisSpeeds speeds = isFieldOriented ? ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Rotation2d.fromDegrees(-Robot.navx.getYaw())) : new ChassisSpeeds(forward, strafe, rotation);
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
 
         setStates(states);
@@ -95,7 +95,7 @@ public class SwerveDrive extends SubsystemBase {
 
     public void setStates(SwerveModuleState[] states) {
         for (int i = 0; i < states.length; i++) {
-            states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(getModule(i).getAngle()));
+//            states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(getModule(i).getAngle()));
             getModule(i).setState(states[i]);
         }
     }
