@@ -147,4 +147,16 @@ public class RobotContainer {
             e.printStackTrace();
         }
     }
+
+    public void disableInit() {
+        for (int i = 0; i < 4; i++) {
+            swerveDrive.getModule(i).setEncoderAbsolute();
+        }
+    }
+
+    public void teleopInit() {
+        for (int i = 0; i < 4; i++) {
+            swerveDrive.getModule(i).setEncoderRelative();
+        }
+    }
 }
