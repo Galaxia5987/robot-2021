@@ -6,13 +6,24 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.estimator.KalmanFilter;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.system.LinearSystem;
+import edu.wpi.first.wpilibj.system.LinearSystemLoop;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.Matrix;
+import edu.wpi.first.wpiutil.math.Nat;
+import edu.wpi.first.wpiutil.math.VecBuilder;
+import edu.wpi.first.wpiutil.math.Vector;
+import edu.wpi.first.wpiutil.math.numbers.N1;
 import frc.robot.Constants;
 import frc.robot.UnitModel;
 import frc.robot.valuetuner.WebConstant;
+import org.techfire225.webapp.FireLog;
 
 /**
  * The Swerve Module Subsystem controls the individual wheel with the controls from the Swerve Drive Subsystem.
@@ -25,24 +36,25 @@ public class SwerveModule extends SubsystemBase {
 
     private final UnitModel driveUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_METER);
     private final UnitModel angleUnitModel = new UnitModel(Constants.SwerveDrive.TICKS_PER_RAD);
-    private final PIDController anglePID;
     private final WebConstant[] anglePIDF;
-    private final double startAngle;
+    private double startAngle = 0;
+
+    private final double J = 0.0043;
+
+    private final Timer timer = new Timer();
+    private LinearSystemLoop<N1, N1, N1> stateSpace;
+    private double currentTime, lastTime;
+
+
 
     public SwerveModule(int wheel, int driveMotorPort, int angleMotorPort, boolean[] inverted, WebConstant[] anglePIDF) {
-        anglePID = new PIDController(anglePIDF[0].get(), anglePIDF[1].get(), anglePIDF[2].get());
         this.anglePIDF = anglePIDF;
-        anglePID.setTolerance(Math.toRadians(0.5));
         driveMotor = new TalonFX(driveMotorPort);
         angleMotor = new TalonSRX(angleMotorPort);
 
 
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
-
-        setEncoderMode(true);
-        startAngle = getAngle();
-        setEncoderMode(false);
 
         angleMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -80,6 +92,8 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.setSelectedSensorPosition(0);
 
         this.wheel = wheel;
+
+        stateSpace = constructLinearSystem(J);
     }
 
     private static double getTargetError(double angle, double currentAngle) {
@@ -93,18 +107,39 @@ public class SwerveModule extends SubsystemBase {
         return ccwDistance;
     }
 
+
+    /**
+     * Initialize the linear system to the default values in order to use the state-space.
+     *
+     * @return an object that represents the model to reach the velocity at the best rate.
+     */
+    private LinearSystemLoop<N1, N1, N1> constructLinearSystem(double J) {
+        if (J == 0) throw new RuntimeException("J must have non-zero value");
+        // https://file.tavsys.net/control/controls-engineering-in-frc.pdf Page 76
+        Vector<N1> A = VecBuilder.fill(-Math.pow(7.5, 2) * Constants.SwerveModule.kT / (Constants.SwerveModule.kV * Constants.SwerveModule.OMEGA * J));
+        Vector<N1> B = VecBuilder.fill((7.5 * Constants.SwerveModule.kT) / (Constants.SwerveModule.OMEGA * J));
+        LinearSystem<N1, N1, N1> stateSpace = new LinearSystem<>(A, B, Matrix.eye(Nat.N1()), new Matrix<>(Nat.N1(), Nat.N1()));
+        KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace,
+                VecBuilder.fill(Constants.SwerveModule.MODEL_TOLERANCE),
+                VecBuilder.fill(Constants.SwerveModule.ENCODER_TOLERANCE),
+                Constants.LOOP_PERIOD
+        );
+        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace, VecBuilder.fill(Constants.SwerveModule.VELOCITY_TOLERANCE),
+                VecBuilder.fill(Constants.NOMINAL_VOLTAGE),
+                Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
+        );
+
+        return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
+    }
+
     public SwerveModuleState getState() {
         return new SwerveModuleState(getSpeed(), new Rotation2d(getAngle()));
     }
 
     public void setState(SwerveModuleState state) {
-       /* double targetAngle = Math.IEEEremainder(state.angle.getRadians(), 2 * Math.PI);
-        double currentAngle = getAngle();
-        double error = getTargetError(targetAngle, currentAngle);
-        double power = anglePID.calculate(error, 0);
-        angleMotor.set(ControlMode.PercentOutput, power);
-       */
-        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(state.speedMetersPerSecond));
+        setSpeed(state.speedMetersPerSecond);
+        FireLog.log("target-angle " + wheel, state.angle.getDegrees());
+        setAngle(state.angle.getRadians());
     }
 
     /**
@@ -122,7 +157,18 @@ public class SwerveModule extends SubsystemBase {
      * @param speed the speed of the wheel in [m/s]
      */
     public void setSpeed(double speed) {
-        driveMotor.set(ControlMode.Velocity, driveUnitModel.toTicks100ms(speed));
+        double timeInterval = Math.max(20, currentTime - lastTime);
+        double currentSpeed = getSpeed() / (2 * Math.PI * Constants.SwerveModule.RADIUS); // [rps]
+        double targetSpeed = speed / (2 * Math.PI * Constants.SwerveModule.RADIUS); // [rps]
+
+
+        stateSpace.setNextR(VecBuilder.fill(targetSpeed)); // r = reference (setpoint)
+        stateSpace.correct(VecBuilder.fill(currentSpeed));
+        stateSpace.predict(timeInterval);
+
+        double voltageToApply = stateSpace.getU(0); // u = input, calculated by the input.
+        // returns the voltage to apply (between -12 and 12)
+        driveMotor.set(ControlMode.PercentOutput, voltageToApply / Constants.NOMINAL_VOLTAGE);
     }
 
     /**
@@ -196,9 +242,11 @@ public class SwerveModule extends SubsystemBase {
     @Override
     public void periodic() {
         configPIDF();
-        anglePID.setP(anglePIDF[0].get());
-        anglePID.setI(anglePIDF[1].get());
-        anglePID.setD(anglePIDF[2].get());
+
+        stateSpace = constructLinearSystem(J);
+        timer.start();
+        lastTime = currentTime;
+        currentTime = timer.get();
     }
 
     public void setEncoderMode(boolean absolute) {
