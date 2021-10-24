@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -16,10 +17,7 @@ import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.StartConveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.autonomous.MoveForward;
-import frc.robot.subsystems.drivetrain.commands.DriveForward;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
-import frc.robot.subsystems.drivetrain.commands.MoveToPosition;
-import frc.robot.subsystems.drivetrain.commands.Rotate;
+import frc.robot.subsystems.drivetrain.commands.*;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.commands.StartFunnel;
 import frc.robot.subsystems.hood.Hood;
@@ -41,7 +39,7 @@ import org.techfire225.webapp.Webserver;
 public class RobotContainer {
 //    public static final PTO pto = new PTO();
 //    public static final VisionModule vision = new VisionModule();
-    public static final SwerveDrive swerveDrive = new SwerveDrive(false);
+    public static final SwerveDrive swerveDrive = new SwerveDrive(true);
     public static XboxController XboxDriver = new XboxController(3);
     public static XboxController Xbox = new XboxController(2);
 //    public final Funnel funnel = new Funnel();
@@ -83,7 +81,10 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
 //        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
-        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
+        swerveDrive.setDefaultCommand(new HolonomicDriveExperimental(swerveDrive));
+//        swerveDrive.setDefaultCommand(new DriveForwardAndBack(swerveDrive));
+//        swerveDrive.setDefaultCommand(new DriveAround(swerveDrive));
+//        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
 //        swerveDrive.setDefaultCommand(new DriveForward(swerveDrive));
     }
 
@@ -94,6 +95,7 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        a.whenPressed(new InstantCommand(Robot.navx::reset));
 //        b.whileHeld(new MoveToPosition(swerveDrive, vision));
 //        RT.whileActiveOnce(new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
 //        RB.whileHeld(new Outtake(funnel, conveyor, shooter));
