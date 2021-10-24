@@ -17,6 +17,8 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import org.techfire225.webapp.FireLog;
 
+import java.util.function.DoubleSupplier;
+
 import static frc.robot.Ports.SwerveDrive.*;
 
 /**
@@ -27,8 +29,10 @@ public class SwerveDrive extends SubsystemBase {
     private static final double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
     private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
     // the sign vectors of Rx and Ry
+//    private static final double[] signX = {1, 1, -1, -1};
+//    private static final double[] signY = {-1, 1, -1, 1};
     private static final double[] signX = {1, 1, -1, -1};
-    private static final double[] signY = {-1, 1, -1, 1};
+    private static final double[] signY = {1, -1, 1, -1};
 
     private static boolean isFieldOriented;
     public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
@@ -51,6 +55,7 @@ public class SwerveDrive extends SubsystemBase {
             Constants.Autonomous.MAX_ACCELERATION)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(kinematics);
+    private final DoubleSupplier angleSupplier = Robot.navx::getYaw;
 
     public SwerveDrive(boolean isFieldOriented) {
         this(isFieldOriented, false);
@@ -87,16 +92,33 @@ public class SwerveDrive extends SubsystemBase {
      * @param rotation the rotation Z of the joystick
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
-        ChassisSpeeds speeds = isFieldOriented ? ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Rotation2d.fromDegrees(-Robot.navx.getYaw())) : new ChassisSpeeds(forward, strafe, rotation);
+        ChassisSpeeds speeds = isFieldOriented ?
+                ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Rotation2d.fromDegrees(angleSupplier.getAsDouble())) :
+                new ChassisSpeeds(forward, strafe, rotation);
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
 
         setStates(states);
     }
 
+    public void holonomicDriveExperimental(double forward, double strafe, double rotation, double[] filter) {
+        ChassisSpeeds speeds = isFieldOriented ?
+                ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Rotation2d.fromDegrees(angleSupplier.getAsDouble())) :
+                new ChassisSpeeds(forward, strafe, rotation);
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+
+        setStatesExperimental(states, filter);
+    }
+
     public void setStates(SwerveModuleState[] states) {
         for (int i = 0; i < states.length; i++) {
-//            states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(getModule(i).getAngle()));
+            states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(getModule(i).getAngle()));
             getModule(i).setState(states[i]);
+        }
+    }
+    public void setStatesExperimental(SwerveModuleState[] states, double[] filter) {
+        for (int i = 0; i < states.length; i++) {
+            states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(getModule(i).getAngle()));
+            getModule(i).setStateExperimental(states[i], filter[i]);
         }
     }
 
@@ -105,7 +127,6 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void stop() {
         for (SwerveModule swerveModule : swerveModules) {
-
             swerveModule.setSpeed(0);
             swerveModule.stopAngleMotor();
         }
@@ -162,7 +183,12 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("x-pose", pose.getX());
         SmartDashboard.putNumber("y-pose", pose.getY());
         SmartDashboard.putNumber("theta-pose", pose.getRotation().getDegrees());
-        SmartDashboard.putNumber("navx angle", Robot.navx.getYaw());
+        SmartDashboard.putNumber("navx angle", angleSupplier.getAsDouble());
+        if (Robot.navx.isConnected())
+            FireLog.log("navx angle", angleSupplier.getAsDouble());
+        else
+            FireLog.log("navx angle", 1);
+
     }
 
 

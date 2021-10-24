@@ -9,11 +9,11 @@ import frc.robot.Utils;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import org.techfire225.webapp.FireLog;
 
-public class HolonomicDrive extends CommandBase {
+public class HolonomicDriveExperimental extends CommandBase {
 
     private final SwerveDrive swerveDrive;
 
-    public HolonomicDrive(SwerveDrive swerveDrive) {
+    public HolonomicDriveExperimental(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
         addRequirements(swerveDrive);
     }
@@ -46,7 +46,20 @@ public class HolonomicDrive extends CommandBase {
         rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
 
         if (forward != 0 || strafe != 0 || rotation != 0) {
-            swerveDrive.holonomicDrive(forward, strafe, rotation);
+            if (rotation == 0) {
+                double averageSpeed = 0;
+                for (int i = 0; i < 4; i++) {
+                    averageSpeed += Math.abs(swerveDrive.getModule(i).getSpeed());
+                }
+                averageSpeed /= 4;
+                double[] filter = {0, 0, 0, 0};
+                for (int i = 0; i < 4; i++) {
+                    filter[i] = averageSpeed - Math.abs(swerveDrive.getModule(i).getSpeed());
+                }
+                swerveDrive.holonomicDriveExperimental(forward, strafe, rotation, filter);
+            } else {
+                swerveDrive.holonomicDrive(forward, strafe, rotation);
+            }
         } else {
             swerveDrive.stop();
         }

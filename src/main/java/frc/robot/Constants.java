@@ -33,27 +33,23 @@ public final class Constants {
         public static final double HEIGHT_TOLERANCE = 0.1; //Error tolerance for the height [m].
     }
 
-    //TODO: change to real values
     public static final class Shooter {
         public static final int TICKS_PER_ROTATION = 2048;
 
         // NOTE: these are the only constants you need to change.
-        // TODO: Calibrate
         public static final double VELOCITY_TOLERANCE = 10; // [RPS]
         public static final double MODEL_TOLERANCE = 2;
         public static final double ENCODER_TOLERANCE = 1; // [ticks]
         public static final double J = 0.000429; // moment of inertia [kg * m^2]
         public static final double ARBITRARY_FEED_FORWARD = 0; // [%] https://docs.ctre-phoenix.com/en/latest/ch16_ClosedLoop.html#do-i-need-to-use-arbitrary-feed-forward
 
-
-        // TODO: Note that we might need to change the values here using the frc-characterizations if the model won't satisfy our needs.
         public static final double STALL_CURRENT = 257; // [amps]
         public static final double STALL_TORQUE = 4.69; // [N*meters]
 
         public static final double FREE_CURRENT = 1.5; // [amps]
         public static final double FREE_SPEED = Units.rotationsPerMinuteToRadiansPerSecond(6380); // [rad/sec]
 
-        public static final double GEAR_RATIO = 0.987654321; //TODO: Choose real value.
+        public static final double GEAR_RATIO = 0.987654321;
         public static final double kT = STALL_TORQUE / STALL_CURRENT;// took from FRC examples.
         public static final double OMEGA = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
         public static final double kV = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA * FREE_CURRENT);// took from FRC examples.
@@ -87,7 +83,6 @@ public final class Constants {
         public static final double POWER_SLOW = 0.4;
     }
 
-    // TODO: Change the values
     public static final class Conveyor {
         public static final double FORWARD_PEAK = 1; // [%]
         public static final double REVERSE_PEAK = -1; // [%]
@@ -133,49 +128,29 @@ public final class Constants {
         public static final double TICKS_PER_METER = 2048 / (4 * 0.0254 * Math.PI) * 7.5 * THIS_SHOULD_BE_1_ASK_AMIR;
         public static final int TICKS_IN_ENCODER = 1024;
         public static final int ALLOWABLE_ANGLE_ERROR = 3; // [ticks]
-        private static final double ANGLE_GEAR_RATIO = 1;
-        public static final double TICKS_PER_RAD = TICKS_IN_ENCODER / (2 * Math.PI) * ANGLE_GEAR_RATIO;
-
         public static final int MAX_CURRENT = 15; // in ampere
-
-        public static final double ROBOT_LENGTH = 0.58; // in meters
-        public static final double ROBOT_WIDTH = 0.58; // in meters
-
+        public static final double ROBOT_LENGTH = 0.5924; // in meters
+        public static final double ROBOT_WIDTH = 0.5924; // in meters
         // the speed of the robot, this constant multiplies the speed outputs from the joysticks
         public static final double SPEED_MULTIPLIER = 4 / Math.sqrt(2);
 
         // the rotational speed of the robot, this constant multiplies the rotation output of the joystick
         public static final double ROTATION_MULTIPLIER = Math.PI;
-
-        public static final double JOYSTICK_THRESHOLD = 0.05;
-
-        public static final double TURN_TOLERANCE = 2; // degrees
-
+        public static final double JOYSTICK_THRESHOLD = 0.1;
         public static final double KP_TURN = 0.05;
         public static final double KI_TURN = 0.02;
         public static final double KD_TURN = 0;
-
-        public static final double KP_MOVE = 0;
-        public static final double KI_MOVE = 0;
-        public static final double KD_MOVE = 0;
-
         public static final double DRIVE_SETPOINT = 0.965; // [m]
         public static final double DRIVE_TOLERANCE = 0.05; // [m]
+        //        public static final double[] J = {0.0046, 0.0043, 0.0043, 0.0032};
+//        public static final double[] J = {0.0045, 0.0043, 0.0043, 0.0036};
+        public static final double[] J = {0.0043, 0.0043, 0.0043, 0.0043};
+        private static final double ANGLE_GEAR_RATIO = 1;
+        public static final double TICKS_PER_RAD = TICKS_IN_ENCODER / (2 * Math.PI) * ANGLE_GEAR_RATIO;
+
     }
 
     public static class SwerveModule {
-        public static final double KP =  6;
-        public static final double KI =  0;
-        public static final double KD = 10;
-        public static final double KF =  0;
-        public static final double[] ANGLE_PIDF = new double[]{KP, KI, KD, KF};
-
-        public static final double KP_DRIVE = 0.045;
-        public static final double KI_DRIVE = 0;
-        public static final double KD_DRIVE = 2;
-        public static final double KF_DRIVE = 0;
-        public static final double[] DRIVE_PIDF = new double[]{KP_DRIVE, KI_DRIVE, KD_DRIVE, KF_DRIVE};
-
         public static final WebConstant KP_ANGLE_FR = new WebConstant("KP_FR", 4.5);
         public static final WebConstant KI_ANGLE_FR = new WebConstant("KI_FR", 0.0045);
         public static final WebConstant KD_ANGLE_FR = new WebConstant("KD_FR", 1);
@@ -200,29 +175,8 @@ public final class Constants {
         public static final WebConstant KF_ANGLE_RL = new WebConstant("KF_RL", 0.01);
         public static final WebConstant[] PIDF_ANGLE_RL = new WebConstant[]{KP_ANGLE_RL, KI_ANGLE_RL, KD_ANGLE_RL, KF_ANGLE_RL};
 
-        // slow man
-        // the module that is slower than the rest
-        public static final double KP_DRIVE_SLOW = 0.046;
-        public static final double KI_DRIVE_SLOW = 0;
-        public static final double KD_DRIVE_SLOW = 2;
-        public static final double KF_DRIVE_SLOW = 0;
-        public static final double[] SLOW_DRIVE_PIDF = new double[]{KP_DRIVE_SLOW, KI_DRIVE_SLOW, KD_DRIVE_SLOW, KF_DRIVE_SLOW};
+        public static final int[] ZERO_POSITIONS = {212, 237, 835, 48};
 
-
-        public static final double KP_BROKEN = 0.065;
-        public static final double KI_BROKEN = 0;
-        public static final double KD_BROKEN = 2;
-        public static final double KF_BROKEN = 0.046;
-
-        public static final int[] ZERO_POSITIONS = {735, 743, 596, 583};
-
-        // sick man
-        // the module that has more friction in the rotating mechanism
-        public static final double KP_SICK = 6;
-        public static final double KI_SICK = 0;
-        public static final double KD_SICK = 8;
-        public static final double KF_SICK = 0;
-        public static final double[] SICK_ANGLE_PIDF = new double[]{KP_SICK, KI_SICK, KD_SICK, KF_SICK};
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 5; // ampere
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // seconds
