@@ -111,6 +111,7 @@ public class SwerveDrive extends SubsystemBase {
 
     public void setStates(SwerveModuleState[] states) {
         for (int i = 0; i < states.length; i++) {
+            System.out.println(i + " " + states[i]);
             states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(getModule(i).getAngle()));
             getModule(i).setState(states[i]);
         }
@@ -204,4 +205,11 @@ public class SwerveDrive extends SubsystemBase {
         return Math.toRadians(Robot.navx.getRate());
     }
 
+    public ChassisSpeeds getRealChassisSpeeds() {
+        SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
+        for (int i = 0; i < 4; i++) swerveModuleStates[i] = new SwerveModuleState(getModule(i).getSpeed(), new Rotation2d(getModule(i).getAngle()));
+        ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(swerveModuleStates);
+        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, Rotation2d.fromDegrees(angleSupplier.getAsDouble()));
+        return chassisSpeeds;
+    }
 }
