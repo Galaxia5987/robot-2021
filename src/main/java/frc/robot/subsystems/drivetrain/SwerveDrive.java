@@ -111,7 +111,6 @@ public class SwerveDrive extends SubsystemBase {
 
     public void setStates(SwerveModuleState[] states) {
         for (int i = 0; i < states.length; i++) {
-            System.out.println(i + " " + states[i]);
             states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(getModule(i).getAngle()));
             getModule(i).setState(states[i]);
         }

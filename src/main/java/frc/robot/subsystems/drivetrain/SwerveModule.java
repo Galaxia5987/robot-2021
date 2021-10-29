@@ -74,8 +74,11 @@ public class SwerveModule extends SubsystemBase {
 
         driveMotor.configSupplyCurrentLimit(currLimitConfig);
 
-        angleMotor.enableCurrentLimit(Constants.ENABLE_CURRENT_LIMIT);
-        angleMotor.configContinuousCurrentLimit(Constants.SwerveDrive.MAX_CURRENT);
+//        angleMotor.configPeakCurrentLimit(Constants.SwerveDrive.MAX_CURRENT);
+//        angleMotor.configPeakCurrentDuration(20);
+//        angleMotor.configContinuousCurrentLimit(Constants.SwerveDrive.MAX_CURRENT);
+        angleMotor.configSupplyCurrentLimit(currLimitConfig);
+//        angleMotor.enableCurrentLimit(Constants.ENABLE_CURRENT_LIMIT);
 
         configPIDF();
 

@@ -175,10 +175,10 @@ public final class Constants {
         public static final WebConstant KF_ANGLE_RL = new WebConstant("KF_RL", 0.01);
         public static final WebConstant[] PIDF_ANGLE_RL = new WebConstant[]{KP_ANGLE_RL, KI_ANGLE_RL, KD_ANGLE_RL, KF_ANGLE_RL};
 
-        public static final int[] ZERO_POSITIONS = {228, 228, 854, 57};
+        public static final int[] ZERO_POSITIONS = {227, 285, 902, 63};
 
 
-        public static final int TRIGGER_THRESHOLD_CURRENT = 5; // ampere
+        public static final int TRIGGER_THRESHOLD_CURRENT = 2; // ampere
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // seconds
         public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
         public static final int VOLTAGE_SATURATION = 12; // volts

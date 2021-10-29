@@ -4,31 +4,12 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commandgroups.ConveyorShooter;
-import frc.robot.commandgroups.Outtake;
-import frc.robot.commandgroups.PickupBalls;
-import frc.robot.subsystems.PTO.PTO;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.StartConveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.autonomous.MoveForward;
-import frc.robot.subsystems.drivetrain.commands.*;
-import frc.robot.subsystems.funnel.Funnel;
-import frc.robot.subsystems.funnel.commands.StartFunnel;
-import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.commands.AdjustHood;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.Shoot;
-import frc.robot.subsystems.shooter.commands.ToggleVisionPiston;
-import frc.robot.utils.VisionModule;
+import frc.robot.subsystems.drivetrain.commands.FineTunedDrive;
 import frc.robot.valuetuner.ValueTuner;
-import org.photonvision.LEDMode;
 import org.techfire225.webapp.Webserver;
 
 
@@ -37,12 +18,12 @@ import org.techfire225.webapp.Webserver;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class RobotContainer {
-//    public static final PTO pto = new PTO();
+    //    public static final PTO pto = new PTO();
 //    public static final VisionModule vision = new VisionModule();
     public static final SwerveDrive swerveDrive = new SwerveDrive(true);
     public static XboxController XboxDriver = new XboxController(3);
     public static XboxController Xbox = new XboxController(2);
-//    public final Funnel funnel = new Funnel();
+    //    public final Funnel funnel = new Funnel();
 //    public final Shooter shooter = new Shooter();
 //    public final Climber climber = new Climber();
 //    public final Intake intake = new Intake();
@@ -81,7 +62,8 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
 //        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
-        swerveDrive.setDefaultCommand(new HolonomicDriveExperimental(swerveDrive));
+//        swerveDrive.setDefaultCommand(new HolonomicDriveExperimental(swerveDrive));
+        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive));
 //        swerveDrive.setDefaultCommand(new DriveForwardAndBack(swerveDrive));
 //        swerveDrive.setDefaultCommand(new DriveAround(swerveDrive));
 //        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
