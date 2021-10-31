@@ -42,7 +42,7 @@ public class FineTunedDrive extends CommandBase {
         strafe = Math.cos(alpha) * vector;
 
         if (DriveUtils.isPaused(forward, strafe, rotation)) {
-            swerveDrive.stop();
+            swerveDrive.terminate();
             isAngleSet = false;
             return;
         }
@@ -83,6 +83,6 @@ public class FineTunedDrive extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        swerveDrive.stop();
+        swerveDrive.terminate();
     }
 }

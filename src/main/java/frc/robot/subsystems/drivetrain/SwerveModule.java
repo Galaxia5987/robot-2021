@@ -51,7 +51,6 @@ public class SwerveModule extends SubsystemBase {
         driveMotor = new TalonFX(driveMotorPort);
         angleMotor = new TalonSRX(angleMotorPort);
 
-
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
 
@@ -140,7 +139,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setState(SwerveModuleState state) {
-        setSpeed(state.speedMetersPerSecond);
+//        setSpeed(state.speedMetersPerSecond);
         FireLog.log("target-angle " + wheel, state.angle.getDegrees());
         setAngle(state.angle.getRadians());
     }

@@ -48,7 +48,7 @@ public class HolonomicDrive extends CommandBase {
         if (forward != 0 || strafe != 0 || rotation != 0) {
             swerveDrive.holonomicDrive(forward, strafe, rotation);
         } else {
-            swerveDrive.stop();
+            swerveDrive.terminate();
         }
 
         FireLog.log("swerve direction", Robot.navx.getYaw());
@@ -66,7 +66,7 @@ public class HolonomicDrive extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        swerveDrive.stop();
+        swerveDrive.terminate();
     }
 
 

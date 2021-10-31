@@ -25,7 +25,7 @@ public class DriveAround extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        swerve.stop();
+        swerve.terminate();
     }
 
     @Override

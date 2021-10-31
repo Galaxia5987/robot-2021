@@ -83,7 +83,7 @@ public class HolonomicDriveExperimental extends CommandBase {
             }
         } else {
             newStartAngle = true;
-            swerveDrive.stop();
+            swerveDrive.terminate();
         }
 
         FireLog.log("swerve direction", Robot.navx.getYaw());
@@ -101,7 +101,7 @@ public class HolonomicDriveExperimental extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        swerveDrive.stop();
+        swerveDrive.terminate();
     }
 
 

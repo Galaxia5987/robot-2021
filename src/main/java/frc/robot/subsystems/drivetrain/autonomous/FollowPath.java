@@ -51,6 +51,6 @@ public class FollowPath extends SwerveControllerCommand {
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
-        swerveDrive.stop();
+        swerveDrive.terminate();
     }
 }

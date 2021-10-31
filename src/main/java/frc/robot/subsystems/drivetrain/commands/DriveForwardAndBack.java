@@ -68,7 +68,7 @@ public class DriveForwardAndBack extends CommandBase {
                 swerveDrive.holonomicDrive(forward, strafe, rotation);
             }
         } else {
-            swerveDrive.stop();
+            swerveDrive.terminate();
         }
 
         FireLog.log("swerve direction", Robot.navx.getYaw());
@@ -86,7 +86,7 @@ public class DriveForwardAndBack extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        swerveDrive.stop();
+        swerveDrive.terminate();
     }
 
 

@@ -123,10 +123,15 @@ public class SwerveDrive extends SubsystemBase {
         }
     }
 
+    public void setModuleOutputMax(int module){
+        getModule(module).setSpeed(100000);
+        getModule(module).setAngle(100000);
+    }
+
     /**
      * Stops all the wheels.
      */
-    public void stop() {
+    public void terminate() {
         for (SwerveModule swerveModule : swerveModules) {
             swerveModule.setSpeed(0);
             swerveModule.stopAngleMotor();
