@@ -4,13 +4,20 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-import static frc.robot.Constants.*;
+import static frc.robot.Constants.LOOP_PERIOD;
 
 public class VoltageTest extends CommandBase {
-    private SwerveDrive swerveDrive = new SwerveDrive(false);
+
+    private final SwerveDrive swerveDrive;
     private double cycles = 0;
     private double initVoltage;
     private double finalVoltage;
+
+    public VoltageTest(SwerveDrive swerveDrive) {
+        this.swerveDrive = swerveDrive;
+        addRequirements(swerveDrive);
+    }
+
 
     @Override
     public void initialize() {

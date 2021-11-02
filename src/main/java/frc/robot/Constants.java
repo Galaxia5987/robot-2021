@@ -175,7 +175,7 @@ public final class Constants {
         public static final WebConstant KF_ANGLE_RL = new WebConstant("KF_RL", 0.01);
         public static final WebConstant[] PIDF_ANGLE_RL = new WebConstant[]{KP_ANGLE_RL, KI_ANGLE_RL, KD_ANGLE_RL, KF_ANGLE_RL};
 
-        public static final int[] ZERO_POSITIONS = {219, 234, 440, 283}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {927, 526, 916, 90}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // ampere
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // seconds
@@ -196,6 +196,7 @@ public final class Constants {
         public static final double OMEGA = NOMINAL_VOLTAGE / STALL_CURRENT; // [Ohm]
         public static final double kV = FREE_SPEED / (NOMINAL_VOLTAGE - OMEGA * FREE_CURRENT);// took from FRC examples.
         public static final double RADIUS = 0.04688; // [m]
+        public static final double DEADBAND = Math.toRadians(5);
 
 
     }

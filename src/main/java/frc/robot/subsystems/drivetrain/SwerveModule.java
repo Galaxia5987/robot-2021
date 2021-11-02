@@ -24,6 +24,8 @@ import frc.robot.UnitModel;
 import frc.robot.valuetuner.WebConstant;
 import org.techfire225.webapp.FireLog;
 
+import static frc.robot.Constants.SwerveModule.DEADBAND;
+
 /**
  * The Swerve Module Subsystem controls the individual wheel with the controls from the Swerve Drive Subsystem.
  */
@@ -228,6 +230,10 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.config_kI(0, anglePIDF[1].get(), Constants.TALON_TIMEOUT);
         angleMotor.config_kD(0, anglePIDF[2].get(), Constants.TALON_TIMEOUT);
         angleMotor.config_kF(0, anglePIDF[3].get(), Constants.TALON_TIMEOUT);
+    }
+
+    public boolean hasReachedAngle(double reqAngle){
+        return (Math.abs(reqAngle - getAngle()) < DEADBAND);
     }
 
     @Override

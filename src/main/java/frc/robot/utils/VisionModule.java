@@ -128,8 +128,8 @@ public class VisionModule extends SubsystemBase {
         if (visionPose.isEmpty() || robotDistance == -1) return Optional.empty();
         var pose = visionPose.get();
         return Optional.of(new Pose2d(
-                        UtilityFunctions.getPortLocation(false).getTranslation().getX() - pose.getRotation().getCos() * robotDistance,
-                        UtilityFunctions.getPortLocation(false).getTranslation().getY() + pose.getRotation().getSin() * robotDistance,
+                        Functions.getPortLocation(false).getTranslation().getX() - pose.getRotation().getCos() * robotDistance,
+                        Functions.getPortLocation(false).getTranslation().getY() + pose.getRotation().getSin() * robotDistance,
                         Rotation2d.fromDegrees((-Robot.navx.getAngle()) - pose.getRotation().getDegrees())
                 )
         );

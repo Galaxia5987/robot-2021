@@ -123,9 +123,22 @@ public class SwerveDrive extends SubsystemBase {
         }
     }
 
-    public void setModuleOutputMax(int module){
+    public void setModuleOutputMax(int module) {
         getModule(module).setSpeed(100000);
         getModule(module).setAngle(100000);
+    }
+
+    public void setAngles(double angle) {
+        for (int i = 0; i < 4; i++) {
+            getModule(i).setAngle(angle);
+        }
+    }
+
+    public boolean hasReachedAngles(double angle){
+        for (int i = 0; i < 4; i++) {
+            getModule(i).hasReachedAngle(angle);
+        }
+        return true;
     }
 
     /**
@@ -211,7 +224,8 @@ public class SwerveDrive extends SubsystemBase {
 
     public ChassisSpeeds getRealChassisSpeeds() {
         SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
-        for (int i = 0; i < 4; i++) swerveModuleStates[i] = new SwerveModuleState(getModule(i).getSpeed(), new Rotation2d(getModule(i).getAngle()));
+        for (int i = 0; i < 4; i++)
+            swerveModuleStates[i] = new SwerveModuleState(getModule(i).getSpeed(), new Rotation2d(getModule(i).getAngle()));
         ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(swerveModuleStates);
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, Rotation2d.fromDegrees(angleSupplier.getAsDouble()));
         return chassisSpeeds;
