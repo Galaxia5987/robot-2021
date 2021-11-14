@@ -10,6 +10,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.autonomous.MoveForward;
 import frc.robot.subsystems.drivetrain.commands.FineTunedDrive;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
+import frc.robot.subsystems.drivetrain.commands.tests.ManiacDrive;
 import frc.robot.valuetuner.ValueTuner;
 import org.techfire225.webapp.Webserver;
 
@@ -79,6 +80,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         a.whenPressed(new InstantCommand(Robot.navx::reset));
+        b.whenPressed(new ManiacDrive(swerveDrive));
 //        b.whileHeld(new MoveToPosition(swerveDrive, vision));
 //        RT.whileActiveOnce(new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
 //        RB.whileHeld(new Outtake(funnel, conveyor, shooter));
