@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -12,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -124,8 +126,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void setModuleOutputMax(int module) {
-        getModule(module).setSpeed(100000);
-        getModule(module).setAngle(100000);
+        getModule(module).setMaxOutput();
     }
 
     public void setAngles(double angle) {
@@ -134,9 +135,10 @@ public class SwerveDrive extends SubsystemBase {
         }
     }
 
-    public boolean hasReachedAngles(double angle){
+    public boolean hasReachedAngles(double angle) {
         for (int i = 0; i < 4; i++) {
-            getModule(i).hasReachedAngle(angle);
+            if (!getModule(i).hasReachedAngle(angle))
+                return false;
         }
         return true;
     }
@@ -229,5 +231,12 @@ public class SwerveDrive extends SubsystemBase {
         ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(swerveModuleStates);
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, Rotation2d.fromDegrees(angleSupplier.getAsDouble()));
         return chassisSpeeds;
+    }
+
+    public double doRotation(double currAngle, PIDController pidController) {
+        double error = (currAngle < 0) ? 360 + currAngle : currAngle;
+        error = 360 - error;
+        // error 0 - 360
+        return pidController.calculate(0, error);
     }
 }

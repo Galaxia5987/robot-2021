@@ -12,6 +12,7 @@ public class DriveVelocity extends CommandBase {
     public DriveVelocity(double output, SwerveDrive swerveDrive) {
         this.output = output;
         this.swerveDrive = swerveDrive;
+        addRequirements(swerveDrive);
     }
 
     @Override
@@ -31,6 +32,6 @@ public class DriveVelocity extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return (timer.get() > 0.25);
+        return (timer.get() > 1);
     }
 }

@@ -151,6 +151,10 @@ public final class Constants {
     }
 
     public static class SwerveModule {
+        //        public static final WebConstant KP_ANGLE_FR = new WebConstant("KP_FR", 4.5);
+//        public static final WebConstant KI_ANGLE_FR = new WebConstant("KI_FR", 0.0045);
+//        public static final WebConstant KD_ANGLE_FR = new WebConstant("KD_FR", 1);
+//        public static final WebConstant KF_ANGLE_FR = new WebConstant("KF_FR", 0.0);
         public static final WebConstant KP_ANGLE_FR = new WebConstant("KP_FR", 4.5);
         public static final WebConstant KI_ANGLE_FR = new WebConstant("KI_FR", 0.0045);
         public static final WebConstant KD_ANGLE_FR = new WebConstant("KD_FR", 1);
@@ -160,22 +164,34 @@ public final class Constants {
         public static final WebConstant KP_ANGLE_FL = new WebConstant("KP_FL", 4);
         public static final WebConstant KI_ANGLE_FL = new WebConstant("KI_FL", 0.0045);
         public static final WebConstant KD_ANGLE_FL = new WebConstant("KD_FL", 3);
-        public static final WebConstant KF_ANGLE_FL = new WebConstant("KF_FL", 0.01125);
+        public static final WebConstant KF_ANGLE_FL = new WebConstant("KF_FL", 0.0);
+//            public static final WebConstant KP_ANGLE_FL = new WebConstant("KP_FL", 4);
+//            public static final WebConstant KI_ANGLE_FL = new WebConstant("KI_FL", 0);
+//            public static final WebConstant KD_ANGLE_FL = new WebConstant("KD_FL", 0);
+//            public static final WebConstant KF_ANGLE_FL = new WebConstant("KF_FL", 0);
         public static final WebConstant[] PIDF_ANGLE_FL = new WebConstant[]{KP_ANGLE_FL, KI_ANGLE_FL, KD_ANGLE_FL, KF_ANGLE_FL};
 
         public static final WebConstant KP_ANGLE_RR = new WebConstant("KP_RR", 4.35);
         public static final WebConstant KI_ANGLE_RR = new WebConstant("KI_RR", 0.004);
         public static final WebConstant KD_ANGLE_RR = new WebConstant("KD_RR", 0);
         public static final WebConstant KF_ANGLE_RR = new WebConstant("KF_RR", 0);
+        //        public static final WebConstant KP_ANGLE_RR = new WebConstant("KP_RR", 4.35);
+//        public static final WebConstant KI_ANGLE_RR = new WebConstant("KI_RR", 0);
+//        public static final WebConstant KD_ANGLE_RR = new WebConstant("KD_RR", 0);
+//        public static final WebConstant KF_ANGLE_RR = new WebConstant("KF_RR", 0);
         public static final WebConstant[] PIDF_ANGLE_RR = new WebConstant[]{KP_ANGLE_RR, KI_ANGLE_RR, KD_ANGLE_RR, KF_ANGLE_RR};
 
         public static final WebConstant KP_ANGLE_RL = new WebConstant("KP_RL", 4.5);
         public static final WebConstant KI_ANGLE_RL = new WebConstant("KI_RL", 0.004);
         public static final WebConstant KD_ANGLE_RL = new WebConstant("KD_RL", 0);
-        public static final WebConstant KF_ANGLE_RL = new WebConstant("KF_RL", 0.01);
+        public static final WebConstant KF_ANGLE_RL = new WebConstant("KF_RL", 0.0);
+        //        public static final WebConstant KP_ANGLE_RL = new WebConstant("KP_RL", 4.5);
+//        public static final WebConstant KI_ANGLE_RL = new WebConstant("KI_RL", 0);
+//        public static final WebConstant KD_ANGLE_RL = new WebConstant("KD_RL", 0);
+//        public static final WebConstant KF_ANGLE_RL = new WebConstant("KF_RL", 0);
         public static final WebConstant[] PIDF_ANGLE_RL = new WebConstant[]{KP_ANGLE_RL, KI_ANGLE_RL, KD_ANGLE_RL, KF_ANGLE_RL};
 
-        public static final int[] ZERO_POSITIONS = {927, 526, 916, 90}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {923, 492, 986, 318}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // ampere
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // seconds

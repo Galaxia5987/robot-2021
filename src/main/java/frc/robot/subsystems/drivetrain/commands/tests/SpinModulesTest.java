@@ -9,12 +9,13 @@ import static frc.robot.Constants.LOOP_PERIOD;
 public class SpinModulesTest extends CommandBase {
     private SwerveDrive swerveDrive;
     private double d_Angle = Math.toRadians(90);
-    private double reqAngle = 90;
+    private double reqAngle = 0;
     private double cycles = 0;
     private Timer timer = new Timer();
 
     public SpinModulesTest(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
+        addRequirements(swerveDrive);
     }
 
     @Override
@@ -24,13 +25,10 @@ public class SpinModulesTest extends CommandBase {
 
     @Override
     public void execute() {
-        if (timer.hasElapsed(cycles + 1))
-            swerveDrive.setAngles(reqAngle);
-
-        if(swerveDrive.hasReachedAngles(reqAngle)){
-            cycles += 1;
-            reqAngle += d_Angle;
+        if (timer.advanceIfElapsed(10)) {
+            reqAngle = reqAngle == 90 ? 0 : 90;
         }
+        swerveDrive.setAngles(reqAngle);
     }
 
     @Override

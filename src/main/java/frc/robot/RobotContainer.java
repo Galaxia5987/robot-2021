@@ -22,7 +22,7 @@ import org.techfire225.webapp.Webserver;
 public class RobotContainer {
     //    public static final PTO pto = new PTO();
 //    public static final VisionModule vision = new VisionModule();
-    public static final SwerveDrive swerveDrive = new SwerveDrive(true);
+    public static final SwerveDrive swerveDrive = new SwerveDrive(false);
     public static XboxController XboxDriver = new XboxController(3);
     public static XboxController Xbox = new XboxController(2);
     //    public final Funnel funnel = new Funnel();
@@ -80,7 +80,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         a.whenPressed(new InstantCommand(Robot.navx::reset));
-        b.whenPressed(new ManiacDrive(swerveDrive));
+        b.whenPressed(new ManiacDrive(swerveDrive, 1));
 //        b.whileHeld(new MoveToPosition(swerveDrive, vision));
 //        RT.whileActiveOnce(new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
 //        RB.whileHeld(new Outtake(funnel, conveyor, shooter));

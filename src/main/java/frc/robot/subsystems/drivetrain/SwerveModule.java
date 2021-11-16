@@ -74,12 +74,13 @@ public class SwerveModule extends SubsystemBase {
         );
 
         driveMotor.configSupplyCurrentLimit(currLimitConfig);
+        angleMotor.config_IntegralZone(0, 5);
 
 //        angleMotor.configPeakCurrentLimit(Constants.SwerveDrive.MAX_CURRENT);
 //        angleMotor.configPeakCurrentDuration(20);
 //        angleMotor.configContinuousCurrentLimit(Constants.SwerveDrive.MAX_CURRENT);
         angleMotor.configSupplyCurrentLimit(currLimitConfig);
-//        angleMotor.enableCurrentLimit(Constants.ENABLE_CURRENT_LIMIT);
+        angleMotor.enableCurrentLimit(Constants.ENABLE_CURRENT_LIMIT);
 
         configPIDF();
 
@@ -141,7 +142,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setState(SwerveModuleState state) {
-//        setSpeed(state.speedMetersPerSecond);
+        setSpeed(state.speedMetersPerSecond);
         FireLog.log("target-angle " + wheel, state.angle.getDegrees());
         setAngle(state.angle.getRadians());
     }
@@ -253,5 +254,10 @@ public class SwerveModule extends SubsystemBase {
         startAngle = Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITIONS[wheel]), 2 * Math.PI);
         angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
         angleMotor.setSelectedSensorPosition(0);
+    }
+
+    public void setMaxOutput() {
+        angleMotor.set(ControlMode.PercentOutput, 1);
+        driveMotor.set(ControlMode.PercentOutput, 1);
     }
 }
