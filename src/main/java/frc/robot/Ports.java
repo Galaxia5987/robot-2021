@@ -23,7 +23,6 @@ public class Ports {
         public static final boolean AUX_INVERTED = true;
         public static final boolean UP_INVERTED = false;
         public static final boolean IS_SENSOR_INVERTED = false;
-
     }
 
     public static final class Vision {

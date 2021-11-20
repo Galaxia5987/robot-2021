@@ -9,7 +9,6 @@ package frc.robot;
 
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -17,7 +16,6 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.ghrobotics.lib.debug.FalconDashboard;
-import org.techfire225.webapp.FireLog;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -29,7 +27,7 @@ public class Robot extends TimedRobot {
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     public static boolean debug = true;
     public static double startAngle;
-//    private final Compressor compressor = new Compressor(0);
+    //    private final Compressor compressor = new Compressor(0);
     public PowerDistributionPanel pdp = new PowerDistributionPanel();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
@@ -73,10 +71,13 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         m_robotContainer.disableInit();
+
     }
+
 
     @Override
     public void disabledPeriodic() {
+
     }
 
     /**

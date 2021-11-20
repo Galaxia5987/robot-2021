@@ -24,17 +24,23 @@ public class FollowPath extends SwerveControllerCommand {
     private final SwerveDrive swerveDrive;
 
     public FollowPath(SwerveDrive swerveDrive, Trajectory trajectory) {
-        super(trajectory, swerveDrive::getPoseForTrajectory,
+        super(
+                trajectory,
+                swerveDrive::getPoseForTrajectory,
                 swerveDrive.kinematics,
                 new PIDController(Constants.Autonomous.kPXController, 0, 0),
                 new PIDController(Constants.Autonomous.kPYController, 0, 0),
                 new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0, Constants.Autonomous.kThetaControllerConstraints) {{
                     enableContinuousInput(-Math.PI, Math.PI);
-                }}, (SwerveModuleState[] states) -> {
+                }},
+                (SwerveModuleState[] states) -> {
                     for (int i = 0; i < states.length; i++) {
-                        swerveDrive.getModule(i).setState(new SwerveModuleState(states[i].speedMetersPerSecond, new Rotation2d(-states[i].angle.getRadians())));
+                        swerveDrive.getModule(i).setState(
+                                new SwerveModuleState(states[i].speedMetersPerSecond,
+                                        new Rotation2d(-states[i].angle.getRadians())));
                     }
-                }, swerveDrive);
+                },
+                swerveDrive);
         this.swerveDrive = swerveDrive;
     }
 
@@ -44,7 +50,7 @@ public class FollowPath extends SwerveControllerCommand {
     }
 
     @Override
-    public void execute(){
+    public void execute() {
         super.execute();
     }
 
