@@ -80,7 +80,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         a.whenPressed(new InstantCommand(Robot.navx::reset));
-        b.whenPressed(new ManiacDrive(swerveDrive, 1));
+        b.whenPressed(new ManiacDrive(swerveDrive, 1, 12));
 //        b.whileHeld(new MoveToPosition(swerveDrive, vision));
 //        RT.whileActiveOnce(new ConveyorShooter(shooter, hood, conveyor, funnel, vision, Constants.Conveyor.CONVEYOR_MOTOR_POWER));
 //        RB.whileHeld(new Outtake(funnel, conveyor, shooter));
