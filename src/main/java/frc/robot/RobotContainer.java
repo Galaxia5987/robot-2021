@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.autonomous.AutoBoto;
 import frc.robot.subsystems.drivetrain.autonomous.MoveForward;
+import frc.robot.subsystems.drivetrain.commands.DriveForward;
 import frc.robot.subsystems.drivetrain.commands.FineTunedDrive;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.drivetrain.commands.Playground;
@@ -63,10 +65,10 @@ public class RobotContainer {
 
 
     private void configureDefaultCommands() {
-        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
+//        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive));
 //        swerveDrive.setDefaultCommand(new HolonomicDriveExperimental(swerveDrive));
-//        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive));
-        swerveDrive.setDefaultCommand(new Playground(swerveDrive));
+        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive));
+//        swerveDrive.setDefaultCommand(new Playground(swerveDrive));
 //        swerveDrive.setDefaultCommand(new DriveForwardAndBack(swerveDrive));
 //        swerveDrive.setDefaultCommand(new DriveAround(swerveDrive));
 //        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
@@ -113,7 +115,9 @@ public class RobotContainer {
 //        return new ShootAndSafeTrench(swerveDrive, vision, shooter, hood, intake, funnel, conveyor);
 //        return new ShootFromInitiation(swerveDrive, vision, funnel, conveyor, shooter, hood);
 //        return new FiveNineEightSeven(swerveDrive);
-        return new MoveForward(swerveDrive, 1).withTimeout(1);
+//        return new MoveForward(swerveDrive, 1).withTimeout(1);
+        return new AutoBoto(swerveDrive);
+//        return new DriveForward(swerveDrive);
     }
 
 

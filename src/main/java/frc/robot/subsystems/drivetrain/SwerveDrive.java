@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.subsystems.drivetrain.autonomous.SwervePath;
 import org.techfire225.webapp.FireLog;
 
 import java.util.function.DoubleSupplier;
@@ -42,8 +44,9 @@ public class SwerveDrive extends SubsystemBase {
             new Translation2d(signX[3] * Rx, signY[3] * Ry)
     );
     private final Timer timer = new Timer();
+    private final DoubleSupplier angleSupplier = Robot.navx::getYaw;
     private final SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
-            new Rotation2d(Math.toRadians(-Robot.navx.getYaw())),
+            new Rotation2d(Math.toRadians(angleSupplier.getAsDouble())),
             new Pose2d(new Translation2d(), new Rotation2d(0)),
             kinematics,
             VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
@@ -55,7 +58,6 @@ public class SwerveDrive extends SubsystemBase {
             Constants.Autonomous.MAX_ACCELERATION)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(kinematics);
-    private final DoubleSupplier angleSupplier = Robot.navx::getYaw;
 
     public SwerveDrive(boolean isFieldOriented) {
         this(isFieldOriented, false);
@@ -79,7 +81,7 @@ public class SwerveDrive extends SubsystemBase {
 
         SwerveDrive.isFieldOriented = isFieldOriented;
 
-        odometry.resetPosition(convertTrajectoryToOdometry(new Pose2d(3.159, 5.86, new Rotation2d())), new Rotation2d(Math.toRadians(-Robot.navx.getYaw())));
+        odometry.resetPosition(convertTrajectoryToOdometry(new Pose2d(3.159, 5.86, new Rotation2d())), new Rotation2d(Math.toRadians(angleSupplier.getAsDouble())));
         timer.reset();
         timer.start();
     }
@@ -133,10 +135,9 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void terminate() {
         for (SwerveModule swerveModule : swerveModules) {
-            swerveModule.setSpeed(0);
+            swerveModule.setPower(0);
             swerveModule.stopAngleMotor();
         }
-
     }
 
     /**
@@ -148,7 +149,9 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return odometry.getEstimatedPosition();
+        Pose2d pose2d = odometry.getEstimatedPosition();
+//        pose2d = new Pose2d(pose2d.getTranslation(), Rotation2d.fromDegrees(angleSupplier.getAsDouble()));
+        return pose2d;
     }
 
     public Pose2d getPoseForTrajectory() {
@@ -173,7 +176,7 @@ public class SwerveDrive extends SubsystemBase {
 
         SwerveModuleState[] swerveModuleState = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {
-            swerveModuleState[i] = new SwerveModuleState(swerveModules[i].getSpeed(), new Rotation2d(Math.toRadians(90) - swerveModules[i].getAngle()));
+            swerveModuleState[i] = swerveModules[i].getState();
             SmartDashboard.putNumber("angle " + i, swerveModuleState[i].angle.getDegrees());
             SmartDashboard.putNumber("vel" + i, swerveModuleState[i].speedMetersPerSecond);
             SmartDashboard.putNumber("correct angle " + i, swerveModules[i].getAngle());
@@ -181,7 +184,7 @@ public class SwerveDrive extends SubsystemBase {
         }
 
         odometry.updateWithTime(timer.get(),
-                new Rotation2d(Math.toRadians(-Robot.navx.getYaw())),
+                Rotation2d.fromDegrees(angleSupplier.getAsDouble()),
                 swerveModuleState
         );
 
@@ -211,7 +214,8 @@ public class SwerveDrive extends SubsystemBase {
 
     public ChassisSpeeds getRealChassisSpeeds() {
         SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
-        for (int i = 0; i < 4; i++) swerveModuleStates[i] = new SwerveModuleState(getModule(i).getSpeed(), new Rotation2d(getModule(i).getAngle()));
+        for (int i = 0; i < 4; i++)
+            swerveModuleStates[i] = new SwerveModuleState(getModule(i).getSpeed(), new Rotation2d(getModule(i).getAngle()));
         ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(swerveModuleStates);
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, Rotation2d.fromDegrees(angleSupplier.getAsDouble()));
         return chassisSpeeds;
@@ -225,8 +229,21 @@ public class SwerveDrive extends SubsystemBase {
         odometry.resetPosition(new Pose2d(0, 0, new Rotation2d()), new Rotation2d());
     }
 
+    public void resetOdometry(Pose2d pose2d) {
+        odometry.resetPosition(pose2d, new Rotation2d());
+    }
+
+
     public Pose2d getOdometryPose() {
         Pose2d estimated = odometry.getEstimatedPosition();
         return new Pose2d(estimated.getX(), estimated.getY(), Rotation2d.fromDegrees(angleSupplier.getAsDouble()));
+    }
+
+    public Pose2d getPoseMeters() {
+        return odometry.getEstimatedPosition();
+    }
+
+    public void drive(ChassisSpeeds targetSpeeds) {
+        holonomicDrive(targetSpeeds.vxMetersPerSecond, targetSpeeds.vyMetersPerSecond, targetSpeeds.omegaRadiansPerSecond);
     }
 }

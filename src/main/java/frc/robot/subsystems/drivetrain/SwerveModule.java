@@ -139,7 +139,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setState(SwerveModuleState state) {
-//        setSpeed(state.speedMetersPerSecond);
+        setSpeed(state.speedMetersPerSecond);
         FireLog.log("target-angle " + wheel, state.angle.getDegrees());
         setAngle(state.angle.getRadians());
     }
@@ -181,6 +181,10 @@ public class SwerveModule extends SubsystemBase {
         double voltageToApply = stateSpace.getU(0); // u = input, calculated by the input.
         // returns the voltage to apply (between -12 and 12)
         driveMotor.set(ControlMode.PercentOutput, voltageToApply / Constants.NOMINAL_VOLTAGE);
+    }
+
+    public void setPower(double power) {
+        driveMotor.set(ControlMode.PercentOutput, power);
     }
 
     /**

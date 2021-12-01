@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
 public class Utils {
 
     /**
@@ -19,6 +21,7 @@ public class Utils {
 
     /**
      * converts cartesian coordinates to polar coordinates
+     *
      * @param x the X cartesian coordinate
      * @param y the Y cartesian coordinate
      * @return a vector of length 2 with the polar coordinates [length, angle]
@@ -33,7 +36,7 @@ public class Utils {
 
     /**
      * @param radius the radius of the vector
-     * @param angle the angle of the vector
+     * @param angle  the angle of the vector
      * @return the cartesian representation with x and y components
      */
     public static double[] polarToCartesian(double radius, double angle) {
@@ -46,6 +49,7 @@ public class Utils {
     /**
      * Calculates a matrix-vector multiplication.
      * assuming that the number of columns in the matrix is equal to the number of rows in the vector.
+     *
      * @param m a matrix of size R * C
      * @param v a vector of size C
      * @return a vector of length R with the corresponding matrix multiplication
@@ -64,11 +68,11 @@ public class Utils {
 
         return out;
     }
-    
+
     /**
      * sets the value of the joystick to 0 if the value is less than the threshold
      *
-     * @param val the joystick value
+     * @param val       the joystick value
      * @param threshold the threshold value
      * @return 0 if val is less than the threshold else val
      */
@@ -78,5 +82,9 @@ public class Utils {
         return val;
     }
 
-
+    public static Rotation2d pathPlannerRotationToRealRotation(Rotation2d rotation2d) {
+        rotation2d = Rotation2d.fromDegrees(rotation2d.getDegrees() < 0 ? rotation2d.getDegrees() + 360 : rotation2d.getDegrees());
+        rotation2d = Rotation2d.fromDegrees(360 - rotation2d.getDegrees());
+        return rotation2d;
+    }
 }

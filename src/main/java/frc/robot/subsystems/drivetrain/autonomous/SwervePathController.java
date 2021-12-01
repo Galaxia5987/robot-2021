@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.RobotContainer;
 
-public class SwerveControllerCommand2 {
+public class SwervePathController {
     private final PIDController posErrorController;
     private final PIDController headingErrorController;
     private final ProfiledPIDController rotationController;
@@ -25,7 +25,7 @@ public class SwerveControllerCommand2 {
      * @param headingErrorController PIDController for the robot's heading
      * @param rotationController     ProfiledPIDController for the robot's rotation
      */
-    public SwerveControllerCommand2(PIDController posErrorController, PIDController headingErrorController, ProfiledPIDController rotationController) {
+    public SwervePathController(PIDController posErrorController, PIDController headingErrorController, ProfiledPIDController rotationController) {
         this.posErrorController = posErrorController;
         this.headingErrorController = headingErrorController;
         this.headingErrorController.enableContinuousInput(-180, 180);
@@ -36,7 +36,7 @@ public class SwerveControllerCommand2 {
         this.currentHeading = new Rotation2d(0);
     }
 
-    public SwerveControllerCommand2(PIDController posErrorController, PIDController headingErrorController) {
+    public SwervePathController(PIDController posErrorController, PIDController headingErrorController) {
         this.posErrorController = posErrorController;
         this.headingErrorController = headingErrorController;
         this.headingErrorController.enableContinuousInput(-180, 180);
@@ -47,7 +47,7 @@ public class SwerveControllerCommand2 {
         this.currentHeading = new Rotation2d(0);
     }
 
-    public double getPosError(){
+    public double getPosError() {
         return posErrorController.getPositionError();
     }
 
@@ -59,25 +59,25 @@ public class SwerveControllerCommand2 {
     public void reset(Pose2d currentPose) {
         this.posErrorController.reset();
         this.headingErrorController.reset();
-        if(rotationController != null) this.rotationController.reset(currentPose.getRotation().getDegrees());
+        if (rotationController != null) this.rotationController.reset(currentPose.getRotation().getDegrees());
         this.lastPosition = currentPose.getTranslation();
         this.totalDistance = 0;
         this.currentHeading = new Rotation2d(0);
     }
 
-    public double getTotalDistance(){
+    public double getTotalDistance() {
         return this.totalDistance;
     }
 
-    public Rotation2d getCurrentHeading(){
+    public Rotation2d getCurrentHeading() {
         return this.currentHeading;
     }
 
     /**
      * Calculate the robot's speeds to match the path
      *
-     * @param currentPose     Current pose of the robot
-     * @param goalState       Goal state of the robot
+     * @param currentPose Current pose of the robot
+     * @param goalState   Goal state of the robot
      * @return The calculated speeds and rotation
      */
     public ChassisSpeeds calculate(Pose2d currentPose, SwervePath.State goalState, double deltaTime, boolean doHeading) {
@@ -94,7 +94,7 @@ public class SwerveControllerCommand2 {
         double rotSpeed = (rotationController != null) ? rotationController.calculate(currentRotation.getDegrees(), goalState.getRotation().getDegrees()) : 0;
 
         vel += posErrorController.calculate(totalDistance, goalState.getPos());
-        if(doHeading) {
+        if (doHeading) {
             heading = heading.plus(Rotation2d.fromDegrees(headingErrorController.calculate(this.currentHeading.getDegrees(), goalState.getHeading().getDegrees())));
         }
 

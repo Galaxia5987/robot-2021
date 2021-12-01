@@ -27,5 +27,4 @@ public class MoveForward extends CommandBase {
     public void end(boolean interrupted) {
         swerveDrive.terminate();
     }
-
 }

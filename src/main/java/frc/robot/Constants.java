@@ -175,7 +175,7 @@ public final class Constants {
         public static final WebConstant KF_ANGLE_RL = new WebConstant("KF_RL", 0.01);
         public static final WebConstant[] PIDF_ANGLE_RL = new WebConstant[]{KP_ANGLE_RL, KI_ANGLE_RL, KD_ANGLE_RL, KF_ANGLE_RL};
 
-        public static final int[] ZERO_POSITIONS = {219, 234, 440, 283}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {950, 493, 301, 214}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // ampere
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // seconds
@@ -203,8 +203,8 @@ public final class Constants {
     public static class Autonomous {
         public static final double MAX_ACCELERATION = 1;
         public static final double MAX_VELOCITY = 3;
-        public static final double kPThetaController = 2;
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints();
+        public static final double kPThetaController = 1;
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(Math.toRadians(30), Math.toRadians(15));
         public static final double kPXController = 1.2;
         public static final double kPYController = 1.2;
         public static final double MAX_CENTRIPETAL_ACCELERATION = 1.2;
